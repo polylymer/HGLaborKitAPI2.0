@@ -137,4 +137,8 @@ public abstract class KitSelector {
         }
         return false;
     }
+
+    public List<ItemStack> getKitSelectorItems() {
+        return kitSelectorItems;
+    }
 }
