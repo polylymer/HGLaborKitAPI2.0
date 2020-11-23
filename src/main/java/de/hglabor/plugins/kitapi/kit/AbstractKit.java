@@ -19,6 +19,7 @@ public abstract class AbstractKit extends KitEvents {
     private Set<Class<? extends Event>> cooldownLessEvents = new HashSet<>();
     private boolean sendCooldownMessage = true;
     private ItemStack mainKitItem;
+
     /**
      * use this to toggle gamemode specific kits
      */
@@ -39,12 +40,18 @@ public abstract class AbstractKit extends KitEvents {
     protected AbstractKit(String name, ItemStack displayItem) {
         this.name = name;
         this.setDisplayItem(displayItem);
-        KitManager.getInstance().register(this);
     }
 
+    /**
+     * some kits don't require an eventlistener so you can activate them here
+     */
     public void enable(KitPlayer kitPlayer) {
     }
 
+    /**
+     * some kits don't require an eventlistener so you can activate disable them here
+     * also used for kit rogue which disables all kits
+     */
     public void disable(KitPlayer kitPlayer) {
     }
 
@@ -56,6 +63,9 @@ public abstract class AbstractKit extends KitEvents {
         return displayItems.getOrDefault(locale, new ItemStack(Material.AIR));
     }
 
+    /**
+     * kititem which will be shown in the kitselector
+     */
     private void setDisplayItem(ItemStack item) {
         for (Locale supportedLanguage : Localization.getSupportedLanguages()) {
             String[] description = Localization.getKitDescription(name.toLowerCase() + "Kit" + "." + "description", supportedLanguage).split("#");
@@ -101,6 +111,10 @@ public abstract class AbstractKit extends KitEvents {
         return kitItems;
     }
 
+    /**
+     * use this for settings as likelyhood, radius or...
+     * used later in kitsettings menu for configuring
+     */
     public <V> void addSetting(KitSettings settings, V value) {
         this.settings.put(settings, value);
     }

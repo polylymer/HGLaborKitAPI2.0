@@ -1,6 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.KitManager;
 import org.bukkit.Material;
 
 public class NoneKit extends AbstractKit {

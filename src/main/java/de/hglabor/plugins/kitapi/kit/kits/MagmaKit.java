@@ -4,15 +4,22 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.ChanceUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class MagmaKit extends AbstractKit {
-    public final static MagmaKit instance = new MagmaKit();
+    private final static MagmaKit instance = new MagmaKit();
 
     private MagmaKit() {
         super("Magma", Material.MAGMA_BLOCK);
+        addSetting(KitSettings.EFFECT_DURATION,2);
+        addSetting(KitSettings.LIKELIHOOD,33);
+    }
+
+    public static MagmaKit getInstance() {
+        return instance;
     }
 
     @Override
@@ -20,9 +27,5 @@ public class MagmaKit extends AbstractKit {
         if (ChanceUtils.roll(getSetting(KitSettings.LIKELIHOOD))) {
             entity.setFireTicks((Integer) getSetting(KitSettings.EFFECT_DURATION) * 20);
         }
-    }
-
-    public static MagmaKit getInstance() {
-        return instance;
     }
 }

@@ -15,14 +15,22 @@ public final class KitApiConfig {
     private KitApiConfig() {
     }
 
-    public void register(File pluginFolder) throws IOException {
-        kitFile = new File(pluginFolder, "kitConfig.yml");
-        if (!kitFile.exists()) {
-            kitFile.createNewFile();
+    public static KitApiConfig getInstance() {
+        return instance;
+    }
+
+    public void register(File pluginFolder) {
+        try {
+            kitFile = new File(pluginFolder, "kitConfig.yml");
+            if (!kitFile.exists()) {
+                kitFile.createNewFile();
+            }
+            kitConfiguration = YamlConfiguration.loadConfiguration(kitFile);
+            kitConfiguration.addDefault("kit.amount", 1);
+            kitConfiguration.save(kitFile);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        kitConfiguration = YamlConfiguration.loadConfiguration(kitFile);
-        kitConfiguration.addDefault("kit.amount", 1);
-        kitConfiguration.save(kitFile);
     }
 
     public void loadKit(AbstractKit kit) {
@@ -51,9 +59,5 @@ public final class KitApiConfig {
 
     public int getKitAmount() {
         return kitConfiguration.getInt("kit.amount");
-    }
-
-    public static KitApiConfig getInstance() {
-        return instance;
     }
 }

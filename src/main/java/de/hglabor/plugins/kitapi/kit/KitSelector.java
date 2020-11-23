@@ -27,9 +27,9 @@ public abstract class KitSelector {
         this.kitSelectorItems = new ArrayList<>();
     }
 
-    public abstract void onKitSelectorClick(PlayerInteractEvent event);
+    protected abstract void onKitSelectorClick(PlayerInteractEvent event);
 
-    public abstract void onInventoryClick(InventoryClickEvent event);
+    protected abstract void onInventoryClick(InventoryClickEvent event);
 
     public void register() {
         kitSelectorItems.clear();
@@ -39,7 +39,7 @@ public abstract class KitSelector {
         this.createKitPages();
     }
 
-    public boolean isKitSelectorItem(ItemStack itemStack) {
+    protected boolean isKitSelectorItem(ItemStack itemStack) {
         return kitSelectorItems.stream().anyMatch(itemStack::isSimilar);
     }
 
@@ -107,14 +107,14 @@ public abstract class KitSelector {
         return slot;
     }
 
-    public void openFirstPage(Player player) {
+    protected void openFirstPage(Player player) {
         Inventory page = getPage(0, Localization.getPlayerLocale(player.getUniqueId()));
         if (page != null) {
             player.openInventory(page);
         }
     }
 
-    public boolean nextPage(String title, ItemStack clickedItem, Player player) {
+    protected boolean nextPage(String title, ItemStack clickedItem, Player player) {
         if (clickedItem.isSimilar(NEXT_PAGE_ITEM)) {
             String pageNumber = title.substring(title.length() - 1);
             Inventory page = getPage(Integer.parseInt(pageNumber), Localization.getPlayerLocale(player.getUniqueId()));
@@ -126,7 +126,7 @@ public abstract class KitSelector {
         return false;
     }
 
-    public boolean lastPage(String title, ItemStack clickedItem, Player player) {
+    protected boolean lastPage(String title, ItemStack clickedItem, Player player) {
         if (clickedItem.isSimilar(LAST_PAGE_ITEM)) {
             String pageNumber = title.substring(title.length() - 1);
             Inventory page = getPage(Integer.parseInt(pageNumber) - 1, Localization.getPlayerLocale(player.getUniqueId()));
