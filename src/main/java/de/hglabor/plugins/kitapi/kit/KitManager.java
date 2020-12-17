@@ -1,9 +1,7 @@
 package de.hglabor.plugins.kitapi.kit;
 
 import de.hglabor.plugins.kitapi.config.KitApiConfig;
-import de.hglabor.plugins.kitapi.kit.kits.MagmaKit;
-import de.hglabor.plugins.kitapi.kit.kits.NoneKit;
-import de.hglabor.plugins.kitapi.kit.kits.ViperKit;
+import de.hglabor.plugins.kitapi.kit.kits.*;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -32,6 +30,8 @@ public final class KitManager {
     }
 
     public void register() {
+        register(ConfusionKit.getInstance());
+        register(CannibalKit.getInstance());
         register(ViperKit.getInstance());
         register(MagmaKit.getInstance());
         register(NoneKit.getInstance());
