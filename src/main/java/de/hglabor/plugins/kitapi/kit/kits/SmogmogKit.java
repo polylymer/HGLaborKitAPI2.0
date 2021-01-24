@@ -25,6 +25,7 @@ public class SmogmogKit extends AbstractKit {
         cloud.setCustomName(e.getPlayer().getUniqueId().toString());
         cloud.setColor(Color.fromBGR(201, 110, 235));
         cloud.setDuration(60);
+        cloud.setSource(e.getPlayer());
         cloud.setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE, false, false));
     }
 
