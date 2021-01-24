@@ -50,6 +50,7 @@ public final class KitManager {
         register(CopyCatKit.INSTANCE);
         register(GladiatorKit.INSTANCE);
         register(GamblerKit.INSTANCE);
+        register(SmogmogKit.INSTANCE);
     }
 
     public void register(AbstractKit kit) {
