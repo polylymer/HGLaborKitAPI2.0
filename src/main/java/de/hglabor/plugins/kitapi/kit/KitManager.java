@@ -49,6 +49,7 @@ public final class KitManager {
         register(SurpriseKit.INSTANCE);
         register(CopyCatKit.INSTANCE);
         register(GladiatorKit.INSTANCE);
+        register(SmogmogKit.INSTANCE);
     }
 
     public void register(AbstractKit kit) {

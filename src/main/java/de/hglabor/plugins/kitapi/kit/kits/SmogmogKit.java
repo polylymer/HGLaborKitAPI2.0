@@ -13,6 +13,7 @@ import org.bukkit.potion.PotionType;
 
 public class SmogmogKit extends AbstractKit {
 
+    public final static SmogmogKit INSTANCE = new SmogmogKit();
 
     private SmogmogKit() {
         super("Smogmog", Material.SHULKER_SPAWN_EGG, 20);
