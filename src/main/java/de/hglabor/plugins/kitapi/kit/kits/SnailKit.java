@@ -18,6 +18,7 @@ public class SnailKit  extends AbstractKit {
     protected SnailKit() {
         super("Snail", Material.SOUL_SOIL);
         addSetting(KitSettings.EFFECT_DURATION,4);
+        addSetting(KitSettings.EFFECT_MULTIPLIER, 3);
         addSetting(KitSettings.LIKELIHOOD, 25);
     }
 
@@ -28,7 +29,7 @@ public class SnailKit  extends AbstractKit {
     @Override
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
         if (ChanceUtils.roll(getSetting(KitSettings.LIKELIHOOD))) {
-            entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (Integer) getSetting(KitSettings.EFFECT_DURATION) * 20, 3, true,true));
+            entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (Integer) getSetting(KitSettings.EFFECT_DURATION) * 20, (Integer)getSetting(KitSettings.EFFECT_MULTIPLIER), true,true));
             entity.getLocation().getWorld().playSound(entity.getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 10, 1);
         }
     }
