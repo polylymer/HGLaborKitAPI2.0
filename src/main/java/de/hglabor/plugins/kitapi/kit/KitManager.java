@@ -8,6 +8,7 @@ import de.hglabor.plugins.kitapi.player.KitPlayerSupplier;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public final class KitManager {
     public final List<AbstractKit> kits;
     private KitPlayerSupplier playerSupplier;
     private KitItemSupplier itemSupplier;
+    private JavaPlugin plugin;
 
     private KitManager() {
         this.kits = new ArrayList<>();
@@ -36,15 +38,17 @@ public final class KitManager {
         return emptyKitList;
     }
 
-    public void register(KitPlayerSupplier kitPlayerSupplier, KitItemSupplier kitItemSupplier) {
+    public void register(KitPlayerSupplier kitPlayerSupplier, KitItemSupplier kitItemSupplier, JavaPlugin plugin) {
         this.playerSupplier = kitPlayerSupplier;
         this.itemSupplier = kitItemSupplier;
+        this.plugin = plugin;
         register(MagmaKit.getInstance());
         register(NinjaKit.getInstance());
         register(NoneKit.getInstance());
         register(BlinkKit.INSTANCE);
         register(SurpriseKit.INSTANCE);
         register(CopyCatKit.INSTANCE);
+        register(GladiatorKit.INSTANCE);
     }
 
     public void register(AbstractKit kit) {
@@ -100,6 +104,9 @@ public final class KitManager {
         player.getInventory().removeItem(kit.getKitItems().toArray(new ItemStack[0]));
     }
 
+    public JavaPlugin getPlugin() {
+        return plugin;
+    }
 
     public boolean sendCooldownMessage(KitPlayer kitPlayer, AbstractKit kit) {
         if (kit.getCooldown() > 0) {

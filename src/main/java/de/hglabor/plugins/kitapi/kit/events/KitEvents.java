@@ -4,6 +4,7 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
@@ -14,6 +15,9 @@ public abstract class KitEvents {
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
     }
 
+    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
+    }
+
     public void onPlayerKillsPlayer(KitPlayer killer, KitPlayer dead) {
     }
 
@@ -21,6 +25,9 @@ public abstract class KitEvents {
     }
 
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
+    }
+
+    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event) {
     }
 
     protected void checkUsesForCooldown(KitPlayer kitPlayer, AbstractKit kit) {

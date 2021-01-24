@@ -55,8 +55,7 @@ public final class WorldEditUtils {
         try (EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(BukkitAdapter.adapt(world), -1)) {
             editSession.setFastMode(true);
             editSession.makeCylinder(BukkitAdapter.asBlockVector(startLocation), BukkitAdapter.asBlockState(new ItemStack(block)), radius, height, filled);
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
