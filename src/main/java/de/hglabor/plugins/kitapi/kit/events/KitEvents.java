@@ -6,6 +6,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 import static de.hglabor.plugins.kitapi.kit.config.KitSettings.USES;
@@ -28,6 +29,9 @@ public abstract class KitEvents {
     }
 
     public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event) {
+    }
+
+    public void onPlayerMove(PlayerMoveEvent event) {
     }
 
     protected void checkUsesForCooldown(KitPlayer kitPlayer, AbstractKit kit) {
