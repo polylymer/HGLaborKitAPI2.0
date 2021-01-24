@@ -27,6 +27,4 @@ public class TestListener extends KitEventHandler implements Listener {
             }
         }
     }
-
-
 }
