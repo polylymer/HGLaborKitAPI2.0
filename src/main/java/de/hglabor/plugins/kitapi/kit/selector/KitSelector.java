@@ -1,6 +1,8 @@
-package de.hglabor.plugins.kitapi.kit;
+package de.hglabor.plugins.kitapi.kit.selector;
 
-import de.hglabor.plugins.kitapi.config.KitApiConfig;
+import de.hglabor.plugins.kitapi.config.Config;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.util.ItemBuilder;
 import de.hglabor.plugins.kitapi.util.Localization;
 import org.bukkit.Bukkit;
@@ -33,7 +35,7 @@ public abstract class KitSelector {
 
     public void register() {
         kitSelectorItems.clear();
-        for (int i = 0; i < KitApiConfig.getInstance().getInteger("kit.amount"); i++) {
+        for (int i = 0; i < Config.getInstance().getInteger("kit.amount"); i++) {
             kitSelectorItems.add(i, new ItemBuilder(Material.CHEST).setName("KitSelector " + (i + 1)).build());
         }
         this.createKitPages();

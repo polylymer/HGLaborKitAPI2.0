@@ -7,5 +7,8 @@
 # Editor-based HTTP Client requests
 /httpRequests/
 
-.idea
-target
+.idea/
+.classpath
+.project
+.settings/
+target/

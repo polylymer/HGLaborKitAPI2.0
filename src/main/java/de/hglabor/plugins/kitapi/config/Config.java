@@ -6,16 +6,16 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 
-public final class KitApiConfig {
-    private final static KitApiConfig instance = new KitApiConfig();
+public final class Config {
+    private final static Config instance = new Config();
 
     private static File kitFile;
     private static YamlConfiguration kitConfiguration;
 
-    private KitApiConfig() {
+    private Config() {
     }
 
-    public static KitApiConfig getInstance() {
+    public static Config getInstance() {
         return instance;
     }
 

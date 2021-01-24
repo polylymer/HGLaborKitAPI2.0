@@ -1,5 +1,7 @@
-package de.hglabor.plugins.kitapi.kit;
+package de.hglabor.plugins.kitapi.kit.events;
 
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.player.KitPlayerSupplier;
 import org.bukkit.Material;

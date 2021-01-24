@@ -1,5 +1,6 @@
 package de.hglabor.plugins.kitapi.kit;
 
+import de.hglabor.plugins.kitapi.kit.events.KitEvents;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.ItemBuilder;
 import de.hglabor.plugins.kitapi.util.Localization;
@@ -35,6 +36,11 @@ public abstract class AbstractKit extends KitEvents {
 
     protected AbstractKit(String name, Material material) {
         this(name, new ItemStack(material));
+    }
+
+    protected AbstractKit(String name, Material material, int cooldown) {
+        this(name, new ItemStack(material));
+        this.setCooldown(cooldown);
     }
 
     protected AbstractKit(String name, ItemStack displayItem) {
@@ -89,6 +95,10 @@ public abstract class AbstractKit extends KitEvents {
         mainKitItem = new ItemBuilder(material).setDescription(ChatColor.RED + "Kititem").setAmount(size).build();
     }
 
+    public ItemStack getMainKitItem() {
+        return mainKitItem;
+    }
+
     /**
      * used for checking in controller if kit has event
      */
@@ -132,16 +142,16 @@ public abstract class AbstractKit extends KitEvents {
         settings.put(KitSettings.COOLDOWN, seconds);
     }
 
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
-    }
-
     public String getName() {
         return name;
     }
 
     public boolean isEnabled() {
         return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
     }
 
     public List<ItemStack> getDisplayItems() {

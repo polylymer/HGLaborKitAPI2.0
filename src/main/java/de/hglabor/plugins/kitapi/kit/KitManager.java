@@ -1,8 +1,14 @@
 package de.hglabor.plugins.kitapi.kit;
 
-import de.hglabor.plugins.kitapi.config.KitApiConfig;
+import de.hglabor.plugins.kitapi.config.Config;
+import de.hglabor.plugins.kitapi.kit.kits.BlinkKit;
 import de.hglabor.plugins.kitapi.kit.kits.MagmaKit;
+import de.hglabor.plugins.kitapi.kit.kits.NinjaKit;
 import de.hglabor.plugins.kitapi.kit.kits.NoneKit;
+import de.hglabor.plugins.kitapi.player.KitPlayer;
+import de.hglabor.plugins.kitapi.player.KitPlayerSupplier;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -12,6 +18,7 @@ import java.util.stream.Collectors;
 public final class KitManager {
     public final static KitManager instance = new KitManager();
     public final List<AbstractKit> kits;
+    private KitPlayerSupplier playerSupplier;
 
     private KitManager() {
         this.kits = new ArrayList<>();
@@ -22,7 +29,7 @@ public final class KitManager {
     }
 
     public List<AbstractKit> empty() {
-        int kitAmount = KitApiConfig.getInstance().getInteger("kit.amount");
+        int kitAmount = Config.getInstance().getInteger("kit.amount");
         List<AbstractKit> emptyKitList = new ArrayList<>(kitAmount);
         for (int i = 0; i < kitAmount; i++) {
             emptyKitList.add(NoneKit.getInstance());
@@ -30,15 +37,18 @@ public final class KitManager {
         return emptyKitList;
     }
 
-    public void register() {
+    public void register(KitPlayerSupplier kitPlayerSupplier) {
+        this.playerSupplier = kitPlayerSupplier;
         register(MagmaKit.getInstance());
+        register(NinjaKit.getInstance());
         register(NoneKit.getInstance());
+        register(BlinkKit.INSTANCE);
     }
 
     public void register(AbstractKit kit) {
         System.out.println(kit.getName());
         kits.add(kit);
-        KitApiConfig kitApiConfig = KitApiConfig.getInstance();
+        Config kitApiConfig = Config.getInstance();
         kitApiConfig.loadKit(kit);
         kit.setEnabled(kitApiConfig.getBoolean("kit" + "." + kit.getName() + "." + "enabled"));
         kit.setCooldown(kitApiConfig.getInteger("kit" + "." + kit.getName() + "." + "cooldown"));
@@ -70,5 +80,31 @@ public final class KitManager {
             }
         }
         return null;
+    }
+
+    public KitPlayer getPlayer(Player player) {
+        return playerSupplier.getKitPlayer(player);
+    }
+
+    public boolean hasKitItemInAnyHand(Player player, AbstractKit kit) {
+        return player.getInventory().getItemInOffHand().isSimilar(kit.getMainKitItem()) || player.getInventory().getItemInMainHand().isSimilar(kit.getMainKitItem());
+    }
+
+    public boolean sendCooldownMessage(KitPlayer kitPlayer, AbstractKit kit) {
+        if (kit.getCooldown() > 0) {
+            Cooldown kitCooldown = kitPlayer.getKitCooldown(kit);
+            Player player = Bukkit.getPlayer(kitPlayer.getUUID());
+            if (kitCooldown.hasCooldown()) {
+                long cooldown = (kitCooldown.getStartTime() + (kit.getCooldown() * 1000L + kitCooldown.getAdditionalTime() * 1000L)) - System.currentTimeMillis();
+                assert player != null;
+                if (kit.getMainKitItem() != null && hasKitItemInAnyHand(player, kit)) {
+                    player.sendMessage("Cooldown: " + (cooldown) / 1000D);
+                } else if (kit.getMainKitItem() == null) {
+                    player.sendMessage("Cooldown: " + (cooldown) / 1000D);
+                }
+                return true;
+            }
+        }
+        return false;
     }
 }
