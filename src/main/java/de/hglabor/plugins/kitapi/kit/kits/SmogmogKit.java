@@ -27,7 +27,6 @@ public class SmogmogKit extends AbstractKit implements Listener {
 
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent e) {
-        e.setCancelled(true);
         AreaEffectCloud cloud = (AreaEffectCloud) e.getPlayer().getWorld().spawnEntity(e.getPlayer().getLocation(), EntityType.AREA_EFFECT_CLOUD);
         cloud.setCustomName(e.getPlayer().getUniqueId().toString());
         cloud.setColor(Color.fromBGR(201, 110, 235));
