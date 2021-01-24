@@ -37,7 +37,4 @@ public abstract class KitEvents {
             kitPlayer.putKitAttribute(kit, 0);
         }
     }
-
-    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
-    }
 }

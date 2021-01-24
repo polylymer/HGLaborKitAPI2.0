@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public final class KitManager {
-    public final static KitManager instance = new KitManager();
+    private final static KitManager instance = new KitManager();
     public final List<AbstractKit> kits;
     private KitPlayerSupplier playerSupplier;
     private KitItemSupplier itemSupplier;
@@ -49,6 +49,7 @@ public final class KitManager {
         register(SurpriseKit.INSTANCE);
         register(CopyCatKit.INSTANCE);
         register(GladiatorKit.INSTANCE);
+        register(GamblerKit.INSTANCE);
     }
 
     public void register(AbstractKit kit) {
@@ -98,6 +99,14 @@ public final class KitManager {
 
     public void giveKitItemsIfSlotEmpty(KitPlayer kitPlayer, AbstractKit kit) {
         itemSupplier.giveKitItems(kitPlayer, kit);
+    }
+
+    public void giveKitItemsIfSlotEmpty(KitPlayer kitPlayer, AbstractKit kit, List<ItemStack> items) {
+        itemSupplier.giveKitItems(kitPlayer,kit ,items);
+    }
+
+    public void giveItemsIfSlotEmpty(KitPlayer kitPlayer, List<ItemStack> kits) {
+        itemSupplier.giveItems(kitPlayer, kits);
     }
 
     public void removeKitItems(AbstractKit kit, Player player) {
