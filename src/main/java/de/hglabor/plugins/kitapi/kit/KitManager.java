@@ -52,6 +52,7 @@ public final class KitManager {
         register(GamblerKit.INSTANCE);
         register(SmogmogKit.INSTANCE);
         register(RogueKit.INSTANCE);
+        register(SnailKit.getInstance());
     }
 
     public void register(AbstractKit kit) {
