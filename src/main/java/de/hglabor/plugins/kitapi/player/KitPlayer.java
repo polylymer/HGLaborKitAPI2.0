@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.player;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.Cooldown;
+import de.hglabor.plugins.kitapi.kit.config.Cooldown;
 
 import java.util.List;
 import java.util.UUID;

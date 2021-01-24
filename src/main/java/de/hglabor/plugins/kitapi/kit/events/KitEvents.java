@@ -7,11 +7,14 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
-import static de.hglabor.plugins.kitapi.kit.KitSettings.USES;
+import static de.hglabor.plugins.kitapi.kit.config.KitSettings.USES;
 
 public abstract class KitEvents {
 
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
+    }
+
+    public void onPlayerKillsPlayer(KitPlayer killer, KitPlayer dead) {
     }
 
     public void onNinjaSneak(PlayerToggleSneakEvent event) {

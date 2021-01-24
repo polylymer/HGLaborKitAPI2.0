@@ -1,5 +1,6 @@
 package de.hglabor.plugins.kitapi.kit;
 
+import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.kit.events.KitEvents;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.ItemBuilder;

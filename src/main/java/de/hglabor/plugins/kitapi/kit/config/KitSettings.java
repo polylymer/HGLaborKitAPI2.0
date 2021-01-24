@@ -1,4 +1,4 @@
-package de.hglabor.plugins.kitapi.kit;
+package de.hglabor.plugins.kitapi.kit.config;
 
 import de.hglabor.plugins.kitapi.util.ItemBuilder;
 import org.bukkit.Material;

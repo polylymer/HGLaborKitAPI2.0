@@ -1,10 +1,8 @@
 package de.hglabor.plugins.kitapi.kit;
 
-import de.hglabor.plugins.kitapi.config.Config;
-import de.hglabor.plugins.kitapi.kit.kits.BlinkKit;
-import de.hglabor.plugins.kitapi.kit.kits.MagmaKit;
-import de.hglabor.plugins.kitapi.kit.kits.NinjaKit;
-import de.hglabor.plugins.kitapi.kit.kits.NoneKit;
+import de.hglabor.plugins.kitapi.config.KitApiConfig;
+import de.hglabor.plugins.kitapi.kit.config.Cooldown;
+import de.hglabor.plugins.kitapi.kit.kits.*;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.player.KitPlayerSupplier;
 import org.bukkit.Bukkit;
@@ -19,6 +17,7 @@ public final class KitManager {
     public final static KitManager instance = new KitManager();
     public final List<AbstractKit> kits;
     private KitPlayerSupplier playerSupplier;
+    private KitItemSupplier itemSupplier;
 
     private KitManager() {
         this.kits = new ArrayList<>();
@@ -29,7 +28,7 @@ public final class KitManager {
     }
 
     public List<AbstractKit> empty() {
-        int kitAmount = Config.getInstance().getInteger("kit.amount");
+        int kitAmount = KitApiConfig.getInstance().getInteger("kit.amount");
         List<AbstractKit> emptyKitList = new ArrayList<>(kitAmount);
         for (int i = 0; i < kitAmount; i++) {
             emptyKitList.add(NoneKit.getInstance());
@@ -37,18 +36,21 @@ public final class KitManager {
         return emptyKitList;
     }
 
-    public void register(KitPlayerSupplier kitPlayerSupplier) {
+    public void register(KitPlayerSupplier kitPlayerSupplier, KitItemSupplier kitItemSupplier) {
         this.playerSupplier = kitPlayerSupplier;
+        this.itemSupplier = kitItemSupplier;
         register(MagmaKit.getInstance());
         register(NinjaKit.getInstance());
         register(NoneKit.getInstance());
         register(BlinkKit.INSTANCE);
+        register(SurpriseKit.INSTANCE);
+        register(CopyCatKit.INSTANCE);
     }
 
     public void register(AbstractKit kit) {
         System.out.println(kit.getName());
         kits.add(kit);
-        Config kitApiConfig = Config.getInstance();
+        KitApiConfig kitApiConfig = KitApiConfig.getInstance();
         kitApiConfig.loadKit(kit);
         kit.setEnabled(kitApiConfig.getBoolean("kit" + "." + kit.getName() + "." + "enabled"));
         kit.setCooldown(kitApiConfig.getInteger("kit" + "." + kit.getName() + "." + "cooldown"));
@@ -89,6 +91,15 @@ public final class KitManager {
     public boolean hasKitItemInAnyHand(Player player, AbstractKit kit) {
         return player.getInventory().getItemInOffHand().isSimilar(kit.getMainKitItem()) || player.getInventory().getItemInMainHand().isSimilar(kit.getMainKitItem());
     }
+
+    public void giveKitItemsIfSlotEmpty(KitPlayer kitPlayer, AbstractKit kit) {
+        itemSupplier.giveKitItems(kitPlayer, kit);
+    }
+
+    public void removeKitItems(AbstractKit kit, Player player) {
+        player.getInventory().removeItem(kit.getKitItems().toArray(new ItemStack[0]));
+    }
+
 
     public boolean sendCooldownMessage(KitPlayer kitPlayer, AbstractKit kit) {
         if (kit.getCooldown() > 0) {

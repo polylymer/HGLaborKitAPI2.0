@@ -1,4 +1,4 @@
-package de.hglabor.plugins.kitapi.kit;
+package de.hglabor.plugins.kitapi.kit.config;
 
 public class Cooldown {
     private boolean hasCooldown;

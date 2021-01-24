@@ -2,13 +2,13 @@ package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
-import de.hglabor.plugins.kitapi.kit.KitSettings;
+import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import static de.hglabor.plugins.kitapi.kit.KitSettings.USES;
+import static de.hglabor.plugins.kitapi.kit.config.KitSettings.USES;
 
 public class BlinkKit extends AbstractKit {
     public static final BlinkKit INSTANCE = new BlinkKit();
@@ -19,6 +19,7 @@ public class BlinkKit extends AbstractKit {
         addSetting(USES, 4);
         addSetting(KitSettings.RADIUS, 5);
     }
+
 
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
