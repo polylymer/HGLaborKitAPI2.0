@@ -33,7 +33,7 @@ public class SmogmogKit extends AbstractKit {
         e.setCancelled(true);
         AreaEffectCloud cloud = (AreaEffectCloud) e.getPlayer().getWorld().spawnEntity(e.getPlayer().getLocation(), EntityType.AREA_EFFECT_CLOUD);
         cloud.setCustomName(e.getPlayer().getUniqueId().toString());
-        cloud.setColor(Color.fromBGR(new Random().nextInt(500), new Random().nextInt(500), new Random().nextInt(500)));
+        cloud.setColor(Color.fromBGR(new Random().nextInt(255), new Random().nextInt(255), new Random().nextInt(255)));
         cloud.setDuration((Integer)getSetting(KitSettings.EFFECT_DURATION)*20);
         cloud.setSource(e.getPlayer());
         cloud.setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE, false, false));
