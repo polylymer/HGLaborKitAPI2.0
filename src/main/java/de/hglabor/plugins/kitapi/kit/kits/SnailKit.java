@@ -30,7 +30,6 @@ public class SnailKit  extends AbstractKit {
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
         if (ChanceUtils.roll(getSetting(KitSettings.LIKELIHOOD))) {
             entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (Integer) getSetting(KitSettings.EFFECT_DURATION) * 20, (Integer)getSetting(KitSettings.EFFECT_MULTIPLIER), true,true));
-            entity.getLocation().getWorld().playSound(entity.getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 10, 1);
         }
     }
 }
