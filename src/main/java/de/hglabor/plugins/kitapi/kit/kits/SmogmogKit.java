@@ -17,6 +17,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
+import java.util.Random;
+
 public class SmogmogKit extends AbstractKit implements Listener {
     public final static SmogmogKit INSTANCE = new SmogmogKit();
 
