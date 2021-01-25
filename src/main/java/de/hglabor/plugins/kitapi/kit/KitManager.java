@@ -67,6 +67,10 @@ public final class KitManager {
         register(GravityKit.INSTANCE);
         register(CannibalKit.INSTANCE);
         register(ZickZackKit.INSTANCE);
+        register(ThorKit.INSTANCE);
+        register(StomperKit.INSTANCE);
+        register(JackhammerKit.INSTANCE);
+        register(SwitcherKit.INSTANCE);
     }
 
     public void register(AbstractKit kit) {

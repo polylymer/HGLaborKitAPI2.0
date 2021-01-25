@@ -5,12 +5,7 @@ import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityResurrectEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -57,14 +52,6 @@ public abstract class KitEvents {
     public void onCraftItem(CraftItemEvent event) {
     }
 
-    protected void checkUsesForCooldown(KitPlayer kitPlayer, AbstractKit kit) {
-        kitPlayer.putKitAttribute(kit, kitPlayer.getKitAttribute(kit) != null ? (Integer) kitPlayer.getKitAttribute(kit) + 1 : 0);
-        if ((Integer) kitPlayer.getKitAttribute(kit) >= (Integer) kit.getSetting(USES)) {
-            kitPlayer.activateKitCooldown(kit, kit.getCooldown());
-            kitPlayer.putKitAttribute(kit, 0);
-        }
-    }
-
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
     }
 
@@ -73,11 +60,21 @@ public abstract class KitEvents {
 
     public void onPlayerInteract(PlayerInteractEvent event) {
     }
-
+  
     public void onBlockBreak(BlockBreakEvent event) {
     }
 
     public void onGettingHitEvent(EntityDamageByEntityEvent event, KitPlayer kitOwner, Player player, Player attacker) {
     }
 
+    public void onBlockBreakWithKitItem(BlockBreakEvent event) {
+    }
+
+    protected void checkUsesForCooldown(KitPlayer kitPlayer, AbstractKit kit) {
+        kitPlayer.putKitAttribute(kit, kitPlayer.getKitAttribute(kit) != null ? (Integer) kitPlayer.getKitAttribute(kit) + 1 : 0);
+        if ((Integer) kitPlayer.getKitAttribute(kit) >= (Integer) kit.getSetting(USES)) {
+            kitPlayer.activateKitCooldown(kit, kit.getCooldown());
+            kitPlayer.putKitAttribute(kit, 0);
+        }
+    }
 }
