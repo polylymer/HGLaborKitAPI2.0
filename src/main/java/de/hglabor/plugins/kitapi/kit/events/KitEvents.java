@@ -4,7 +4,10 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityResurrectEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -36,7 +39,15 @@ public abstract class KitEvents {
     }
 
     public void onEntityResurrect(EntityResurrectEvent event) {
+    }
 
+    public void onEntityDeath(EntityDeathEvent event) {
+    }
+
+    public void onEntityDamage(EntityDamageEvent event) {
+    }
+
+    public void onCraftItem(CraftItemEvent event) {
     }
 
     protected void checkUsesForCooldown(KitPlayer kitPlayer, AbstractKit kit) {

@@ -63,6 +63,9 @@ public final class KitManager {
         register(SnailKit.getInstance());
         register(DiggerKit.INSTANCE);
         register(ReviveKit.INSTANCE);
+        register(TankKit.INSTANCE);
+        register(GravityKit.INSTANCE);
+        register(CannibalKit.INSTANCE);
     }
 
     public void register(AbstractKit kit) {
