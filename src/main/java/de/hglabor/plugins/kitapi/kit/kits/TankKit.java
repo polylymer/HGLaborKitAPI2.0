@@ -12,6 +12,7 @@ import org.bukkit.event.inventory.CraftItemEvent;
 
 public class TankKit extends AbstractKit {
     public static final TankKit INSTANCE = new TankKit();
+
     protected TankKit() {
         super("Tank", Material.TNT);
         addSetting(KitSettings.EXPLOSION_SIZE_PLAYER, 6);
@@ -23,8 +24,9 @@ public class TankKit extends AbstractKit {
     @Override
     public void onPlayerKillsLivingEntity(EntityDeathEvent event) {
         LivingEntity entity = event.getEntity();
+        Player killer = entity.getKiller();
         int explosionSize = entity instanceof Player ? (Integer) getSetting(KitSettings.EXPLOSION_SIZE_PLAYER) : (Integer) getSetting(KitSettings.EXPLOSION_SIZE_ENTITY);
-        entity.getWorld().createExplosion(entity.getLocation(), explosionSize, false, true);
+        entity.getWorld().createExplosion(entity.getLocation(), explosionSize, false, true, killer);
     }
 
     @Override
