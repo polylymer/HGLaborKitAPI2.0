@@ -1,5 +1,6 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
+import de.hglabor.Localization.Localization;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
@@ -78,7 +79,6 @@ public class GamblerKit extends AbstractKit implements Listener {
         badLuckCollection.add(1, badPotionEffects);
 
         //GOOD EFFECTS
-
         RandomCollection<Consumer<Player>> goodPotionEffects = new RandomCollection<>();
         goodPotionEffects.add("§cStrength", 1, p -> p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, potionDauer, 0)));
         goodPotionEffects.add("§eFire Resistance", 1, p -> p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, potionDauer, 0)));

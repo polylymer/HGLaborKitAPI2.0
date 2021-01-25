@@ -44,7 +44,7 @@ public class RogueKit extends AbstractKit {
 
     private List<KitPlayer> getKitPlayerInRadius(Player player) {
         List<KitPlayer> enemies = new ArrayList<>();
-        for (Player nearbyPlayer : player.getWorld().getNearbyEntitiesByType(Player.class, player.getLocation(), getSetting(KitSettings.RADIUS))) {
+        for (Player nearbyPlayer : player.getWorld().getNearbyEntitiesByType(Player.class, player.getLocation(), (Double) getSetting(KitSettings.RADIUS))) {
             KitPlayer nearbyKitPlayer = KitManager.getInstance().getPlayer(nearbyPlayer);
             if (nearbyKitPlayer.isValid()) {
                 enemies.add(nearbyKitPlayer);

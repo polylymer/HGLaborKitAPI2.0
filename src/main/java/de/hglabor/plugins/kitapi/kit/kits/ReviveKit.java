@@ -21,11 +21,12 @@ public class ReviveKit extends AbstractKit {
     @Override
     public void disable(KitPlayer kitPlayer) {
         Player player = Bukkit.getPlayer(kitPlayer.getUUID());
-        if (player.getInventory().getItemInOffHand().isSimilar(this.getMainKitItem())) {
-            player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+        if (player != null) {
+            if (player.getInventory().getItemInOffHand().isSimilar(this.getMainKitItem())) {
+                player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+            }
         }
     }
-
 
     @Override
     public void enable(KitPlayer kitPlayer) {
@@ -35,17 +36,12 @@ public class ReviveKit extends AbstractKit {
 
     @Override
     public void onEntityResurrect(EntityResurrectEvent event) {
-
         Player player = (Player) event.getEntity();
         KitPlayer kitPlayer = KitManager.getInstance().getPlayer(player);
-
         kitPlayer.putKitAttribute(this, kitPlayer.getKitAttribute(this) != null ? (Integer) kitPlayer.getKitAttribute(this) + 1 : 1);
-
-        Bukkit.getScheduler().runTaskLater(Bukkit.getPluginManager().getPlugin("HGLaborFFA2.0"), () -> {
+        Bukkit.getScheduler().runTaskLater(KitManager.getInstance().getPlugin(), () -> {
             giveTotem(kitPlayer, player);
-        }, getCooldown() * 20 * (Integer) kitPlayer.getKitAttribute(this));
-
-
+        }, (long) getCooldown() * 20 * (Integer) kitPlayer.getKitAttribute(this));
     }
 
     private void giveTotem(KitPlayer kitPlayer, Player player) {
