@@ -16,7 +16,7 @@ public class PoseidonKit extends AbstractKit {
 
     private PoseidonKit() {
         super("Poseidon", Material.WATER_BUCKET);
-        addSetting(KitSettings.EFFECT_MULTIPLIER, 3);
+        addSetting(KitSettings.EFFECT_MULTIPLIER, 2);
         addSetting(KitSettings.EFFECT_DURATION, 3);
     }
 
