@@ -25,6 +25,7 @@ public class StomperKit extends AbstractKit {
     @Override
     public void onEntityDamage(EntityDamageEvent event) {
         if(event.getEntity() instanceof Player) {
+            if(!event.getCause().equals(EntityDamageEvent.DamageCause.FALL)) return;
             Player player = (Player) event.getEntity();
             final double STOMPER_DAMAGE = event.getDamage();
             player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1, 1);
