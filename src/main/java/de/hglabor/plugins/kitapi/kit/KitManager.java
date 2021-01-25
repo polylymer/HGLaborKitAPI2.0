@@ -6,6 +6,7 @@ import de.hglabor.plugins.kitapi.kit.kits.*;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.player.KitPlayerSupplier;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -146,9 +147,11 @@ public final class KitManager {
                 long cooldown = (kitCooldown.getStartTime() + (kit.getCooldown() * 1000L + kitCooldown.getAdditionalTime() * 1000L)) - System.currentTimeMillis();
                 assert player != null;
                 if (kit.getMainKitItem() != null && hasKitItemInAnyHand(player, kit)) {
-                    player.sendMessage("Cooldown: " + (cooldown) / 1000D);
+                    player.sendActionBar(ChatColor.GRAY + "Cooldown:" + ChatColor.YELLOW + " " + (cooldown) / 1000D);
+                    //player.sendMessage("Cooldown: " + (cooldown) / 1000D);
                 } else if (kit.getMainKitItem() == null) {
-                    player.sendMessage("Cooldown: " + (cooldown) / 1000D);
+                    player.sendActionBar(ChatColor.GRAY + "Cooldown:" + ChatColor.YELLOW + " " + (cooldown) / 1000D);
+//                    player.sendMessage("Cooldown: " + (cooldown) / 1000D);
                 }
                 return true;
             }
