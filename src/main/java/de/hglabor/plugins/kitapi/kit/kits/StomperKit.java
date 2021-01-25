@@ -39,7 +39,7 @@ public class StomperKit extends AbstractKit {
                             Player playerEntity = (Player) entity;
                             KitPlayer kitPlayer = KitManager.getInstance().getPlayer(playerEntity);
                             if(kitPlayer.isValid()) {
-                                playerEntity.playSound(playerEntity.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1, 1);
+                                playerEntity.playSound(playerEntity.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.05f, 1);
                                 livingEntity.damage(STOMPER_DAMAGE);
                             }
                         } else {
