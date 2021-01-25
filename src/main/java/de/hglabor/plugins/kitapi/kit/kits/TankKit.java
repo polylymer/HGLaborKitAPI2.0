@@ -1,5 +1,6 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
+import com.google.common.collect.ImmutableList;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import org.bukkit.Material;
@@ -18,6 +19,7 @@ public class TankKit extends AbstractKit {
         addSetting(KitSettings.EXPLOSION_SIZE_PLAYER, 6);
         addSetting(KitSettings.EXPLOSION_SIZE_ENTITY, 1);
         addSetting(KitSettings.EXPLOSION_SIZE_RECRAFT, 1);
+        addEvents(ImmutableList.of(EntityDeathEvent.class, EntityDamageEvent.class, CraftItemEvent.class));
     }
 
 
@@ -50,6 +52,5 @@ public class TankKit extends AbstractKit {
         if (player.getInventory().firstEmpty() != -1) {
             player.getWorld().createExplosion(player.getLocation(), (Integer) getSetting(KitSettings.EXPLOSION_SIZE_RECRAFT), false, true, player);
         }
-
     }
 }

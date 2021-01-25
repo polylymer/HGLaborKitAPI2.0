@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
+import java.util.Collections;
 import java.util.Random;
 
 public class SmogmogKit extends AbstractKit implements Listener {
@@ -26,6 +27,7 @@ public class SmogmogKit extends AbstractKit implements Listener {
         super("Smogmog", Material.POPPED_CHORUS_FRUIT, 20);
         addSetting(KitSettings.EFFECT_DURATION, 3);
         setMainKitItem(getDisplayMaterial());
+        addEvents(Collections.singletonList(PlayerInteractEvent.class));
     }
 
     @Override

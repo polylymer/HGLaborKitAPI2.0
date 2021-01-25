@@ -8,8 +8,11 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.Collections;
 
 public class SnailKit  extends AbstractKit {
 
@@ -20,6 +23,7 @@ public class SnailKit  extends AbstractKit {
         addSetting(KitSettings.EFFECT_DURATION,4);
         addSetting(KitSettings.EFFECT_MULTIPLIER, 0);
         addSetting(KitSettings.LIKELIHOOD, 25);
+        addEvents(Collections.singletonList(EntityDamageByEntityEvent.class));
     }
 
     public static SnailKit getInstance() {

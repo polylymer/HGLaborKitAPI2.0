@@ -21,11 +21,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Collections;
 import java.util.Random;
 
 import static de.hglabor.plugins.kitapi.kit.config.KitSettings.MATERIAL;
@@ -39,6 +41,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
         addSetting(MATERIAL, Material.GLASS);
         addSetting(KitSettings.RADIUS, 11);
         addSetting(KitSettings.HEIGHT, 10);
+        addEvents(Collections.singletonList(PlayerInteractAtEntityEvent.class));
     }
 
     @Override

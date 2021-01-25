@@ -5,12 +5,17 @@ import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+
+import java.util.Collections;
 
 public class CopyCatKit extends AbstractKit {
     public final static CopyCatKit INSTANCE = new CopyCatKit();
 
     private CopyCatKit() {
         super("CopyCat", Material.CAT_SPAWN_EGG);
+        addEvents(Collections.singletonList(PlayerDeathEvent.class));
     }
 
     @Override
@@ -39,6 +44,9 @@ public class CopyCatKit extends AbstractKit {
         AbstractKit oldCopiedKit = killer.getKitAttribute(this);
         AbstractKit newKit = dead.getKits().get(0);
         //DISABLE OLD KIT
+
+        Bukkit.broadcastMessage(killer.getUUID().toString());
+        Bukkit.broadcastMessage(dead.getUUID().toString());
         if (oldCopiedKit != null) {
             oldCopiedKit.disable(killer);
             KitManager.getInstance().removeKitItems(oldCopiedKit, Bukkit.getPlayer(killer.getUUID()));

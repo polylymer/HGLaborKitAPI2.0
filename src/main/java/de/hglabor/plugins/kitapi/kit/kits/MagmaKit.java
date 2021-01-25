@@ -7,6 +7,9 @@ import de.hglabor.plugins.kitapi.util.ChanceUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+
+import java.util.Collections;
 
 public class MagmaKit extends AbstractKit {
     private final static MagmaKit instance = new MagmaKit();
@@ -15,6 +18,8 @@ public class MagmaKit extends AbstractKit {
         super("Magma", Material.MAGMA_BLOCK);
         addSetting(KitSettings.EFFECT_DURATION,2);
         addSetting(KitSettings.LIKELIHOOD,33);
+        addEvents(Collections.singletonList(EntityDamageByEntityEvent.class));
+
     }
 
     public static MagmaKit getInstance() {

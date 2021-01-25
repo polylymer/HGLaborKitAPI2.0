@@ -11,9 +11,12 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Collections;
 
 public class DiggerKit extends AbstractKit {
     public static final DiggerKit INSTANCE = new DiggerKit();
@@ -22,6 +25,7 @@ public class DiggerKit extends AbstractKit {
         super("Digger", Material.DRAGON_EGG, 12);
         setMainKitItem(getDisplayMaterial(), 16);
         addSetting(KitSettings.RADIUS, 6);
+        addEvents(Collections.singletonList(PlayerInteractEvent.class));
     }
 
     @Override

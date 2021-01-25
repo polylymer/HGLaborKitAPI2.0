@@ -8,8 +8,11 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.Collections;
 
 public class CannibalKit extends AbstractKit {
     public final static CannibalKit INSTANCE = new CannibalKit();
@@ -19,6 +22,7 @@ public class CannibalKit extends AbstractKit {
         addSetting(KitSettings.EFFECT_DURATION,2);
         addSetting(KitSettings.EFFECT_MULTIPLIER, 1);
         addSetting(KitSettings.LIKELIHOOD,33);
+        addEvents(Collections.singletonList(EntityDamageByEntityEvent.class));
     }
 
     @Override

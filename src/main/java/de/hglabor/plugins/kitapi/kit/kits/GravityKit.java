@@ -7,9 +7,12 @@ import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.Collections;
 
 public class GravityKit extends AbstractKit {
     public static final GravityKit INSTANCE = new GravityKit();
@@ -19,6 +22,7 @@ public class GravityKit extends AbstractKit {
         addSetting(KitSettings.EFFECT_MULTIPLIER, 3);
         addSetting(KitSettings.EFFECT_DURATION, 1);
         addSetting(KitSettings.USES, 3);
+        addEvents(Collections.singletonList(PlayerInteractEvent.class));
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -35,6 +36,7 @@ public class GamblerKit extends AbstractKit implements Listener {
         badLuckCollection = new RandomCollection<>();
         goodLuckCollection = new RandomCollection<>();
         initRandomEffects();
+        addEvents(Collections.singletonList(PlayerInteractEvent.class));
     }
 
     @Override

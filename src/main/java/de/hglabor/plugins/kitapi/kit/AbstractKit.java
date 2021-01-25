@@ -170,4 +170,8 @@ public abstract class AbstractKit extends KitEvents {
     public boolean isPlaceable() {
         return isPlaceable;
     }
+
+    public Set<Class<? extends Event>> getKitEvents() {
+        return kitEvents;
+    }
 }
