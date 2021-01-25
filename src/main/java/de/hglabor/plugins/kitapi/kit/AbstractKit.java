@@ -39,6 +39,10 @@ public abstract class AbstractKit extends KitEvents {
         this(name, new ItemStack(material));
     }
 
+    public void setUsesOffHand(boolean usesOffHand) {
+        this.usesOffHand = usesOffHand;
+    }
+
     protected AbstractKit(String name, Material material, int cooldown) {
         this(name, new ItemStack(material));
         this.setCooldown(cooldown);
