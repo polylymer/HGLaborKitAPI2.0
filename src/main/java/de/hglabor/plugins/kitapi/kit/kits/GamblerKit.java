@@ -1,10 +1,10 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import de.hglabor.Localization.Localization;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.RandomCollection;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
@@ -38,15 +38,24 @@ public class GamblerKit extends AbstractKit implements Listener {
     }
 
     @Override
-    public void disable(KitPlayer kitOwner) {
-        GambleWin gambleWin = kitOwner.getKitAttribute(this);
+    public void disable(KitPlayer kitPlayer) {
+        GambleWin gambleWin = kitPlayer.getKitAttribute(this);
         if (gambleWin != null) {
             gambleWin.end();
         }
-        if (kitOwner.isValid()) {
+        if (kitPlayer.isValid()) {
             return;
         }
-        //TODO: player.getWorld().getEntitiesByClass(Wolf.class).stream().filter(wolf -> wolf.getOwnerUniqueId() != null).filter(wolf -> wolf.getOwnerUniqueId().equals(player.getUniqueId())).forEach(wolf -> wolf.setOwner(null));
+        Player player = Bukkit.getPlayer(kitPlayer.getUUID());
+        if (player != null) {
+            for (Wolf wolf : player.getWorld().getEntitiesByClass(Wolf.class)) {
+                if (wolf.getOwnerUniqueId() != null) {
+                    if (wolf.getOwnerUniqueId().equals(player.getUniqueId())) {
+                        wolf.setOwner(null);
+                    }
+                }
+            }
+        }
     }
 
     @Override
