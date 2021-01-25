@@ -3,7 +3,10 @@ package de.hglabor.plugins.kitapi.kit.events;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityResurrectEvent;
@@ -60,4 +63,16 @@ public abstract class KitEvents {
             kitPlayer.putKitAttribute(kit, 0);
         }
     }
+
+    public void onProjectileLaunch(ProjectileLaunchEvent event) {
+    }
+
+    public void onProjectileHitEvent(ProjectileHitEvent event) {
+    }
+
+    public void onPlayerInteract(PlayerInteractEvent event){}
+
+    public void onBlockBreak(BlockBreakEvent event){
+    }
+
 }
