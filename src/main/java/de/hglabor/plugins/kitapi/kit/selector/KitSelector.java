@@ -4,7 +4,7 @@ import de.hglabor.plugins.kitapi.config.KitApiConfig;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.util.ItemBuilder;
-import de.hglabor.plugins.kitapi.util.Localization;
+import de.hglabor.plugins.kitapi.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,12 +17,12 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 public abstract class KitSelector {
-    protected List<ItemStack> kitSelectorItems;
-    protected Map<Locale, List<Inventory>> kitPages;
     protected final int MAX_AMOUNT_OF_KITS = 35;
     protected final String kitSelectorTitle = "KitSelector";
     protected final ItemStack LAST_PAGE_ITEM = new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setName(ChatColor.RED + "<-").build();
     protected final ItemStack NEXT_PAGE_ITEM = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).setName(ChatColor.GREEN + "->").build();
+    protected List<ItemStack> kitSelectorItems;
+    protected Map<java.util.Locale, List<Inventory>> kitPages;
 
     public KitSelector() {
         this.kitPages = new HashMap<>();
@@ -47,7 +47,7 @@ public abstract class KitSelector {
 
     public void createKitPages() {
         this.resetKitPages();
-        for (Locale language : Localization.getSupportedLanguages()) {
+        for (Locale language : KitManager.getInstance().getSupportedLanguages()) {
             int LAST_PAGE_SLOT = 18;
             int NEXT_PAGE_SLOT = 26;
             for (int i = 0; i < pageAmount(); i++) {
@@ -76,7 +76,7 @@ public abstract class KitSelector {
         }
     }
 
-    public Inventory getPage(int index, Locale locale) {
+    public Inventory getPage(int index, java.util.Locale locale) {
         return (index >= 0) && (index < kitPages.get(locale).size()) ? kitPages.get(locale).get(index) : null;
     }
 
@@ -90,7 +90,7 @@ public abstract class KitSelector {
 
     private void resetKitPages() {
         kitPages.clear();
-        Localization.getSupportedLanguages().forEach(supportedLanguage -> kitPages.put(supportedLanguage, new ArrayList<>()));
+        KitManager.getInstance().getSupportedLanguages().forEach(supportedLanguage -> kitPages.put(supportedLanguage, new ArrayList<>()));
     }
 
     private int inventorySlotNumber(int slot) {
@@ -110,7 +110,7 @@ public abstract class KitSelector {
     }
 
     protected void openFirstPage(Player player) {
-        Inventory page = getPage(0, Localization.getPlayerLocale(player.getUniqueId()));
+        Inventory page = getPage(0, Utils.getPlayerLocale(player.getUniqueId()));
         if (page != null) {
             player.openInventory(page);
         }
@@ -119,7 +119,7 @@ public abstract class KitSelector {
     protected boolean nextPage(String title, ItemStack clickedItem, Player player) {
         if (clickedItem.isSimilar(NEXT_PAGE_ITEM)) {
             String pageNumber = title.substring(title.length() - 1);
-            Inventory page = getPage(Integer.parseInt(pageNumber), Localization.getPlayerLocale(player.getUniqueId()));
+            Inventory page = getPage(Integer.parseInt(pageNumber), Utils.getPlayerLocale(player.getUniqueId()));
             if (page != null) {
                 player.openInventory(page);
             }
@@ -131,7 +131,7 @@ public abstract class KitSelector {
     protected boolean lastPage(String title, ItemStack clickedItem, Player player) {
         if (clickedItem.isSimilar(LAST_PAGE_ITEM)) {
             String pageNumber = title.substring(title.length() - 1);
-            Inventory page = getPage(Integer.parseInt(pageNumber) - 1, Localization.getPlayerLocale(player.getUniqueId()));
+            Inventory page = getPage(Integer.parseInt(pageNumber) - 1, Utils.getPlayerLocale(player.getUniqueId()));
             if (page != null) {
                 player.openInventory(page);
             }

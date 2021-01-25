@@ -7,8 +7,13 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityResurrectEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 import static de.hglabor.plugins.kitapi.kit.config.KitSettings.USES;
@@ -18,7 +23,7 @@ public abstract class KitEvents {
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
     }
 
-    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
+    public void onAreaEffectCloudDamage(EntityDamageByEntityEvent event) {
     }
 
     public void onPlayerKillsPlayer(KitPlayer killer, KitPlayer dead) {
@@ -31,6 +36,24 @@ public abstract class KitEvents {
     }
 
     public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event) {
+    }
+
+    public void onPlayerMove(PlayerMoveEvent event) {
+    }
+
+    public void onEntityResurrect(EntityResurrectEvent event) {
+    }
+
+    public void onEntityDeath(EntityDeathEvent event) {
+    }
+
+    public void onPlayerKillsLivingEntity(EntityDeathEvent event) {
+    }
+
+    public void onEntityDamage(EntityDamageEvent event) {
+    }
+
+    public void onCraftItem(CraftItemEvent event) {
     }
 
     protected void checkUsesForCooldown(KitPlayer kitPlayer, AbstractKit kit) {
@@ -51,6 +74,5 @@ public abstract class KitEvents {
 
     public void onBlockBreak(BlockBreakEvent event){
     }
-
 
 }

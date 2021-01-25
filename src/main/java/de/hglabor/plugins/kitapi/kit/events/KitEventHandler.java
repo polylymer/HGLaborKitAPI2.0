@@ -6,6 +6,7 @@ import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.player.KitPlayerSupplier;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 
 public abstract class KitEventHandler extends KitEvents {
     protected final KitPlayerSupplier playerSupplier;
@@ -14,9 +15,13 @@ public abstract class KitEventHandler extends KitEvents {
         this.playerSupplier = playerSupplier;
     }
 
-    public boolean canUseKit(KitPlayer kitPlayer, AbstractKit kit) {
+    public boolean canUseKit(Event event, KitPlayer kitPlayer, AbstractKit kit) {
         Player player = Bukkit.getPlayer(kitPlayer.getUUID());
         if (player == null) {
+            return false;
+        }
+
+        if (!kit.getKitEvents().contains(event.getClass())) {
             return false;
         }
         //Player doesnt have kit
@@ -36,7 +41,7 @@ public abstract class KitEventHandler extends KitEvents {
         return true;
     }
 
-    public boolean canUseKitItem(KitPlayer kitPlayer, AbstractKit kit) {
+    public boolean canUseKitItem(Event event, KitPlayer kitPlayer, AbstractKit kit) {
         Player player = Bukkit.getPlayer(kitPlayer.getUUID());
         if (player == null) {
             return false;
@@ -51,7 +56,7 @@ public abstract class KitEventHandler extends KitEvents {
             return false;
         }
 
-        if (canUseKit(kitPlayer, kit)) {
+        if (canUseKit(event, kitPlayer, kit)) {
             return true;
         }
 

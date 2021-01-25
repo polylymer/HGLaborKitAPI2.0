@@ -1,10 +1,10 @@
 package de.hglabor.plugins.kitapi.kit;
 
+import de.hglabor.Localization.Localization;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.kit.events.KitEvents;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.ItemBuilder;
-import de.hglabor.plugins.kitapi.util.Localization;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
@@ -37,6 +37,10 @@ public abstract class AbstractKit extends KitEvents {
 
     protected AbstractKit(String name, Material material) {
         this(name, new ItemStack(material));
+    }
+
+    public void setUsesOffHand(boolean usesOffHand) {
+        this.usesOffHand = usesOffHand;
     }
 
     protected AbstractKit(String name, Material material, int cooldown) {
@@ -74,14 +78,10 @@ public abstract class AbstractKit extends KitEvents {
      * kititem which will be shown in the kitselector
      */
     private void setDisplayItem(ItemStack item) {
-        for (Locale supportedLanguage : Localization.getSupportedLanguages()) {
-            String[] description = Localization.getKitDescription(name.toLowerCase() + "Kit" + "." + "description", supportedLanguage).split("#");
+        for (Locale supportedLanguage : KitManager.getInstance().getSupportedLanguages()) {
+            String[] description = Localization.INSTANCE.getMessage(name.toLowerCase() + "." + "description", supportedLanguage).split("#");
             displayItems.put(supportedLanguage, new ItemBuilder(item.clone()).setName(ChatColor.RED + name).setDescription(description).build());
         }
-    }
-
-    public void setMainKitItem(Material material) {
-        mainKitItem = new ItemBuilder(material).setDescription(ChatColor.RED + "Kititem").build();
     }
 
     public void setMainKitItem(Material material, boolean unbreakable) {
@@ -98,6 +98,10 @@ public abstract class AbstractKit extends KitEvents {
 
     public ItemStack getMainKitItem() {
         return mainKitItem;
+    }
+
+    public void setMainKitItem(Material material) {
+        mainKitItem = new ItemBuilder(material).setDescription(ChatColor.RED + "Kititem").build();
     }
 
     /**
@@ -165,5 +169,9 @@ public abstract class AbstractKit extends KitEvents {
 
     public boolean isPlaceable() {
         return isPlaceable;
+    }
+
+    public Set<Class<? extends Event>> getKitEvents() {
+        return kitEvents;
     }
 }
