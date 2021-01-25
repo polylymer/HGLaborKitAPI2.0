@@ -41,14 +41,16 @@ public class StomperKit extends AbstractKit {
                             KitPlayer kitPlayer = KitManager.getInstance().getPlayer(playerEntity);
                             if(kitPlayer.isValid()) {
                                 if(!playerEntity.isSneaking()) {
-                                    playerEntity.playSound(playerEntity.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.05f, 1);
                                     livingEntity.damage(STOMPER_DAMAGE);
                                     livingEntity.setVelocity(livingEntity.getVelocity().setY(livingEntity.getVelocity().getY()*STOMPER_DAMAGE/4));
                                 }
+                                playerEntity.playSound(playerEntity.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.05f, 1);
                             }
                         } else {
                             livingEntity.damage(STOMPER_DAMAGE);
-                        }livingEntity.setVelocity(livingEntity.getVelocity().setY(livingEntity.getVelocity().getY()*STOMPER_DAMAGE/4));
+                            livingEntity.setVelocity(livingEntity.getVelocity().setY(livingEntity.getVelocity().getY()*STOMPER_DAMAGE/4));
+                        }
+
 
                     }
                 }
