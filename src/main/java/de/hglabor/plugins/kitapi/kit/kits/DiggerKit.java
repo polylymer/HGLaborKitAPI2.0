@@ -17,7 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class DiggerKit extends AbstractKit {
-
     public static final DiggerKit INSTANCE = new DiggerKit();
 
     protected DiggerKit() {
@@ -37,44 +36,31 @@ public class DiggerKit extends AbstractKit {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-
                     int dist = (int) Math.ceil((double) ((Integer) getSetting(KitSettings.RADIUS) - 1) / 2);
-
                     for (int y = -1; y >= -(Integer) getSetting(KitSettings.RADIUS); y--) {
                         for (int x = -dist; x <= dist; x++) {
                             for (int z = -dist; z <= dist; z++) {
-
                                 if (block.getY() + y <= 0) {
                                     continue;
                                 }
-
                                 Block b = block.getWorld().getBlockAt(block.getX() + x, block.getY() + y, block.getZ() + z);
-
                                 if (b.hasMetadata("feastBlock")) {
                                     continue;
                                 }
-
                                 if (b.hasMetadata("gladiatorBlock")) {
                                     continue;
                                 }
-
                                 if (!b.getType().equals(Material.BEDROCK)) {
-
                                     if (b instanceof Container) {
                                         b.breakNaturally();
                                     } else {
                                         b.setType(Material.AIR);
                                     }
-
                                 }
-
-
                             }
                         }
                     }
-
                     player.getWorld().playSound(player.getLocation(), Sound.BLOCK_STONE_BREAK, 10, 1);
-
                 }
 
             }.runTaskLater(Bukkit.getPluginManager().getPlugin("HGLaborFFA2.0"), 15);
