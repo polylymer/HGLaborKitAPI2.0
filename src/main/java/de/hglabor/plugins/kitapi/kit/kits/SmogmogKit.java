@@ -39,7 +39,7 @@ public class SmogmogKit extends AbstractKit implements Listener {
         cloud.setDuration((Integer) getSetting(KitSettings.EFFECT_DURATION) * 20);
         cloud.setSource(e.getPlayer());
         cloud.setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE, false, false));
-        cloud.setRadius(getSetting(KitSettings.RADIUS));
+        cloud.setRadius(((Integer) getSetting(KitSettings.RADIUS)).floatValue());
         KitPlayer kitPlayer = KitManager.getInstance().getPlayer(e.getPlayer());
         kitPlayer.activateKitCooldown(this, this.getCooldown());
         e.getPlayer().getLocation().getWorld().playSound(e.getPlayer().getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 0.2f, 0);
