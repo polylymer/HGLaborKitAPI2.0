@@ -13,7 +13,19 @@ public class ReviveKit extends AbstractKit {
 
     private ReviveKit() {
         super("Revive", Material.TOTEM_OF_UNDYING, 60);
-        setMainKitItem(getDisplayMaterial());
     }
 
+    @Override
+    public void enable(KitPlayer kitPlayer) {
+        Player player = Bukkit.getPlayer(kitPlayer.getUUID());
+        player.getInventory().setItemInOffHand(new ItemStack(Material.TOTEM_OF_UNDYING));
+    }
+
+    @Override
+    public void disable(KitPlayer kitPlayer) {
+        Player player = Bukkit.getPlayer(kitPlayer.getUUID());
+        if(player.getInventory().getItemInOffHand().getType() == Material.TOTEM_OF_UNDYING) {
+            player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+        }
+    }
 }
