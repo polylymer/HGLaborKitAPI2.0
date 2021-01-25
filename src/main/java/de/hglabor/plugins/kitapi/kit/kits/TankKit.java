@@ -20,9 +20,8 @@ public class TankKit extends AbstractKit {
     }
 
 
-
     @Override
-    public void onEntityDeath(EntityDeathEvent event) {
+    public void onPlayerKillsLivingEntity(EntityDeathEvent event) {
         LivingEntity entity = event.getEntity();
         int explosionSize = entity instanceof Player ? (Integer) getSetting(KitSettings.EXPLOSION_SIZE_PLAYER) : (Integer) getSetting(KitSettings.EXPLOSION_SIZE_ENTITY);
         entity.getWorld().createExplosion(entity.getLocation(), explosionSize, false, true);
