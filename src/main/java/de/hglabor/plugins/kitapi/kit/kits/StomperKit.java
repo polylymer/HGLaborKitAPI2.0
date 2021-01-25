@@ -1,7 +1,9 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -35,9 +37,14 @@ public class StomperKit extends AbstractKit {
                         LivingEntity livingEntity = (LivingEntity) entity;
                         if(entity instanceof Player) {
                             Player playerEntity = (Player) entity;
-                            playerEntity.playSound(playerEntity.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1, 1);
+                            KitPlayer kitPlayer = KitManager.getInstance().getPlayer(playerEntity);
+                            if(kitPlayer.isValid()) {
+                                playerEntity.playSound(playerEntity.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1, 1);
+                                livingEntity.damage(STOMPER_DAMAGE);
+                            }
+                        } else {
+                            livingEntity.damage(STOMPER_DAMAGE);
                         }
-                        livingEntity.damage(STOMPER_DAMAGE);
                     }
                 }
             }
