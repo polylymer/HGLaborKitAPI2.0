@@ -11,18 +11,26 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public final class KitManager {
     private final static KitManager instance = new KitManager();
     public final List<AbstractKit> kits;
+    private final List<Locale> supportedLanguages;
     private KitPlayerSupplier playerSupplier;
     private KitItemSupplier itemSupplier;
     private JavaPlugin plugin;
 
     private KitManager() {
         this.kits = new ArrayList<>();
+        this.supportedLanguages = Arrays.asList(Locale.ENGLISH, Locale.GERMAN);
+    }
+
+    public List<Locale> getSupportedLanguages() {
+        return supportedLanguages;
     }
 
     public static KitManager getInstance() {
@@ -105,7 +113,7 @@ public final class KitManager {
     }
 
     public void giveKitItemsIfSlotEmpty(KitPlayer kitPlayer, AbstractKit kit, List<ItemStack> items) {
-        itemSupplier.giveKitItems(kitPlayer,kit ,items);
+        itemSupplier.giveKitItems(kitPlayer, kit, items);
     }
 
     public void giveItemsIfSlotEmpty(KitPlayer kitPlayer, List<ItemStack> kits) {
