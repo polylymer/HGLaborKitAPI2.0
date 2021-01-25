@@ -1,19 +1,16 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import com.google.common.collect.ImmutableList;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class DiggerKit extends AbstractKit {
@@ -29,7 +26,7 @@ public class DiggerKit extends AbstractKit {
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Block block = event.getClickedBlock();
         Player player = event.getPlayer();
-        if(block != null) {
+        if (block != null) {
             block.setType(Material.AIR);
             KitPlayer kitPlayer = KitManager.getInstance().getPlayer(event.getPlayer());
             kitPlayer.activateKitCooldown(this, this.getCooldown());
@@ -47,7 +44,7 @@ public class DiggerKit extends AbstractKit {
                                 if (b.hasMetadata("feastBlock")) {
                                     continue;
                                 }
-                                if (b.hasMetadata("gladiatorBlock")) {
+                                if (b.hasMetadata(KitMetaData.GLADIATOR_BLOCK.getKey())) {
                                     continue;
                                 }
                                 if (!b.getType().equals(Material.BEDROCK)) {
@@ -63,7 +60,7 @@ public class DiggerKit extends AbstractKit {
                     player.getWorld().playSound(player.getLocation(), Sound.BLOCK_STONE_BREAK, 10, 1);
                 }
 
-            }.runTaskLater(Bukkit.getPluginManager().getPlugin("HGLaborFFA2.0"), 15);
+            }.runTaskLater(KitManager.getInstance().getPlugin(), 15);
         }
     }
 }
