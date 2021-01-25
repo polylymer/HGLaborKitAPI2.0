@@ -66,6 +66,7 @@ public final class KitManager {
         register(TankKit.INSTANCE);
         register(GravityKit.INSTANCE);
         register(CannibalKit.INSTANCE);
+        register(ZickZackKit.INSTANCE);
     }
 
     public void register(AbstractKit kit) {
