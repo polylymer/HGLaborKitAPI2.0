@@ -45,8 +45,6 @@ public class CopyCatKit extends AbstractKit {
         AbstractKit newKit = dead.getKits().get(0);
         //DISABLE OLD KIT
 
-        Bukkit.broadcastMessage(killer.getUUID().toString());
-        Bukkit.broadcastMessage(dead.getUUID().toString());
         if (oldCopiedKit != null) {
             oldCopiedKit.disable(killer);
             KitManager.getInstance().removeKitItems(oldCopiedKit, Bukkit.getPlayer(killer.getUUID()));
