@@ -1,16 +1,17 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-
 import de.hglabor.plugins.kitapi.kit.KitManager;
-import org.bukkit.*;
+import de.hglabor.plugins.kitapi.player.KitPlayer;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
 import java.util.Collections;
-import java.util.Objects;
 
 /**
  * Hommage an Waffel :) (wtf?)
@@ -20,7 +21,7 @@ public class JackhammerKit extends AbstractKit {
 
     private JackhammerKit() {
         super("Jackhammer", Material.STONE_AXE);
-        setMainKitItem(getDisplayMaterial(),true);
+        setMainKitItem(getDisplayMaterial(), true);
         addEvents(Collections.singletonList(BlockBreakEvent.class));
     }
 
@@ -36,11 +37,9 @@ public class JackhammerKit extends AbstractKit {
         } else if (above == Material.AIR) {
             //RUNTER
             dig(block.getLocation(), -1, 1);
-        } else {
-            //BEIDE RICHTUNGEN
-            dig(block.getLocation(), 1, 2);
-            dig(block.getLocation(), -1, 2);
         }
+        KitPlayer player = KitManager.getInstance().getPlayer(e.getPlayer());
+        player.activateKitCooldown(this, this.getCooldown());
     }
 
     /**
