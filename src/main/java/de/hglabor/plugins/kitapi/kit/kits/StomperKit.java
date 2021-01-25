@@ -46,6 +46,7 @@ public class StomperKit extends AbstractKit {
                         } else {
                             livingEntity.damage(STOMPER_DAMAGE);
                         }
+                        livingEntity.setVelocity(livingEntity.getVelocity().setY(livingEntity.getVelocity().getY()*STOMPER_DAMAGE/4));
                     }
                 }
             }
