@@ -18,7 +18,7 @@ public class SnailKit  extends AbstractKit {
     protected SnailKit() {
         super("Snail", Material.SOUL_SOIL);
         addSetting(KitSettings.EFFECT_DURATION,4);
-        addSetting(KitSettings.EFFECT_MULTIPLIER, 3);
+        addSetting(KitSettings.EFFECT_MULTIPLIER, 0);
         addSetting(KitSettings.LIKELIHOOD, 25);
     }
 
