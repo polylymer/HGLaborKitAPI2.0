@@ -40,7 +40,7 @@ public class SpidermanKit extends AbstractKit implements Listener {
     private SpidermanKit() {
         super("Spiderman", Material.COBWEB, 45);
         setMainKitItem(getDisplayMaterial());
-        addEvents(ImmutableList.of(PlayerInteractEvent.class, ProjectileHitEvent.class, PlayerMoveEvent.class));
+        addEvents(ImmutableList.of(PlayerInteractEvent.class));
         addSetting(KitSettings.RADIUS, 5);
         addSetting(KitSettings.CLIMBVELOCITY, 0.3);
         addSetting(KitSettings.SHOOTINGVELOCITY, 1.5);
@@ -110,7 +110,7 @@ public class SpidermanKit extends AbstractKit implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         KitPlayer kitPlayer = KitManager.getInstance().getPlayer(player);
-        if (!kitPlayer.hasKit(this) || !KitManager.getInstance().hasKitItemInAnyHand(player, this)) {
+        if (!kitPlayer.hasKit(this) || !KitManager.getInstance().hasKitItemInAnyHand(player, this) || kitPlayer.areKitsDisabled()) {
             return;
         }
         if (kitPlayer.hasKitCooldown(this)) {
