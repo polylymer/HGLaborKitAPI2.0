@@ -3,6 +3,7 @@ package de.hglabor.plugins.kitapi.kit.events;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.CraftItemEvent;
@@ -16,6 +17,9 @@ import static de.hglabor.plugins.kitapi.kit.config.KitSettings.USES;
 public abstract class KitEvents {
 
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
+    }
+
+    public void onPlayerGetsAttackedByLivingEntity(EntityDamageByEntityEvent event, Player player, LivingEntity attacker) {
     }
 
     public void onAreaEffectCloudDamage(EntityDamageByEntityEvent event) {
@@ -58,6 +62,9 @@ public abstract class KitEvents {
     }
 
     public void onPlayerInteract(PlayerInteractEvent event) {
+    }
+
+    public void onBlockBreak(BlockBreakEvent event) {
     }
 
     public void onBlockBreakWithKitItem(BlockBreakEvent event) {
