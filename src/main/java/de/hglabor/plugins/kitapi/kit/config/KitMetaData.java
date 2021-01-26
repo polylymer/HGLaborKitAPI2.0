@@ -7,6 +7,7 @@ public enum KitMetaData {
     SWITCHER_BALL,
     SPIT_SOUP,
     SPIT_PROJECTILE,
+    SPIDERMAN_SNOWBALL,
     ;
 
     public String getKey() {
