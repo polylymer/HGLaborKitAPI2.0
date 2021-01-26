@@ -7,9 +7,11 @@ import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class RogueKit extends AbstractKit {
@@ -21,6 +23,7 @@ public class RogueKit extends AbstractKit {
         setMainKitItem(getDisplayMaterial());
         addSetting(KitSettings.RADIUS, 10);
         addSetting(KitSettings.EFFECT_DURATION, 15);
+        addEvents(Collections.singletonList(PlayerInteractEvent.class));
     }
 
     @Override

@@ -2,11 +2,11 @@ package de.hglabor.plugins.kitapi.kit.events;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityResurrectEvent;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -20,13 +20,19 @@ public abstract class KitEvents {
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
     }
 
+    public void onPlayerGetsAttackedByLivingEntity(EntityDamageByEntityEvent event, Player player, LivingEntity attacker) {
+    }
+
+    public void onHitLivingEntityWithKitItem(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
+    }
+
     public void onAreaEffectCloudDamage(EntityDamageByEntityEvent event) {
     }
 
     public void onPlayerKillsPlayer(KitPlayer killer, KitPlayer dead) {
     }
 
-    public void onNinjaSneak(PlayerToggleSneakEvent event) {
+    public void onPlayerToggleSneakEvent(PlayerToggleSneakEvent event) {
     }
 
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
@@ -51,6 +57,21 @@ public abstract class KitEvents {
     }
 
     public void onCraftItem(CraftItemEvent event) {
+    }
+
+    public void onProjectileLaunch(ProjectileLaunchEvent event) {
+    }
+
+    public void onProjectileHitEvent(ProjectileHitEvent event) {
+    }
+
+    public void onPlayerInteract(PlayerInteractEvent event) {
+    }
+
+    public void onBlockBreak(BlockBreakEvent event) {
+    }
+
+    public void onBlockBreakWithKitItem(BlockBreakEvent event) {
     }
 
     protected void checkUsesForCooldown(KitPlayer kitPlayer, AbstractKit kit) {

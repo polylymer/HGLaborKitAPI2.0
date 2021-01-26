@@ -6,8 +6,11 @@ import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Collections;
 
 public class ReviveKit extends AbstractKit {
     public static final ReviveKit INSTANCE = new ReviveKit();
@@ -16,6 +19,7 @@ public class ReviveKit extends AbstractKit {
         super("Revive", Material.TOTEM_OF_UNDYING, 60);
         setMainKitItem(getDisplayMaterial());
         setUsesOffHand(true);
+        addEvents(Collections.singletonList(EntityResurrectEvent.class));
     }
 
     @Override

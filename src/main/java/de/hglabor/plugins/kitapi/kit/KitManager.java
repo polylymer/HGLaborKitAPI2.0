@@ -1,10 +1,13 @@
 package de.hglabor.plugins.kitapi.kit;
 
+import com.google.common.collect.ImmutableMap;
+import de.hglabor.Localization.Localization;
 import de.hglabor.plugins.kitapi.config.KitApiConfig;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
 import de.hglabor.plugins.kitapi.kit.kits.*;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.player.KitPlayerSupplier;
+import de.hglabor.plugins.kitapi.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -29,15 +32,15 @@ public final class KitManager {
         this.supportedLanguages = Arrays.asList(Locale.ENGLISH, Locale.GERMAN);
     }
 
-    public List<Locale> getSupportedLanguages() {
-        return supportedLanguages;
-    }
-
     public static KitManager getInstance() {
         return instance;
     }
 
-    public List<AbstractKit> empty() {
+    public List<Locale> getSupportedLanguages() {
+        return supportedLanguages;
+    }
+
+    public List<AbstractKit> emptyKitList() {
         int kitAmount = KitApiConfig.getInstance().getInteger("kit.amount");
         List<AbstractKit> emptyKitList = new ArrayList<>(kitAmount);
         for (int i = 0; i < kitAmount; i++) {
@@ -60,15 +63,20 @@ public final class KitManager {
         register(GamblerKit.INSTANCE);
         register(SmogmogKit.INSTANCE);
         register(RogueKit.INSTANCE);
-        register(SnailKit.getInstance());
+        register(SnailKit.INSTANCE);
         register(DiggerKit.INSTANCE);
         register(ReviveKit.INSTANCE);
         register(TankKit.INSTANCE);
         register(GravityKit.INSTANCE);
         register(CannibalKit.INSTANCE);
+        register(ZickZackKit.INSTANCE);
         register(ThorKit.INSTANCE);
         register(StomperKit.INSTANCE);
         register(DannyKit.INSTANCE);
+        register(JackhammerKit.INSTANCE);
+        register(SwitcherKit.INSTANCE);
+        register(SpitKit.INSTANCE);
+        register(SquidKit.INSTANCE);
     }
 
     public void register(AbstractKit kit) {
@@ -144,9 +152,13 @@ public final class KitManager {
                 long cooldown = (kitCooldown.getStartTime() + (kit.getCooldown() * 1000L + kitCooldown.getAdditionalTime() * 1000L)) - System.currentTimeMillis();
                 assert player != null;
                 if (kit.getMainKitItem() != null && hasKitItemInAnyHand(player, kit)) {
-                    player.sendMessage("Cooldown: " + (cooldown) / 1000D);
+                    player.sendActionBar(Localization.INSTANCE.getMessage("kit.cooldown",
+                            ImmutableMap.of("numberInSeconds", String.valueOf((cooldown) / 1000D)),
+                            Utils.getPlayerLocale(player)));
                 } else if (kit.getMainKitItem() == null) {
-                    player.sendMessage("Cooldown: " + (cooldown) / 1000D);
+                    player.sendActionBar(Localization.INSTANCE.getMessage("kit.cooldown",
+                            ImmutableMap.of("numberInSeconds", String.valueOf((cooldown) / 1000D)),
+                            Utils.getPlayerLocale(player)));
                 }
                 return true;
             }

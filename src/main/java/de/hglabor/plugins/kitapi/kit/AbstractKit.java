@@ -104,6 +104,10 @@ public abstract class AbstractKit extends KitEvents {
         mainKitItem = new ItemBuilder(material).setDescription(ChatColor.RED + "Kititem").build();
     }
 
+    public void setMainKitItem(Material material, String name) {
+        mainKitItem = new ItemBuilder(material).setDescription(ChatColor.RED + "Kititem").setName(ChatColor.BLUE + name).build();
+    }
+
     /**
      * used for checking in controller if kit has event
      */
@@ -169,5 +173,9 @@ public abstract class AbstractKit extends KitEvents {
 
     public boolean isPlaceable() {
         return isPlaceable;
+    }
+
+    public Set<Class<? extends Event>> getKitEvents() {
+        return kitEvents;
     }
 }

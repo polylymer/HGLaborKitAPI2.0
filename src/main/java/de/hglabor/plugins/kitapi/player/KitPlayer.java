@@ -15,6 +15,8 @@ public interface KitPlayer {
 
     void setKit(AbstractKit kit, int index);
 
+    void setKits(List<AbstractKit> kits);
+
     boolean hasKitCooldown(AbstractKit kit);
 
     KitPlayer getLastHittedPlayer();

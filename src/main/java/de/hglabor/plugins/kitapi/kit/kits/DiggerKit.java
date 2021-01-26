@@ -5,14 +5,18 @@ import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Collections;
 
 public class DiggerKit extends AbstractKit {
     public static final DiggerKit INSTANCE = new DiggerKit();
@@ -21,15 +25,16 @@ public class DiggerKit extends AbstractKit {
         super("Digger", Material.DRAGON_EGG, 12);
         setMainKitItem(getDisplayMaterial(), 16);
         addSetting(KitSettings.RADIUS, 6);
+        addEvents(Collections.singletonList(PlayerInteractEvent.class));
     }
 
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
-        Block block = event.getClickedBlock();
+        Block clickedBlock = event.getClickedBlock();
         Player player = event.getPlayer();
-        if (block != null) {
+        if (clickedBlock != null) {
+            Block block = clickedBlock.getLocation().add(0, 1, 0).getBlock();
             reduceKitItem(event, player);
-            block.setType(Material.AIR);
             KitPlayer kitPlayer = KitManager.getInstance().getPlayer(event.getPlayer());
             kitPlayer.activateKitCooldown(this, this.getCooldown());
             new BukkitRunnable() {
@@ -70,7 +75,7 @@ public class DiggerKit extends AbstractKit {
         if (event.getHand() != null && event.getItem() != null) {
             ItemStack itemStack = player.getInventory().getItem(event.getHand());
             if (itemStack != null) {
-                player.getInventory().setItem(event.getHand(),itemStack.subtract(1));
+                itemStack.subtract();
             }
         }
     }
