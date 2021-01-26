@@ -8,13 +8,17 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+
+import java.util.Collections;
 
 public class NinjaKit extends AbstractKit {
     private final static NinjaKit instance = new NinjaKit();
 
     private NinjaKit() {
         super("Ninja", Material.INK_SAC, 13);
+        addEvents(Collections.singletonList(PlayerToggleSneakEvent.class));
     }
 
     public static NinjaKit getInstance() {
@@ -22,7 +26,7 @@ public class NinjaKit extends AbstractKit {
     }
 
     @Override
-    public void onNinjaSneak(PlayerToggleSneakEvent event) {
+    public void onPlayerToggleSneakEvent(PlayerToggleSneakEvent event) {
         Player player = event.getPlayer();
         KitPlayer attacker = KitManager.getInstance().getPlayer(player);
         KitPlayer lastHittedPlayer = attacker.getLastHittedPlayer();
