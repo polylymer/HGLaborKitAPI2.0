@@ -58,7 +58,9 @@ public class DannyKit extends AbstractKit {
                         break;
                     case DROP_ITEM:
                         player.playSound(player.getLocation(), Sound.ENTITY_DONKEY_DEATH, 10, 1);
-                        player.dropItem(false);
+                        if(player.getItemInHand().getType() != Material.AIR) {
+                            player.dropItem(false);
+                        }
                         break;
                 }
             }
