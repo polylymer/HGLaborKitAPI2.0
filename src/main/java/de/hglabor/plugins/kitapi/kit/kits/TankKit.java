@@ -39,8 +39,6 @@ public class TankKit extends AbstractKit {
         Player deadPlayer = Bukkit.getPlayer(dead.getUUID());
         Player killerPlayer = Bukkit.getPlayer(killer.getUUID());
         int explosionSize = getSetting(KitSettings.EXPLOSION_SIZE_PLAYER);
-        Bukkit.broadcastMessage(deadPlayer.getPlayer().getName());
-        Bukkit.broadcastMessage(String.valueOf(explosionSize));
         if (deadPlayer != null) {
             deadPlayer.getWorld().createExplosion(deadPlayer.getLocation(), explosionSize, false, true, killerPlayer);
         }
