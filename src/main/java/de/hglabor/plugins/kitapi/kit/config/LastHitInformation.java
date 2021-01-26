@@ -48,4 +48,11 @@ public class LastHitInformation {
     public void setEntityTimeStamp(long entityTimeStamp) {
         this.entityTimeStamp = entityTimeStamp;
     }
+
+    private void clear() {
+        lastEntity = null;
+        lastPlayer = null;
+        playerTimeStamp = 0;
+        entityTimeStamp = 0;
+    }
 }
