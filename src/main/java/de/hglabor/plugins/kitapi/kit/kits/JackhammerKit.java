@@ -3,6 +3,7 @@ package de.hglabor.plugins.kitapi.kit.kits;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,7 +21,7 @@ public class JackhammerKit extends AbstractKit {
     public final static JackhammerKit INSTANCE = new JackhammerKit();
 
     private JackhammerKit() {
-        super("Jackhammer", Material.STONE_AXE,20);
+        super("Jackhammer", Material.STONE_AXE, 20);
         setMainKitItem(getDisplayMaterial(), true);
         addSetting(KitSettings.USES, 5);
         addEvents(Collections.singletonList(BlockBreakEvent.class));
@@ -49,15 +50,16 @@ public class JackhammerKit extends AbstractKit {
     private void dig(Location loc, int direction, int delay) {
         final Location currentLocation = loc.clone();
 
-        Bukkit.getScheduler().runTaskTimer(KitManager.getInstance().getPlugin(), r -> {
-            currentLocation.getBlock().setType(Material.AIR);
-            loc.getWorld().spawnParticle(Particle.ASH, currentLocation.clone().add(.5, 0, .5), 100);
-            currentLocation.add(0, direction, 0);
-            if (direction == 1 && currentLocation.getBlockY() >= currentLocation.getWorld().getMaxHeight()) {
-                r.cancel();
-            }
-            if (currentLocation.getBlock().getType() == Material.BEDROCK) {
-                r.cancel();
+        Bukkit.getScheduler().runTaskTimer(KitManager.getInstance().getPlugin(), bukkitTask -> {
+            if (!Utils.isUnbreakableLaborBlock(currentLocation.getBlock())) {
+                currentLocation.getBlock().setType(Material.AIR);
+                loc.getWorld().spawnParticle(Particle.ASH, currentLocation.clone().add(.5, 0, .5), 100);
+                currentLocation.add(0, direction, 0);
+                if (currentLocation.getBlock().getType() == Material.BEDROCK) {
+                    bukkitTask.cancel();
+                }
+            } else {
+                bukkitTask.cancel();
             }
         }, 0, delay);
     }

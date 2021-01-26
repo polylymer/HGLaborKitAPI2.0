@@ -38,7 +38,13 @@ public abstract class KitEvents {
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
     }
 
+    public void onPlayerLeftClickKitItem(PlayerInteractEvent event) {
+    }
+
     public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event) {
+    }
+
+    public void onPlayerRightClickLivingEntityWithKitItem(PlayerInteractAtEntityEvent event) {
     }
 
     public void onPlayerMove(PlayerMoveEvent event) {
