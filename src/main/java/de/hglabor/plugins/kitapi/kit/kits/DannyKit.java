@@ -77,7 +77,7 @@ public class DannyKit extends AbstractKit {
     @Override
     public void onCraftItem(CraftItemEvent event) {
         if (ChanceUtils.roll(getSetting(KitSettings.LIKELIHOOD))) {
-            ItemStack stack = new ItemStack(Material.PLAYER_HEAD, new Random().nextInt(12));
+            ItemStack stack = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta meta = (SkullMeta) stack.getItemMeta();
             meta.setOwningPlayer(Bukkit.getOfflinePlayer("Daannyy"));
             stack.setItemMeta(meta);
