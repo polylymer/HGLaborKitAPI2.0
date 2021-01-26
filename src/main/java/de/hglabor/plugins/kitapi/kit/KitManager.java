@@ -76,6 +76,7 @@ public final class KitManager {
         register(SwitcherKit.INSTANCE);
         register(SpitKit.INSTANCE);
         register(SquidKit.INSTANCE);
+        register(ShapeShifterKit.INSTANCE);
     }
 
     public void register(AbstractKit kit) {
