@@ -21,7 +21,6 @@ import java.util.Random;
 public class DannyKit extends AbstractKit {
     public static final DannyKit INSTANCE = new DannyKit();
     private Plugin plugin = KitManager.getInstance().getPlugin();
-    private BukkitTask task;
     private PotionEffectType[] potionEffects = {PotionEffectType.BLINDNESS, PotionEffectType.WITHER, PotionEffectType.POISON, PotionEffectType.WEAKNESS, PotionEffectType.HARM, PotionEffectType.CONFUSION};
 
     protected DannyKit() {
@@ -32,10 +31,12 @@ public class DannyKit extends AbstractKit {
 
     @Override
     public void enable(KitPlayer kitPlayer) {
+        BukkitTask task;
         task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             if(kitPlayer.isValid()) {
                 DannyAction action = DannyAction.values()[new Random().nextInt(DannyAction.values().length)];
                 Player player = Bukkit.getPlayer(kitPlayer.getUUID());
+                if(player == null) return;
                 switch (action) {
                     case EAT_ITEM:
                         player.playSound(player.getLocation(), Sound.ENTITY_DONKEY_EAT, 10, 1);
@@ -62,10 +63,12 @@ public class DannyKit extends AbstractKit {
                 }
             }
         }, 0, 10*20L);
+        kitPlayer.putKitAttribute(this, task);
     }
 
     @Override
     public void disable(KitPlayer kitPlayer) {
+        BukkitTask task = kitPlayer.getKitAttribute(this);
         task.cancel();
     }
 
