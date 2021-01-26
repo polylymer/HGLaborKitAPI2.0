@@ -44,6 +44,9 @@ public abstract class KitEvents {
     public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event) {
     }
 
+    public void onPlayerRightClickLivingEntityWithKitItem(PlayerInteractAtEntityEvent event) {
+    }
+
     public void onPlayerMove(PlayerMoveEvent event) {
     }
 

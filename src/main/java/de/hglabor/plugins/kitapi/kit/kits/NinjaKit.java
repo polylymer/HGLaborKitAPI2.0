@@ -8,7 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 import java.util.Collections;
@@ -37,7 +36,7 @@ public class NinjaKit extends AbstractKit {
         if (toTeleport != null) {
             if (!toTeleport.isOnline()) return;
             if (!lastHittedPlayer.isValid()) return;
-            if (attacker.getLastHitTimeStamp() + this.getCooldown() * 1000L > System.currentTimeMillis()) {
+            if (attacker.getLastHittedPlayerTimeStamp() + this.getCooldown() * 1000L > System.currentTimeMillis()) {
                 //TODO distance check einbauen
                 player.teleport(calculateNinjaBehind(toTeleport));
                 attacker.activateKitCooldown(this, this.getCooldown());

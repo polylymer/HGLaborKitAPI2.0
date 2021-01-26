@@ -2,6 +2,7 @@ package de.hglabor.plugins.kitapi.player;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
+import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,9 +22,13 @@ public interface KitPlayer {
 
     KitPlayer getLastHittedPlayer();
 
+    LivingEntity getLastHittedEntity();
+
     void setLastHittedPlayer(KitPlayer player);
 
-    long getLastHitTimeStamp();
+    long getLastHittedPlayerTimeStamp();
+
+    long getLastHittedEntityTimeStamp();
 
     UUID getUUID();
 
