@@ -22,6 +22,9 @@ public abstract class KitEvents {
     public void onPlayerGetsAttackedByLivingEntity(EntityDamageByEntityEvent event, Player player, LivingEntity attacker) {
     }
 
+    public void onHitLivingEntityWithKitItem(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
+    }
+
     public void onAreaEffectCloudDamage(EntityDamageByEntityEvent event) {
     }
 
