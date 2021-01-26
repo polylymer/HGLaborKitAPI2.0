@@ -25,6 +25,7 @@ public class StomperKit extends AbstractKit {
     @Override
     public void onEntityDamage(EntityDamageEvent event) {
         if(event.getEntity() instanceof Player) {
+            if(!event.getCause().equals(EntityDamageEvent.DamageCause.FALL)) return;
             Player player = (Player) event.getEntity();
             final double STOMPER_DAMAGE = event.getDamage();
             player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1, 1);
@@ -39,12 +40,18 @@ public class StomperKit extends AbstractKit {
                             Player playerEntity = (Player) entity;
                             KitPlayer kitPlayer = KitManager.getInstance().getPlayer(playerEntity);
                             if(kitPlayer.isValid()) {
-                                playerEntity.playSound(playerEntity.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1, 1);
-                                livingEntity.damage(STOMPER_DAMAGE);
+                                if(!playerEntity.isSneaking()) {
+                                    livingEntity.damage(STOMPER_DAMAGE);
+                                    livingEntity.setVelocity(livingEntity.getVelocity().setY(livingEntity.getVelocity().getY()*STOMPER_DAMAGE/4));
+                                }
+                                playerEntity.playSound(playerEntity.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.05f, 1);
                             }
                         } else {
                             livingEntity.damage(STOMPER_DAMAGE);
+                            livingEntity.setVelocity(livingEntity.getVelocity().setY(livingEntity.getVelocity().getY()*STOMPER_DAMAGE/4));
                         }
+
+
                     }
                 }
             }

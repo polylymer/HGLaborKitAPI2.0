@@ -26,6 +26,7 @@ public class SmogmogKit extends AbstractKit implements Listener {
     private SmogmogKit() {
         super("Smogmog", Material.POPPED_CHORUS_FRUIT, 20);
         addSetting(KitSettings.EFFECT_DURATION, 3);
+        addSetting(KitSettings.RADIUS, 8);
         setMainKitItem(getDisplayMaterial());
         addEvents(Collections.singletonList(PlayerInteractEvent.class));
     }
@@ -39,6 +40,7 @@ public class SmogmogKit extends AbstractKit implements Listener {
         cloud.setSource(e.getPlayer());
         cloud.setRadius(((Integer) getSetting(KitSettings.RADIUS)).floatValue());
         cloud.setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE, false, false));
+        cloud.setRadius(((Integer) getSetting(KitSettings.RADIUS)).floatValue());
         KitPlayer kitPlayer = KitManager.getInstance().getPlayer(e.getPlayer());
         kitPlayer.activateKitCooldown(this, this.getCooldown());
         e.getPlayer().getLocation().getWorld().playSound(e.getPlayer().getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 0.2f, 0);
