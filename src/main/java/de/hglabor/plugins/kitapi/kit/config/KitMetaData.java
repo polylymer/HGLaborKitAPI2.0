@@ -6,7 +6,7 @@ public enum KitMetaData {
     HAS_BEEN_MAGED,
     SWITCHER_BALL,
     SPIT_SOUP,
-    SPIT_PROJECTILEl,
+    SPIT_PROJECTILE,
     ;
 
     public String getKey() {
