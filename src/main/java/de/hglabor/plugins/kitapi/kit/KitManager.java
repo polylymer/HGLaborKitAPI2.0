@@ -72,6 +72,7 @@ public final class KitManager {
         register(ZickZackKit.INSTANCE);
         register(ThorKit.INSTANCE);
         register(StomperKit.INSTANCE);
+        register(DannyKit.INSTANCE);
         register(JackhammerKit.INSTANCE);
         register(SwitcherKit.INSTANCE);
         register(SpitKit.INSTANCE);
