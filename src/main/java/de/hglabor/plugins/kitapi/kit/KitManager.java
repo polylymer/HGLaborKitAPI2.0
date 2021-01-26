@@ -63,7 +63,7 @@ public final class KitManager {
         register(GamblerKit.INSTANCE);
         register(SmogmogKit.INSTANCE);
         register(RogueKit.INSTANCE);
-        register(SnailKit.getInstance());
+        register(SnailKit.INSTANCE);
         register(DiggerKit.INSTANCE);
         register(ReviveKit.INSTANCE);
         register(TankKit.INSTANCE);
@@ -74,6 +74,7 @@ public final class KitManager {
         register(StomperKit.INSTANCE);
         register(JackhammerKit.INSTANCE);
         register(SwitcherKit.INSTANCE);
+        register(SpitKit.INSTANCE);
     }
 
     public void register(AbstractKit kit) {
