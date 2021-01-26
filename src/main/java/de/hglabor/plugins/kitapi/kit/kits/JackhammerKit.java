@@ -55,16 +55,17 @@ public class JackhammerKit extends AbstractKit {
      */
     private void dig(Location loc, int direction, int delay) {
         final Location currentLocation = loc.clone();
-
         Bukkit.getScheduler().runTaskTimer(KitManager.getInstance().getPlugin(), r -> {
-            currentLocation.getBlock().setType(Material.AIR);
-            Objects.requireNonNull(loc.getWorld()).spawnParticle(Particle.ASH, currentLocation.clone().add(.5, 0, .5), 100);
-            currentLocation.add(0, direction, 0);
-            if (currentLocation.getBlock().getType() == Material.BEDROCK) {
+            if (!currentLocation.getBlock().hasMetadata("feastBlock")) {
+                currentLocation.getBlock().setType(Material.AIR);
+                Objects.requireNonNull(loc.getWorld()).spawnParticle(Particle.ASH, currentLocation.clone().add(.5, 0, .5), 100);
+                currentLocation.add(0, direction, 0);
+                if (currentLocation.getBlock().getType() == Material.BEDROCK) {
+                    r.cancel();
+                }
+            }else{
                 r.cancel();
             }
         }, 0, delay);
-
-
     }
 }
