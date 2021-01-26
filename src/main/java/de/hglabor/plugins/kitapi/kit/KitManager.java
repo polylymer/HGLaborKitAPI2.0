@@ -1,12 +1,14 @@
 package de.hglabor.plugins.kitapi.kit;
 
+import com.google.common.collect.ImmutableMap;
+import de.hglabor.Localization.Localization;
 import de.hglabor.plugins.kitapi.config.KitApiConfig;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
 import de.hglabor.plugins.kitapi.kit.kits.*;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.player.KitPlayerSupplier;
+import de.hglabor.plugins.kitapi.util.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,12 +32,12 @@ public final class KitManager {
         this.supportedLanguages = Arrays.asList(Locale.ENGLISH, Locale.GERMAN);
     }
 
-    public List<Locale> getSupportedLanguages() {
-        return supportedLanguages;
-    }
-
     public static KitManager getInstance() {
         return instance;
+    }
+
+    public List<Locale> getSupportedLanguages() {
+        return supportedLanguages;
     }
 
     public List<AbstractKit> empty() {
@@ -147,11 +149,13 @@ public final class KitManager {
                 long cooldown = (kitCooldown.getStartTime() + (kit.getCooldown() * 1000L + kitCooldown.getAdditionalTime() * 1000L)) - System.currentTimeMillis();
                 assert player != null;
                 if (kit.getMainKitItem() != null && hasKitItemInAnyHand(player, kit)) {
-                    player.sendActionBar(ChatColor.GRAY + "Cooldown:" + ChatColor.YELLOW + " " + (cooldown) / 1000D);
-                    //player.sendMessage("Cooldown: " + (cooldown) / 1000D);
+                    player.sendActionBar(Localization.INSTANCE.getMessage("kit.cooldown",
+                            ImmutableMap.of("numberInSeconds", String.valueOf((cooldown) / 1000D)),
+                            Utils.getPlayerLocale(player)));
                 } else if (kit.getMainKitItem() == null) {
-                    player.sendActionBar(ChatColor.GRAY + "Cooldown:" + ChatColor.YELLOW + " " + (cooldown) / 1000D);
-//                    player.sendMessage("Cooldown: " + (cooldown) / 1000D);
+                    player.sendActionBar(Localization.INSTANCE.getMessage("kit.cooldown",
+                            ImmutableMap.of("numberInSeconds", String.valueOf((cooldown) / 1000D)),
+                            Utils.getPlayerLocale(player)));
                 }
                 return true;
             }
