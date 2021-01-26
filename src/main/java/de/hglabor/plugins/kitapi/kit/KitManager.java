@@ -68,6 +68,7 @@ public final class KitManager {
         register(CannibalKit.INSTANCE);
         register(ThorKit.INSTANCE);
         register(StomperKit.INSTANCE);
+        register(DannyKit.INSTANCE);
     }
 
     public void register(AbstractKit kit) {
