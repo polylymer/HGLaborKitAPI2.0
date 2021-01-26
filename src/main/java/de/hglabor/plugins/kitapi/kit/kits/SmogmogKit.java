@@ -35,8 +35,9 @@ public class SmogmogKit extends AbstractKit implements Listener {
         AreaEffectCloud cloud = (AreaEffectCloud) e.getPlayer().getWorld().spawnEntity(e.getPlayer().getLocation(), EntityType.AREA_EFFECT_CLOUD);
         cloud.setCustomName(e.getPlayer().getUniqueId().toString());
         cloud.setColor(Color.fromBGR(new Random().nextInt(255), new Random().nextInt(255), new Random().nextInt(255)));
-        cloud.setDuration((Integer)getSetting(KitSettings.EFFECT_DURATION)*20);
+        cloud.setDuration((Integer) getSetting(KitSettings.EFFECT_DURATION) * 20);
         cloud.setSource(e.getPlayer());
+        cloud.setRadius(((Integer) getSetting(KitSettings.RADIUS)).floatValue());
         cloud.setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE, false, false));
         KitPlayer kitPlayer = KitManager.getInstance().getPlayer(e.getPlayer());
         kitPlayer.activateKitCooldown(this, this.getCooldown());
