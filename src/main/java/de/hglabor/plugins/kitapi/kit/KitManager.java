@@ -36,6 +36,10 @@ public final class KitManager {
         return instance;
     }
 
+    public List<Locale> getSupportedLanguages() {
+        return supportedLanguages;
+    }
+
     public List<AbstractKit> emptyKitList() {
         int kitAmount = KitApiConfig.getInstance().getInteger("kit.amount");
         List<AbstractKit> emptyKitList = new ArrayList<>(kitAmount);
