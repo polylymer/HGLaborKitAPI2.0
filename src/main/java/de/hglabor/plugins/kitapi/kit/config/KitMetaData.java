@@ -8,7 +8,10 @@ public enum KitMetaData {
     FEAST_BLOCK,
     UNBREAKABLE_BLOCK;
     SPIT_SOUP,
-    SPIT_PROJECTILE;
+    SPIT_PROJECTILE,
+    SPIDERMAN_SNOWBALL,
+    MANIPULATED_MOB,
+    ;
 
 
     public String getKey() {
