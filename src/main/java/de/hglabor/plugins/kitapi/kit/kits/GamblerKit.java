@@ -150,7 +150,7 @@ public class GamblerKit extends AbstractKit implements Listener {
             String name = randomCollection.getName(randomEffect);
             if (System.currentTimeMillis() >= END) {
                 randomEffect.accept(player);
-                player.sendTitle(" ", name, 0, 20, 0);
+                player.sendTitle("", name, 0, 20, 0);
                 player.playSound(player.getLocation(), goodOrBad ? Sound.ENTITY_PLAYER_LEVELUP : Sound.ENTITY_DONKEY_HURT, 0.8F, 1.0F);
                 cancel();
             } else {

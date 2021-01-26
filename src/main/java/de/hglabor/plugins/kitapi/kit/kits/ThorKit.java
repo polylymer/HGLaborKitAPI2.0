@@ -13,7 +13,7 @@ public class ThorKit extends AbstractKit {
     public static final ThorKit INSTANCE = new ThorKit();
     protected ThorKit() {
         super("Thor", Material.WOODEN_AXE, 10);
-        setMainKitItem(getDisplayMaterial());
+        setMainKitItem(getDisplayMaterial(),true);
         addEvents(Collections.singletonList(PlayerInteractEvent.class));
     }
 

@@ -17,7 +17,6 @@ import java.util.Random;
 import java.util.UUID;
 
 public class ZickZackKit extends AbstractKit {
-
     public static final ZickZackKit INSTANCE = new ZickZackKit();
 
     private ZickZackKit() {
@@ -30,7 +29,7 @@ public class ZickZackKit extends AbstractKit {
     public void enable(KitPlayer kitPlayer) {
         kitPlayer.putKitAttribute(this, new HashMap<UUID, Integer>());
     }
-
+    
     @Override
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent e, KitPlayer attacker, LivingEntity entity) {
         if (!(e.getEntity() instanceof Player && e.getDamager() instanceof Player)) {
@@ -50,16 +49,20 @@ public class ZickZackKit extends AbstractKit {
     }
 
     @Override
-    public void onGettingHitEvent(EntityDamageByEntityEvent event, KitPlayer kitOwner, Player player, Player attacker) {
+    public void onPlayerGetsAttackedByLivingEntity(EntityDamageByEntityEvent event, Player player, LivingEntity attacker) {
+        if (!(attacker instanceof Player)) {
+            return;
+        }
+        KitPlayer kitPlayer = KitManager.getInstance().getPlayer(player);
         int likelihood = getSetting(KitSettings.LIKELIHOOD);
-        Map<UUID, Integer> combo = kitOwner.getKitAttribute(this);
+        Map<UUID, Integer> combo = kitPlayer.getKitAttribute(this);
         if (combo.containsKey(attacker.getUniqueId())) {
             int chance = new Random().nextInt(likelihood) + 1;
             int comboAmount = combo.get(attacker.getUniqueId());
             if (chance > likelihood - comboAmount) {
                 event.setCancelled(true);
                 combo.replace(attacker.getUniqueId(), combo.get(attacker.getUniqueId()) - 1);
-                attacker.playSound(attacker.getLocation(), Sound.BLOCK_BUBBLE_COLUMN_WHIRLPOOL_INSIDE, 100, 100);
+                ((Player) attacker).playSound(attacker.getLocation(), Sound.BLOCK_BUBBLE_COLUMN_WHIRLPOOL_INSIDE, 100, 100);
                 player.playSound(player.getLocation(), Sound.BLOCK_BUBBLE_COLUMN_WHIRLPOOL_INSIDE, 100, 100);
             } else {
                 combo.replace(attacker.getUniqueId(), 0);

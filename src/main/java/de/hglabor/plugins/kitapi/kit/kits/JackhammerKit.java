@@ -2,7 +2,7 @@ package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
-import de.hglabor.plugins.kitapi.player.KitPlayer;
+import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,8 +20,9 @@ public class JackhammerKit extends AbstractKit {
     public final static JackhammerKit INSTANCE = new JackhammerKit();
 
     private JackhammerKit() {
-        super("Jackhammer", Material.STONE_AXE);
+        super("Jackhammer", Material.STONE_AXE,20);
         setMainKitItem(getDisplayMaterial(), true);
+        addSetting(KitSettings.USES, 5);
         addEvents(Collections.singletonList(BlockBreakEvent.class));
     }
 
@@ -38,8 +39,7 @@ public class JackhammerKit extends AbstractKit {
             //RUNTER
             dig(block.getLocation(), -1, 1);
         }
-        KitPlayer player = KitManager.getInstance().getPlayer(e.getPlayer());
-        player.activateKitCooldown(this, this.getCooldown());
+        checkUsesForCooldown(KitManager.getInstance().getPlayer(e.getPlayer()), this);
     }
 
     /**

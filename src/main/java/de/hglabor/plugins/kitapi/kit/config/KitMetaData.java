@@ -7,6 +7,9 @@ public enum KitMetaData {
     SWITCHER_BALL,
     FEAST_BLOCK,
     UNBREAKABLE_BLOCK;
+    SPIT_SOUP,
+    SPIT_PROJECTILE;
+
 
     public String getKey() {
         return name();
