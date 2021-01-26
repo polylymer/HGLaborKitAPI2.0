@@ -20,7 +20,7 @@ public class JackhammerKit extends AbstractKit {
     public final static JackhammerKit INSTANCE = new JackhammerKit();
 
     private JackhammerKit() {
-        super("Jackhammer", Material.STONE_AXE);
+        super("Jackhammer", Material.STONE_AXE,20);
         setMainKitItem(getDisplayMaterial(), true);
         addSetting(KitSettings.USES, 5);
         addEvents(Collections.singletonList(BlockBreakEvent.class));
