@@ -19,6 +19,9 @@ public abstract class KitEvents {
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
     }
 
+    public void onPlayerGetsAttackedByLivingEntity(EntityDamageByEntityEvent event, Player player, LivingEntity attacker) {
+    }
+
     public void onAreaEffectCloudDamage(EntityDamageByEntityEvent event) {
     }
 
@@ -60,11 +63,8 @@ public abstract class KitEvents {
 
     public void onPlayerInteract(PlayerInteractEvent event) {
     }
-  
-    public void onBlockBreak(BlockBreakEvent event) {
-    }
 
-    public void onGettingHitEvent(EntityDamageByEntityEvent event, KitPlayer kitOwner, Player player, Player attacker) {
+    public void onBlockBreak(BlockBreakEvent event) {
     }
 
     public void onBlockBreakWithKitItem(BlockBreakEvent event) {
