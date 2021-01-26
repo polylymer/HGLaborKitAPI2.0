@@ -5,7 +5,8 @@ public enum KitMetaData {
     GLADIATOR_BLOCK,
     HAS_BEEN_MAGED,
     SWITCHER_BALL,
-    ;
+    FEAST_BLOCK,
+    UNBREAKABLE_BLOCK;
 
     public String getKey() {
         return name();
