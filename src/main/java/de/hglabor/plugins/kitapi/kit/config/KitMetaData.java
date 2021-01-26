@@ -5,11 +5,14 @@ public enum KitMetaData {
     GLADIATOR_BLOCK,
     HAS_BEEN_MAGED,
     SWITCHER_BALL,
+    FEAST_BLOCK,
+    UNBREAKABLE_BLOCK;
     SPIT_SOUP,
     SPIT_PROJECTILE,
     SPIDERMAN_SNOWBALL,
     MANIPULATED_MOB,
     ;
+
 
     public String getKey() {
         return name();
