@@ -3,11 +3,14 @@ package de.hglabor.plugins.kitapi.kit.kits;
 import com.google.common.collect.ImmutableList;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.player.KitPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 
@@ -17,9 +20,9 @@ public class TankKit extends AbstractKit {
     protected TankKit() {
         super("Tank", Material.TNT);
         addSetting(KitSettings.EXPLOSION_SIZE_PLAYER, 6);
-        addSetting(KitSettings.EXPLOSION_SIZE_ENTITY, 1);
+        addSetting(KitSettings.EXPLOSION_SIZE_ENTITY, 3);
         addSetting(KitSettings.EXPLOSION_SIZE_RECRAFT, 1);
-        addEvents(ImmutableList.of(EntityDeathEvent.class, EntityDamageEvent.class, CraftItemEvent.class));
+        addEvents(ImmutableList.of(EntityDeathEvent.class, PlayerDeathEvent.class, EntityDamageEvent.class, CraftItemEvent.class));
     }
 
 
@@ -27,8 +30,18 @@ public class TankKit extends AbstractKit {
     public void onPlayerKillsLivingEntity(EntityDeathEvent event) {
         LivingEntity entity = event.getEntity();
         Player killer = entity.getKiller();
-        int explosionSize = entity instanceof Player ? (Integer) getSetting(KitSettings.EXPLOSION_SIZE_PLAYER) : (Integer) getSetting(KitSettings.EXPLOSION_SIZE_ENTITY);
+        int explosionSize = entity instanceof Player ? 0 : (Integer) getSetting(KitSettings.EXPLOSION_SIZE_ENTITY);
         entity.getWorld().createExplosion(entity.getLocation(), explosionSize, false, true, killer);
+    }
+
+    @Override
+    public void onPlayerKillsPlayer(KitPlayer killer, KitPlayer dead) {
+        Player deadPlayer = Bukkit.getPlayer(dead.getUUID());
+        Player killerPlayer = Bukkit.getPlayer(killer.getUUID());
+        int explosionSize = getSetting(KitSettings.EXPLOSION_SIZE_PLAYER);
+        if (deadPlayer != null) {
+            deadPlayer.getWorld().createExplosion(deadPlayer.getLocation(), explosionSize, false, true, killerPlayer);
+        }
     }
 
     @Override

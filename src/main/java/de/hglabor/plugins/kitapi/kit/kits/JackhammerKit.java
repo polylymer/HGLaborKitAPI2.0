@@ -1,52 +1,45 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-
 import de.hglabor.plugins.kitapi.kit.KitManager;
-import org.bukkit.*;
+import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import java.util.Objects;
+import java.util.Collections;
 
 /**
- * Hommage an Waffel :)
+ * Hommage an Waffel :) (wtf?)
  */
 public class JackhammerKit extends AbstractKit {
+    public final static JackhammerKit INSTANCE = new JackhammerKit();
 
     private JackhammerKit() {
-        super("Jackhammer", Material.STONE_AXE);
+        super("Jackhammer", Material.STONE_AXE,20);
+        setMainKitItem(getDisplayMaterial(), true);
+        addSetting(KitSettings.USES, 5);
+        addEvents(Collections.singletonList(BlockBreakEvent.class));
     }
 
     @Override
-    public void onBlockBreak(BlockBreakEvent e) {
+    public void onBlockBreakWithKitItem(BlockBreakEvent e) {
         Block block = e.getBlock();
-        World world = e.getBlock().getWorld();
-        Location loc = block.getLocation();
-        int add = 0;
-
         Material above = block.getRelative(BlockFace.UP).getType();
         Material below = block.getRelative(BlockFace.DOWN).getType();
-
-        if (above == Material.AIR && below == Material.AIR) {
-            return;
-        }
 
         if (above != Material.AIR && below == Material.AIR) {
             //HOCH
             dig(block.getLocation(), 1, 1);
-
         } else if (above == Material.AIR) {
             //RUNTER
             dig(block.getLocation(), -1, 1);
-
-        } else {
-            //BEIDE RICHTUNGEN
-            dig(block.getLocation(), 1, 2);
-            dig(block.getLocation(), -1, 2);
         }
-
+        checkUsesForCooldown(KitManager.getInstance().getPlayer(e.getPlayer()), this);
     }
 
     /**
@@ -64,6 +57,13 @@ public class JackhammerKit extends AbstractKit {
                     r.cancel();
                 }
             }else{
+            currentLocation.getBlock().setType(Material.AIR);
+            loc.getWorld().spawnParticle(Particle.ASH, currentLocation.clone().add(.5, 0, .5), 100);
+            currentLocation.add(0, direction, 0);
+            if (direction == 1 && currentLocation.getBlockY() >= currentLocation.getWorld().getMaxHeight()) {
+                r.cancel();
+            }
+            if (currentLocation.getBlock().getType() == Material.BEDROCK) {
                 r.cancel();
             }
         }, 0, delay);

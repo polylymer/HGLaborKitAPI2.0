@@ -3,28 +3,25 @@ package de.hglabor.plugins.kitapi.kit.kits;
 import com.google.common.collect.ImmutableList;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
-import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.mozilla.javascript.Kit;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class SwitcherKit extends AbstractKit implements Listener {
-
-    private final List<Material> disabledBlocks = Arrays.asList(Material.AIR, Material.BARRIER, Material.BEDROCK, Material.END_PORTAL_FRAME);
-
     public static final SwitcherKit INSTANCE = new SwitcherKit();
+    private final List<Material> disabledBlocks = Arrays.asList(Material.AIR, Material.BARRIER, Material.BEDROCK, Material.END_PORTAL_FRAME);
 
     private SwitcherKit() {
         super("Switcher", Material.SNOWBALL);
@@ -38,12 +35,12 @@ public class SwitcherKit extends AbstractKit implements Listener {
         if (!(e.getEntity().getShooter() instanceof Player)) {
             return;
         }
-        e.getEntity().setCustomName("switcherBall");
+        e.getEntity().setMetadata(KitMetaData.SWITCHER_BALL.getKey(), new FixedMetadataValue(KitManager.getInstance().getPlugin(), ""));
     }
 
-    @Override
+    @EventHandler
     public void onProjectileHitEvent(ProjectileHitEvent e) {
-        if (!(Objects.equals(e.getEntity().getCustomName(), "switcherBall"))) {
+        if (!e.getEntity().hasMetadata(KitMetaData.SWITCHER_BALL.getKey())) {
             return;
         }
         if (e.getEntity().getShooter() == null) {

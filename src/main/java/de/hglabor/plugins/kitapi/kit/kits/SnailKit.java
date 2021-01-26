@@ -15,8 +15,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.Collections;
 
 public class SnailKit  extends AbstractKit {
-
-    private final static SnailKit instance = new SnailKit();
+    public final static SnailKit INSTANCE = new SnailKit();
 
     protected SnailKit() {
         super("Snail", Material.SOUL_SOIL);
@@ -26,9 +25,6 @@ public class SnailKit  extends AbstractKit {
         addEvents(Collections.singletonList(EntityDamageByEntityEvent.class));
     }
 
-    public static SnailKit getInstance() {
-        return instance;
-    }
 
     @Override
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {

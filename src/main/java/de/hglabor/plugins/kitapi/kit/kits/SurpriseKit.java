@@ -18,6 +18,7 @@ public class SurpriseKit extends AbstractKit {
     public void enable(KitPlayer kitplayer) {
         AbstractKit randomKit = NoneKit.getInstance();
         int kitSlot = 0;
+        //TODO copycat surprise
         for (AbstractKit kit : kitplayer.getKits()) {
             if (kit.equals(this)) {
                 int randomNumber = new Random().nextInt(KitManager.getInstance().getEnabledKits().size());

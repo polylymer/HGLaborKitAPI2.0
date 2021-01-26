@@ -1,6 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.ChanceUtils;
@@ -31,6 +32,9 @@ public class CannibalKit extends AbstractKit {
             return;
         }
         if (!(event.getDamager() instanceof Player)) {
+            return;
+        }
+        if (KitManager.getInstance().getPlayer((Player) entity).hasKit(this)) {
             return;
         }
         Player attack = (Player) event.getDamager();
