@@ -37,7 +37,7 @@ public final class KitManager {
         return instance;
     }
 
-    public List<AbstractKit> empty() {
+    public List<AbstractKit> emptyKitList() {
         int kitAmount = KitApiConfig.getInstance().getInteger("kit.amount");
         List<AbstractKit> emptyKitList = new ArrayList<>(kitAmount);
         for (int i = 0; i < kitAmount; i++) {
