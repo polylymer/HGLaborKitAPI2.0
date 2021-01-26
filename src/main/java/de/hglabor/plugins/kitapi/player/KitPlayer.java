@@ -2,6 +2,7 @@ package de.hglabor.plugins.kitapi.player;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
+import de.hglabor.plugins.kitapi.kit.config.LastHitInformation;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
@@ -20,15 +21,7 @@ public interface KitPlayer {
 
     boolean hasKitCooldown(AbstractKit kit);
 
-    KitPlayer getLastHittedPlayer();
-
-    LivingEntity getLastHittedEntity();
-
-    void setLastHittedPlayer(KitPlayer player);
-
-    long getLastHittedPlayerTimeStamp();
-
-    long getLastHittedEntityTimeStamp();
+    LastHitInformation getLastHitInformation();
 
     UUID getUUID();
 
@@ -39,8 +32,6 @@ public interface KitPlayer {
     void activateKitCooldown(AbstractKit kit, int cooldown);
 
     Cooldown getKitCooldown(AbstractKit kit);
-
-    void setLastHittedTimeStamp(Long timeStamp);
 
     <T> T getKitAttribute(AbstractKit kit);
 

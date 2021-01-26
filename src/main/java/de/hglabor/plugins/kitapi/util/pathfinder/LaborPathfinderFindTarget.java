@@ -29,9 +29,9 @@ public class LaborPathfinderFindTarget extends PathfinderGoal {
 
     @Override
     public boolean a() {
-        Entity target = kitPlayer.getLastHittedEntity();
+        Entity target = kitPlayer.getLastHitInformation().getLastEntity();
 
-        if (kitPlayer.getLastHittedEntityTimeStamp() + (long) (10 * 1000) < System.currentTimeMillis()) {
+        if (kitPlayer.getLastHitInformation().getEntityTimeStamp() + (long) (10 * 1000) < System.currentTimeMillis()) {
             mob.setGoalTarget(null, EntityTargetEvent.TargetReason.CUSTOM, true);
             return false;
         }

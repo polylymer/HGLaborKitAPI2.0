@@ -28,7 +28,7 @@ public class NinjaKit extends AbstractKit {
     public void onPlayerToggleSneakEvent(PlayerToggleSneakEvent event) {
         Player player = event.getPlayer();
         KitPlayer attacker = KitManager.getInstance().getPlayer(player);
-        KitPlayer lastHittedPlayer = attacker.getLastHittedPlayer();
+        KitPlayer lastHittedPlayer = KitManager.getInstance().getPlayer(attacker.getLastHitInformation().getLastPlayer());
         if (lastHittedPlayer == null) {
             return;
         }
@@ -36,12 +36,12 @@ public class NinjaKit extends AbstractKit {
         if (toTeleport != null) {
             if (!toTeleport.isOnline()) return;
             if (!lastHittedPlayer.isValid()) return;
-            if (attacker.getLastHittedPlayerTimeStamp() + this.getCooldown() * 1000L > System.currentTimeMillis()) {
+            if (attacker.getLastHitInformation().getPlayerTimeStamp() + this.getCooldown() * 1000L > System.currentTimeMillis()) {
                 //TODO distance check einbauen
                 player.teleport(calculateNinjaBehind(toTeleport));
                 attacker.activateKitCooldown(this, this.getCooldown());
-                attacker.setLastHittedTimeStamp((long) 0);
-                attacker.setLastHittedPlayer(null);
+                attacker.getLastHitInformation().setPlayerTimeStamp(0);
+                attacker.getLastHitInformation().setLastPlayer(null);
             }
         }
     }
