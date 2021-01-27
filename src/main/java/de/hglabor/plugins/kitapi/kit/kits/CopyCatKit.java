@@ -5,7 +5,6 @@ import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import java.util.Collections;
@@ -31,7 +30,7 @@ public class CopyCatKit extends AbstractKit {
         AbstractKit copiedKit = kitPlayer.getKitAttribute(this);
         if (copiedKit != null) {
             if (copiedKit.equals(this)) {
-                kitPlayer.putKitAttribute(this, SurpriseKit.INSTANCE);
+                kitPlayer.putKitAttribute(this, SurpriseKit.INSTANCE.getRandomEnabledKit());
                 ((AbstractKit) kitPlayer.getKitAttribute(this)).enable(kitPlayer);
             } else {
                 copiedKit.enable(kitPlayer);
