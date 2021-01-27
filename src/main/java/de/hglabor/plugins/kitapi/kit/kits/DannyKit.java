@@ -4,10 +4,13 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
+import de.hglabor.plugins.kitapi.util.ChanceUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.Plugin;
@@ -16,6 +19,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Collections;
 import java.util.Random;
 
 public class DannyKit extends AbstractKit {
@@ -27,6 +31,8 @@ public class DannyKit extends AbstractKit {
         super("Danny", Material.PLAYER_HEAD);
         addSetting(KitSettings.EFFECT_MULTIPLIER, 1);
         addSetting(KitSettings.EFFECT_DURATION, 3);
+        addSetting(KitSettings.LIKELIHOOD, 22);
+        addEvents(Collections.singletonList(CraftItemEvent.class));
     }
 
     @Override
@@ -58,12 +64,25 @@ public class DannyKit extends AbstractKit {
                         break;
                     case DROP_ITEM:
                         player.playSound(player.getLocation(), Sound.ENTITY_DONKEY_DEATH, 10, 1);
-                        player.dropItem(false);
+                        if(player.getItemInHand().getType() != Material.AIR) {
+                            player.dropItem(false);
+                        }
                         break;
                 }
             }
         }, 0, 10*20L);
         kitPlayer.putKitAttribute(this, task);
+    }
+
+    @Override
+    public void onCraftItem(CraftItemEvent event) {
+        if (ChanceUtils.roll(getSetting(KitSettings.LIKELIHOOD))) {
+            ItemStack stack = new ItemStack(Material.PLAYER_HEAD);
+            SkullMeta meta = (SkullMeta) stack.getItemMeta();
+            meta.setOwningPlayer(Bukkit.getOfflinePlayer("Daannyy"));
+            stack.setItemMeta(meta);
+            event.setCurrentItem(stack);
+        }
     }
 
     @Override

@@ -17,20 +17,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ShapeShifterKit extends AbstractKit {
     public static final ShapeShifterKit INSTANCE = new ShapeShifterKit();
 
     private final List<Material> DISABLED_BLOCKS = Arrays.asList(Material.AIR, Material.BARRIER, Material.BEDROCK,
-            Material.REDSTONE_WIRE, Material.REDSTONE_TORCH, Material.REDSTONE_WALL_TORCH, Material.TORCH, Material.WALL_TORCH
-    );
+            Material.REDSTONE_WIRE, Material.REDSTONE_TORCH, Material.REDSTONE_WALL_TORCH, Material.TORCH, Material.WALL_TORCH,
+            Material.CHEST, Material.PLAYER_HEAD, Material.PLAYER_WALL_HEAD);
+
 
     private ShapeShifterKit() {
         super("Shapeshifter", Material.REDSTONE_BLOCK);
         addEvents(ImmutableList.of(PlayerInteractEvent.class, EntityDamageByEntityEvent.class));
         setMainKitItem(getDisplayMaterial());
+        DISABLED_BLOCKS.addAll(Arrays.stream(Material.values()).filter(material -> material.name().endsWith("SIGN")).collect(Collectors.toList()));
     }
 
     @Override
@@ -46,7 +50,7 @@ public class ShapeShifterKit extends AbstractKit {
         Block block = event.getClickedBlock();
         Player player = event.getPlayer();
         if (block != null) {
-            if (DISABLED_BLOCKS.contains(block.getType())) {
+            if (DISABLED_BLOCKS.contains(block.getType()) || block.getType().name().contains("SIGN")) {
                 player.sendMessage(Localization.INSTANCE.getMessage("shapeshifter.denyTransformation", Utils.getPlayerLocale(player)));
                 return;
             }
