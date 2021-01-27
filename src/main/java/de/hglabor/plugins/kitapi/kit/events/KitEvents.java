@@ -1,8 +1,8 @@
 package de.hglabor.plugins.kitapi.kit.events;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.config.KitUses;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -16,6 +16,19 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import static de.hglabor.plugins.kitapi.kit.config.KitSettings.USES;
 
 public abstract class KitEvents {
+
+    public static void checkUsesForCooldown(KitPlayer kitPlayer, AbstractKit kit) {
+        if (kitPlayer.getKitAttribute(kit, KitUses.class) == null) {
+            kitPlayer.putKitAttribute(kit, new KitUses(), KitUses.class);
+        } else {
+            ((KitUses) kitPlayer.getKitAttribute(kit, KitUses.class)).increaseUse();
+        }
+        KitUses kitUses = kitPlayer.getKitAttribute(kit,KitUses.class);
+        if (kitUses.getUse() >= (Integer) kit.getSetting(USES)) {
+            kitPlayer.activateKitCooldown(kit, kit.getCooldown());
+            kitUses.resetUse();
+        }
+    }
 
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
     }
@@ -78,13 +91,5 @@ public abstract class KitEvents {
     }
 
     public void onBlockBreakWithKitItem(BlockBreakEvent event) {
-    }
-
-    protected void checkUsesForCooldown(KitPlayer kitPlayer, AbstractKit kit) {
-        kitPlayer.putKitAttribute(kit, kitPlayer.getKitAttribute(kit) != null ? (Integer) kitPlayer.getKitAttribute(kit) + 1 : 0);
-        if ((Integer) kitPlayer.getKitAttribute(kit) >= (Integer) kit.getSetting(USES)) {
-            kitPlayer.activateKitCooldown(kit, kit.getCooldown());
-            kitPlayer.putKitAttribute(kit, 0);
-        }
     }
 }

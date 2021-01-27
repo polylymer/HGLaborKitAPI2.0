@@ -1,11 +1,13 @@
 package de.hglabor.plugins.kitapi.kit.kits.endermage;
 
 import com.google.common.collect.ImmutableList;
+import de.hglabor.Localization.Localization;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
+import de.hglabor.plugins.kitapi.util.Utils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -20,18 +22,19 @@ public class EndermageKit extends AbstractKit implements Listener {
     public final static EndermageKit INSTANCE = new EndermageKit();
 
     private EndermageKit() {
-        super("Endermage", Material.END_PORTAL_FRAME);
+        super("Endermage", Material.END_PORTAL_FRAME,15);
         setMainKitItem(getDisplayMaterial());
         addEvents(ImmutableList.of(PlayerInteractEvent.class));
         addSetting(KitSettings.RADIUS, 4);
         addSetting(KitSettings.NUMBER, 5);
+        addSetting(KitSettings.USES, 5);
     }
 
     @Override
     public void disable(KitPlayer kitPlayer) {
-        EndermageSearch endermageRunnable = kitPlayer.getKitAttribute(this);
+        EndermageSearch endermageRunnable = kitPlayer.getKitAttribute(this,EndermageSearch.class);
         if (endermageRunnable != null && endermageRunnable.isSearchingForPlayers) {
-            endermageRunnable.end();
+            endermageRunnable.endSearching();
         }
     }
 
@@ -46,14 +49,16 @@ public class EndermageKit extends AbstractKit implements Listener {
                 return;
             }
 
-            EndermageSearch endermageRunnable = kitPlayer.getKitAttribute(this);
+            EndermageSearch endermageRunnable = kitPlayer.getKitAttribute(this,EndermageSearch.class);
             if (endermageRunnable != null && endermageRunnable.isSearchingForPlayers) {
+                player.sendMessage(Localization.INSTANCE.getMessage("endermage.alreadySearching", Utils.getPlayerLocale(player)));
                 return;
             }
+
             BlockData oldBlockData = endermagePortal.getBlockData();
             endermagePortal.setType(Material.END_PORTAL_FRAME);
             EndermageSearch newEndermageRunnable = new EndermageSearch(player, endermagePortal, oldBlockData);
-            kitPlayer.putKitAttribute(this, newEndermageRunnable);
+            kitPlayer.putKitAttribute(this, newEndermageRunnable,EndermageSearch.class);
             newEndermageRunnable.runTaskTimer(KitManager.getInstance().getPlugin(), 0, 20);
         }
     }
