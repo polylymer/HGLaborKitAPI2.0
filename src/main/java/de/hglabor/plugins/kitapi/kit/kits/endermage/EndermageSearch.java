@@ -27,6 +27,7 @@ public class EndermageSearch extends BukkitRunnable {
     protected final JavaPlugin plugin;
     protected final double radius;
     protected int counter;
+    protected int magedPeople;
     protected boolean isSearchingForPlayers;
     protected boolean hasMaged;
 
@@ -45,7 +46,6 @@ public class EndermageSearch extends BukkitRunnable {
     private void removeEndermageMetaDataLater(Player player, int delay) {
         KitPlayer kitPlayer = KitManager.getInstance().getPlayer(player);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            //TODO doesnt seems right
             EndermageProperties endermageProperties = kitPlayer.getKitProperty(KitMetaData.HAS_BEEN_MAGED);
             if (endermageProperties == null) {
                 player.removeMetadata(KitMetaData.HAS_BEEN_MAGED.getKey(), plugin);
@@ -62,7 +62,6 @@ public class EndermageSearch extends BukkitRunnable {
         counter++;
 
         if (isSearchingForPlayers || counter < searchDuration) {
-            int delay = EndermageKit.INSTANCE.getSetting(KitSettings.NUMBER);
             int magedPeople = 0;
             for (Player nearbyPlayer : world.getNearbyPlayers(endermagePortal.getLocation(), radius, world.getMaxHeight())) {
                 KitPlayer nearbyKitPlayer = KitManager.getInstance().getPlayer(nearbyPlayer);
@@ -74,31 +73,40 @@ public class EndermageSearch extends BukkitRunnable {
                 }
 
                 if (!(endermagePortal.getLocation().getY() > nearbyPlayer.getLocation().getY() - 3 && endermagePortal.getLocation().getY() < nearbyPlayer.getLocation().getY() + 3)) {
-                    nearbyPlayer.teleport(endermagePortal.getLocation().clone().add(0, 1, 0));
-                    nearbyPlayer.setMetadata(KitMetaData.HAS_BEEN_MAGED.getKey(), new FixedMetadataValue(plugin, ""));
-                    nearbyKitPlayer.putKitPropety(KitMetaData.HAS_BEEN_MAGED, new EndermageProperties(System.currentTimeMillis()));
-                    removeEndermageMetaDataLater(nearbyPlayer, delay);
-                    nearbyPlayer.sendMessage(Localization.INSTANCE.getMessage("endermage.gotTeleported",
-                            ImmutableMap.of("timeInSeconds", String.valueOf(delay)),
-                            Utils.getPlayerLocale(nearbyPlayer)));
+                    mageTeleportPlayer(nearbyPlayer, false);
                     hasMaged = true;
                     magedPeople++;
                 }
             }
 
+            this.magedPeople = magedPeople;
+
             if (hasMaged) {
                 endSearching();
-                player.teleport(endermagePortal.getLocation().clone().add(0, 1, 0));
-                player.setMetadata(KitMetaData.HAS_BEEN_MAGED.getKey(), new FixedMetadataValue(plugin, ""));
-                player.sendMessage(Localization.INSTANCE.getMessage("endermage.successfulTeleport",
-                        ImmutableMap.of("amount", String.valueOf(magedPeople),
-                                "timeInSeconds", String.valueOf(delay)),
-                        Utils.getPlayerLocale(player)));
-                removeEndermageMetaDataLater(player, delay);
+                mageTeleportPlayer(player, true);
             }
         } else {
             endSearching();
         }
+    }
+
+    protected void mageTeleportPlayer(Player player, boolean isMage) {
+        int delay = EndermageKit.INSTANCE.getSetting(KitSettings.NUMBER);
+        KitPlayer kitPlayer = KitManager.getInstance().getPlayer(player);
+        player.teleport(endermagePortal.getLocation().clone().add(0, 1, 0));
+        player.setMetadata(KitMetaData.HAS_BEEN_MAGED.getKey(), new FixedMetadataValue(plugin, ""));
+        kitPlayer.putKitPropety(KitMetaData.HAS_BEEN_MAGED, new EndermageProperties(System.currentTimeMillis()));
+        if (isMage) {
+            player.sendMessage(Localization.INSTANCE.getMessage("endermage.successfulTeleport",
+                    ImmutableMap.of("amount", String.valueOf(magedPeople),
+                            "timeInSeconds", String.valueOf(delay)),
+                    Utils.getPlayerLocale(player)));
+        } else {
+            player.sendMessage(Localization.INSTANCE.getMessage("endermage.gotTeleported",
+                    ImmutableMap.of("timeInSeconds", String.valueOf(delay)),
+                    Utils.getPlayerLocale(player)));
+        }
+        removeEndermageMetaDataLater(player, delay);
     }
 
     protected void endSearching() {
