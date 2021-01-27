@@ -45,6 +45,7 @@ public class EndermageSearch extends BukkitRunnable {
     private void removeEndermageMetaDataLater(Player player, int delay) {
         KitPlayer kitPlayer = KitManager.getInstance().getPlayer(player);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            //TODO doesnt seems right
             EndermageProperties endermageProperties = kitPlayer.getKitProperty(KitMetaData.HAS_BEEN_MAGED);
             if (endermageProperties == null) {
                 player.removeMetadata(KitMetaData.HAS_BEEN_MAGED.getKey(), plugin);
