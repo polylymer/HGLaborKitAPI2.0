@@ -80,6 +80,7 @@ public final class KitManager {
         register(ShapeShifterKit.INSTANCE);
         register(SpidermanKit.INSTANCE);
         register(ManipulationKit.INSTANCE);
+        register(EndermageKit.INSTANCE);
     }
 
     public void register(AbstractKit kit) {
