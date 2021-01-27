@@ -11,6 +11,7 @@ public enum KitMetaData {
     SPIT_PROJECTILE,
     SPIDERMAN_SNOWBALL,
     MANIPULATED_MOB,
+    THOR_BLOCK,
     ;
 
 
