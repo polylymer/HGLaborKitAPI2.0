@@ -5,6 +5,7 @@ import de.hglabor.Localization.Localization;
 import de.hglabor.plugins.kitapi.config.KitApiConfig;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
 import de.hglabor.plugins.kitapi.kit.kits.*;
+import de.hglabor.plugins.kitapi.kit.kits.endermage.EndermageKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.player.KitPlayerSupplier;
 import de.hglabor.plugins.kitapi.util.Utils;

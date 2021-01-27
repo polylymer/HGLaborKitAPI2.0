@@ -2,8 +2,9 @@ package de.hglabor.plugins.kitapi.player;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
+import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
+import de.hglabor.plugins.kitapi.kit.config.KitProperties;
 import de.hglabor.plugins.kitapi.kit.config.LastHitInformation;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 import java.util.UUID;
@@ -11,17 +12,21 @@ import java.util.UUID;
 public interface KitPlayer {
     List<AbstractKit> getKits();
 
+    void setKits(List<AbstractKit> kits);
+
     boolean hasKit(AbstractKit kit);
 
     boolean areKitsDisabled();
 
     void setKit(AbstractKit kit, int index);
 
-    void setKits(List<AbstractKit> kits);
-
     boolean hasKitCooldown(AbstractKit kit);
 
     LastHitInformation getLastHitInformation();
+
+    <T extends KitProperties> T getKitProperty(KitMetaData key);
+
+    <T extends KitProperties> void putKitPropety(KitMetaData key, T property);
 
     UUID getUUID();
 
