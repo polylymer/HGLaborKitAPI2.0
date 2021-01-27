@@ -113,11 +113,11 @@ public class SpidermanKit extends AbstractKit implements Listener {
         if (!kitPlayer.hasKit(this) || !KitManager.getInstance().hasKitItemInAnyHand(player, this) || kitPlayer.areKitsDisabled()) {
             return;
         }
-        if (kitPlayer.hasKitCooldown(this)) {
-            player.sendActionBar(Localization.INSTANCE.getMessage("spiderman.noClimbWithCooldown", Utils.getPlayerLocale(player)));
-            return;
-        }
         if (nearWall(0.5, event.getPlayer())) {
+            if (kitPlayer.hasKitCooldown(this)) {
+                player.sendActionBar(Localization.INSTANCE.getMessage("spiderman.noClimbWithCooldown", Utils.getPlayerLocale(player)));
+                return;
+            }
             player.setVelocity(new Vector(0, (Double) getSetting(KitSettings.CLIMBVELOCITY), 0));
         }
     }
