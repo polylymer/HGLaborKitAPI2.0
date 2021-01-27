@@ -1,6 +1,5 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import com.comphenix.protocol.PacketType;
 import com.google.common.collect.ImmutableList;
 import de.hglabor.Localization.Localization;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
@@ -25,15 +24,16 @@ import java.util.stream.Collectors;
 public class ShapeShifterKit extends AbstractKit {
     public static final ShapeShifterKit INSTANCE = new ShapeShifterKit();
 
-    private final List<Material> DISABLED_BLOCKS = Arrays.asList(Material.AIR, Material.BARRIER, Material.BEDROCK,
-            Material.REDSTONE_WIRE, Material.REDSTONE_TORCH, Material.REDSTONE_WALL_TORCH, Material.TORCH, Material.WALL_TORCH,
-            Material.CHEST, Material.PLAYER_HEAD, Material.PLAYER_WALL_HEAD);
-
+    private final List<Material> DISABLED_BLOCKS;
 
     private ShapeShifterKit() {
         super("Shapeshifter", Material.REDSTONE_BLOCK);
         addEvents(ImmutableList.of(PlayerInteractEvent.class, EntityDamageByEntityEvent.class));
         setMainKitItem(getDisplayMaterial());
+        DISABLED_BLOCKS = new ArrayList<>();
+        DISABLED_BLOCKS.addAll(Arrays.asList(Material.AIR, Material.BARRIER, Material.BEDROCK,
+                Material.REDSTONE_WIRE, Material.REDSTONE_TORCH, Material.REDSTONE_WALL_TORCH, Material.TORCH, Material.WALL_TORCH,
+                Material.CHEST, Material.PLAYER_HEAD, Material.PLAYER_WALL_HEAD));
         DISABLED_BLOCKS.addAll(Arrays.stream(Material.values()).filter(material -> material.name().endsWith("SIGN")).collect(Collectors.toList()));
     }
 
@@ -66,7 +66,7 @@ public class ShapeShifterKit extends AbstractKit {
 
     @Override
     public void onPlayerGetsAttackedByLivingEntity(EntityDamageByEntityEvent event, Player player, LivingEntity attacker) {
-        if (attacker instanceof Player){
+        if (attacker instanceof Player) {
             DisguiseAPI.undisguiseToAll(player);
         }
     }
