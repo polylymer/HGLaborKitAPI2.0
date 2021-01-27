@@ -21,13 +21,16 @@ public class ThorKit extends AbstractKit {
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         if(event.getClickedBlock() == null) return;
         Location location = event.getClickedBlock().getLocation();
-        if(!location.getWorld().isClearWeather()) {
-            location.getWorld().strikeLightning(location.add(1, 0, 0));
-            location.getWorld().strikeLightning(location.add(0, 0, 1));
-            location.getWorld().strikeLightning(location.add(1, 0, 1));
+        World world = location.getWorld();
+        Location highestBlock = world.getHighestBlockAt(location).getLocation();
+        if(!world.isClearWeather()) {
+            world.strikeLightning(highestBlock.add(1, 0, 0));
+            world.strikeLightning(highestBlock.add(0, 0, 1));
+            world.strikeLightning(highestBlock.add(1, 0, 1));
         } else {
-            location.getWorld().strikeLightning(location);
+            world.strikeLightning(highestBlock);
         }
+        highestBlock.add(0, 1, 0).getBlock().setType(Material.FIRE);
         KitPlayer kitPlayer = KitManager.getInstance().getPlayer(event.getPlayer());
         kitPlayer.activateKitCooldown(this, this.getCooldown());
     }
