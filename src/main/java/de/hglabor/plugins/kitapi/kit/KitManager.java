@@ -82,6 +82,7 @@ public final class KitManager {
         register(SpidermanKit.INSTANCE);
         register(ManipulationKit.INSTANCE);
         register(EndermageKit.INSTANCE);
+        register(ViperKit.INSTANCE);
     }
 
     public void register(AbstractKit kit) {
