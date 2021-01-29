@@ -21,19 +21,24 @@ public class SurpriseKit extends AbstractKit {
         //TODO copycat surprise
         for (AbstractKit kit : kitplayer.getKits()) {
             if (kit.equals(this)) {
-                int randomNumber = new Random().nextInt(KitManager.getInstance().getEnabledKits().size());
-                int i = 0;
-                for (AbstractKit enabledKit : KitManager.getInstance().getEnabledKits()) {
-                    if (i == randomNumber) {
-                        randomKit = enabledKit;
-                    }
-                    i++;
-                }
+                randomKit = getRandomEnabledKit();
                 kitplayer.getKits().set(kitSlot, randomKit);
                 KitManager.getInstance().giveKitItemsIfSlotEmpty(kitplayer, randomKit);
                 randomKit.enable(kitplayer);
             }
             kitSlot++;
         }
+    }
+
+    public AbstractKit getRandomEnabledKit() {
+        int randomNumber = new Random().nextInt(KitManager.getInstance().getEnabledKits().size());
+        int i = 0;
+        for (AbstractKit enabledKit : KitManager.getInstance().getEnabledKits()) {
+            if (i == randomNumber) {
+                return enabledKit;
+            }
+            i++;
+        }
+        return NoneKit.getInstance();
     }
 }

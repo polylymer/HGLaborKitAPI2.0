@@ -93,6 +93,7 @@ public class ManipulationKit extends AbstractKit implements Listener {
             craftMonster.goalSelector.a(1, new PathfinderGoalFloat(craftMonster));
             craftMonster.targetSelector.a(0, new LaborPathfinderFindTarget(craftMonster, player.getUniqueId(), attack));
 
+            //TODO ghast wont shoot and creeper doesnt explode
             switch (mob.getType()) {
                 case HUSK:
                 case ZOMBIE:
