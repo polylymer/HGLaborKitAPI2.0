@@ -1,7 +1,6 @@
 package de.hglabor.plugins.kitapi.kit;
 
 import com.google.common.collect.ImmutableMap;
-import de.hglabor.Localization.Localization;
 import de.hglabor.plugins.kitapi.config.KitApiConfig;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
 import de.hglabor.plugins.kitapi.kit.kits.*;
@@ -9,6 +8,7 @@ import de.hglabor.plugins.kitapi.kit.kits.endermage.EndermageKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.player.KitPlayerSupplier;
 import de.hglabor.plugins.kitapi.util.Utils;
+import de.hglabor.utils.localization.Localization;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
