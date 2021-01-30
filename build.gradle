@@ -9,10 +9,8 @@ plugins {
     id "java"
 }
 
-
-
 group = 'de.hglabor.plugins.kitapi'
-version = '0.0.1'
+version = '0.0.2'
 description = 'KitAPI for HGLabor'
 
 allprojects {
@@ -32,7 +30,7 @@ publishing {
             from components.java
             groupId 'de.hglabor.plugins.kitapi'
             artifactId 'KitAPI'
-            version '0.0.1'
+            version '0.0.2'
         }
     }
 }
@@ -48,7 +46,7 @@ bintray {
         licenses = ['Apache-2.0']
         vcsUrl = "https://github.com/HGLabor/HGLaborKitAPI2.0.git"
         version {
-            name = '0.0.1'
+            name = '0.0.2'
             desc = 'KitAPI for HGLabor'
             released = new Date()
         }
