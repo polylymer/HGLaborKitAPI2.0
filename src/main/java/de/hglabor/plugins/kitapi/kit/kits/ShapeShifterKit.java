@@ -1,10 +1,10 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import com.google.common.collect.ImmutableList;
-import de.hglabor.Localization.Localization;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.Utils;
+import de.hglabor.utils.localization.Localization;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MiscDisguise;

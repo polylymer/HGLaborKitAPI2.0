@@ -1,13 +1,13 @@
 package de.hglabor.plugins.kitapi.kit.kits.endermage;
 
 import com.google.common.collect.ImmutableList;
-import de.hglabor.Localization.Localization;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.Utils;
+import de.hglabor.utils.localization.Localization;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;

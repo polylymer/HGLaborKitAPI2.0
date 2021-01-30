@@ -1,0 +1,101 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+
+plugins {
+    id "com.jfrog.bintray" version "1.8.5"
+    id "java"
+}
+
+
+
+group = 'de.hglabor.plugins.kitapi'
+version = '0.0.1'
+description = 'KitAPI for HGLabor'
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
+    apply plugin: 'java'
+}
+
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            groupId 'de.hglabor.plugins.kitapi'
+            artifactId 'KitAPI'
+            version '0.0.1'
+        }
+    }
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    publications = ['MyPublication']
+    pkg {
+        repo = 'plugins'
+        name = 'KitAPI'
+        userOrg = "hglabor"
+        licenses = ['Apache-2.0']
+        vcsUrl = "https://github.com/HGLabor/HGLaborKitAPI2.0.git"
+        version {
+            name = '0.0.1'
+            desc = 'KitAPI for HGLabor'
+            released = new Date()
+        }
+    }
+}
+
+
+
+dependencies {
+    implementation 'org.apache.commons:commons-lang3:3.11'
+    compileOnly 'com.destroystokyo.paper:paper-api:1.16.4-R0.1-SNAPSHOT'
+    compileOnly 'org.bukkit:craftbukkit:1.16.4-R0.1-SNAPSHOT'
+    compileOnly 'de.hglabor.utils:Localization:1.0'
+    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.0-SNAPSHOT'
+    compileOnly 'LibsDisguises:LibsDisguises:10.0.21'
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = uri('https://papermc.io/repo/repository/maven-public/')
+    }
+
+    maven {
+        url = uri('https://oss.sonatype.org/content/groups/public/')
+    }
+
+    maven {
+        url = uri('http://maven.enginehub.org/repo/')
+    }
+
+    maven {
+        url = uri('http://repo.md-5.net/content/groups/public/')
+    }
+
+    maven {
+        url = uri('https://hglabor.bintray.com/utils/')
+    }
+
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
+
+    maven { url "https://jitpack.io/" }
+}
+
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}

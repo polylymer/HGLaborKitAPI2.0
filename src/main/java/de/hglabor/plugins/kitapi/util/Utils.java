@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.util;
 
-import de.hglabor.Localization.Localization;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
+import de.hglabor.utils.localization.Localization;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
