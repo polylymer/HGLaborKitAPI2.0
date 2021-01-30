@@ -28,8 +28,8 @@ public class NinjaKit extends AbstractKit {
     public void onPlayerToggleSneakEvent(PlayerToggleSneakEvent event) {
         Player player = event.getPlayer();
         KitPlayer attacker = KitManager.getInstance().getPlayer(player);
-        if(attacker == null) return;
-        if(attacker.getLastHitInformation() == null) return;
+        if (attacker == null || attacker.getLastHitInformation() == null || attacker.getLastHitInformation().getLastPlayer() == null)
+            return;
         KitPlayer lastHittedPlayer = KitManager.getInstance().getPlayer(attacker.getLastHitInformation().getLastPlayer());
         if (lastHittedPlayer == null) {
             return;
