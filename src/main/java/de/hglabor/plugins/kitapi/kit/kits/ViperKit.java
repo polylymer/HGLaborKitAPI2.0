@@ -19,7 +19,7 @@ public class ViperKit extends AbstractKit {
         super("Viper", Material.SPIDER_EYE);
         addSetting(KitSettings.EFFECT_DURATION,4);
         addSetting(KitSettings.EFFECT_MULTIPLIER, 0);
-        addSetting(KitSettings.LIKELIHOOD, 25);
+        addSetting(KitSettings.LIKELIHOOD, 30);
         addEvents(Collections.singletonList(EntityDamageByEntityEvent.class));
     }
 
