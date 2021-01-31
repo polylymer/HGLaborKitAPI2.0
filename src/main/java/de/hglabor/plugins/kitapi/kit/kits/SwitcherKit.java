@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
+import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -51,18 +52,25 @@ public class SwitcherKit extends AbstractKit implements Listener {
         }
 
         Player shooter = (Player) e.getEntity().getShooter();
+        KitPlayer kitPlayer = KitManager.getInstance().getPlayer(shooter);
+        if (!kitPlayer.isValid()) {
+            return;
+        }
         Location playerLoc = shooter.getLocation();
 
         if (e.getHitEntity() != null) {
             Entity hit = e.getHitEntity();
+            if (hit instanceof Player) {
+                KitPlayer kitEntity = KitManager.getInstance().getPlayer((Player) hit);
+                if (!kitEntity.isValid()) {
+                    return;
+                }
+            }
             Location hitLocation = hit.getLocation();
-
             shooter.teleport(hitLocation);
             hit.teleport(playerLoc);
-
             hit.sendMessage(ChatColor.LIGHT_PURPLE + "SWITCHEROOOOO");
             shooter.sendMessage(ChatColor.LIGHT_PURPLE + "SWITCHEROOOOO");
-
             KitManager.getInstance().getPlayer(shooter).activateKitCooldown(this, this.getCooldown());
         }
     }
