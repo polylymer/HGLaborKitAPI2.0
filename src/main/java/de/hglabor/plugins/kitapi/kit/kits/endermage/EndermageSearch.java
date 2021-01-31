@@ -9,6 +9,7 @@ import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.utils.localization.Localization;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -113,6 +114,7 @@ public class EndermageSearch extends BukkitRunnable {
         cancel();
         isSearchingForPlayers = false;
         endermagePortal.setBlockData(oldBlockData);
+        endermagePortal.setType(Material.END_STONE);
         KitManager.getInstance().checkUsesForCooldown(player, EndermageKit.INSTANCE);
     }
 
