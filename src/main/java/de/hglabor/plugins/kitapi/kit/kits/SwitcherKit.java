@@ -4,10 +4,12 @@ import com.google.common.collect.ImmutableList;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
+import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,7 +19,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class SwitcherKit extends AbstractKit implements Listener {
     public static final SwitcherKit INSTANCE = new SwitcherKit();
@@ -51,18 +52,28 @@ public class SwitcherKit extends AbstractKit implements Listener {
         }
 
         Player shooter = (Player) e.getEntity().getShooter();
+        KitPlayer kitPlayer = KitManager.getInstance().getPlayer(shooter);
+        if (!kitPlayer.isValid()) {
+            return;
+        }
         Location playerLoc = shooter.getLocation();
 
         if (e.getHitEntity() != null) {
             Entity hit = e.getHitEntity();
+            if (hit instanceof Player) {
+                KitPlayer kitEntity = KitManager.getInstance().getPlayer((Player) hit);
+                if (!kitEntity.isValid()) {
+                    return;
+                }
+            }
             Location hitLocation = hit.getLocation();
-
             shooter.teleport(hitLocation);
             hit.teleport(playerLoc);
-
+            if (hit instanceof LivingEntity) {
+                ((LivingEntity) hit).damage(1, shooter);
+            }
             hit.sendMessage(ChatColor.LIGHT_PURPLE + "SWITCHEROOOOO");
             shooter.sendMessage(ChatColor.LIGHT_PURPLE + "SWITCHEROOOOO");
-
             KitManager.getInstance().getPlayer(shooter).activateKitCooldown(this, this.getCooldown());
         }
     }
