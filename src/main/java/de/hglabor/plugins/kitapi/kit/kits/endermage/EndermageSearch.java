@@ -14,6 +14,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -114,9 +115,10 @@ public class EndermageSearch extends BukkitRunnable {
         cancel();
         isSearchingForPlayers = false;
         endermagePortal.setBlockData(oldBlockData);
-        endermagePortal.setType(Material.END_STONE);
         KitManager.getInstance().checkUsesForCooldown(player, EndermageKit.INSTANCE);
+        if (!(Utils.isUnbreakableLaborBlock(endermagePortal) && endermagePortal.getType() == Material.BEDROCK && endermagePortal.getState() instanceof InventoryHolder)) {
+            endermagePortal.setType(Material.END_STONE);
+        }
     }
-
 }
 
