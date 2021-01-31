@@ -116,7 +116,7 @@ public class EndermageSearch extends BukkitRunnable {
         isSearchingForPlayers = false;
         endermagePortal.setBlockData(oldBlockData);
         KitManager.getInstance().checkUsesForCooldown(player, EndermageKit.INSTANCE);
-        if (!(Utils.isUnbreakableLaborBlock(endermagePortal) && endermagePortal.getType() == Material.BEDROCK && endermagePortal.getState() instanceof InventoryHolder)) {
+        if (!Utils.isUnbreakableLaborBlock(endermagePortal) && endermagePortal.getType() != Material.BEDROCK && !(endermagePortal.getState() instanceof InventoryHolder)) {
             endermagePortal.setType(Material.END_STONE);
         }
     }
