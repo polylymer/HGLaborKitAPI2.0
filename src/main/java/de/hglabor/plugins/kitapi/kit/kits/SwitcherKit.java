@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,7 +19,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class SwitcherKit extends AbstractKit implements Listener {
     public static final SwitcherKit INSTANCE = new SwitcherKit();
@@ -69,6 +69,9 @@ public class SwitcherKit extends AbstractKit implements Listener {
             Location hitLocation = hit.getLocation();
             shooter.teleport(hitLocation);
             hit.teleport(playerLoc);
+            if (hit instanceof LivingEntity) {
+                ((LivingEntity) hit).damage(1, shooter);
+            }
             hit.sendMessage(ChatColor.LIGHT_PURPLE + "SWITCHEROOOOO");
             shooter.sendMessage(ChatColor.LIGHT_PURPLE + "SWITCHEROOOOO");
             KitManager.getInstance().getPlayer(shooter).activateKitCooldown(this, this.getCooldown());
