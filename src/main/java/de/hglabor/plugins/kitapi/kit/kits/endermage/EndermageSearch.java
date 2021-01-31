@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
-import de.hglabor.plugins.kitapi.kit.events.KitEvents;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.utils.localization.Localization;
@@ -61,7 +60,7 @@ public class EndermageSearch extends BukkitRunnable {
     public void run() {
         counter++;
 
-        if (isSearchingForPlayers || counter < searchDuration) {
+        if (isSearchingForPlayers && counter <= searchDuration) {
             int magedPeople = 0;
             for (Player nearbyPlayer : world.getNearbyPlayers(endermagePortal.getLocation(), radius, world.getMaxHeight())) {
                 KitPlayer nearbyKitPlayer = KitManager.getInstance().getPlayer(nearbyPlayer);
@@ -115,6 +114,5 @@ public class EndermageSearch extends BukkitRunnable {
         endermagePortal.setBlockData(oldBlockData);
         KitManager.getInstance().checkUsesForCooldown(player, EndermageKit.INSTANCE);
     }
-
 }
 
