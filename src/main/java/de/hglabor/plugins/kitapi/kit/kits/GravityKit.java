@@ -1,5 +1,6 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
+import com.google.common.collect.ImmutableList;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
@@ -13,18 +14,16 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Collections;
-
 public class GravityKit extends AbstractKit {
     public static final GravityKit INSTANCE = new GravityKit();
 
     protected GravityKit() {
         super("Gravity", Material.MAGENTA_GLAZED_TERRACOTTA, 30);
-        setMainKitItem(getDisplayMaterial(), 1);
+        setMainKitItem(getDisplayMaterial());
         addSetting(KitSettings.EFFECT_MULTIPLIER, 3);
         addSetting(KitSettings.EFFECT_DURATION, 1);
         addSetting(KitSettings.USES, 3);
-        addEvents(Collections.singletonList(PlayerInteractEvent.class));
+        addEvents(ImmutableList.of(PlayerInteractEvent.class, EntityDamageByEntityEvent.class));
     }
 
     @Override
@@ -52,6 +51,6 @@ public class GravityKit extends AbstractKit {
     @Override
     public void onHitLivingEntityWithKitItem(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
         entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 20 * (Integer) getSetting(KitSettings.EFFECT_DURATION), getSetting(KitSettings.EFFECT_MULTIPLIER)));
-       KitManager.getInstance().checkUsesForCooldown(attacker, this);
+        KitManager.getInstance().checkUsesForCooldown(attacker, this);
     }
 }
