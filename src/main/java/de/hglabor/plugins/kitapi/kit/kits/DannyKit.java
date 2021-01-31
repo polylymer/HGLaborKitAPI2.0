@@ -9,14 +9,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Collections;
@@ -24,11 +21,11 @@ import java.util.Random;
 
 public class DannyKit extends AbstractKit {
     public static final DannyKit INSTANCE = new DannyKit();
-    private Plugin plugin = KitManager.getInstance().getPlugin();
-    private PotionEffectType[] potionEffects = {PotionEffectType.BLINDNESS, PotionEffectType.WITHER, PotionEffectType.POISON, PotionEffectType.WEAKNESS, PotionEffectType.HARM, PotionEffectType.CONFUSION};
+    private final PotionEffectType[] potionEffects;
 
     protected DannyKit() {
         super("Danny", Material.PLAYER_HEAD);
+        this.potionEffects = new PotionEffectType[]{PotionEffectType.BLINDNESS, PotionEffectType.WITHER, PotionEffectType.POISON, PotionEffectType.WEAKNESS, PotionEffectType.HARM, PotionEffectType.CONFUSION};
         addSetting(KitSettings.EFFECT_MULTIPLIER, 1);
         addSetting(KitSettings.EFFECT_DURATION, 3);
         addSetting(KitSettings.LIKELIHOOD, 22);
@@ -38,11 +35,11 @@ public class DannyKit extends AbstractKit {
     @Override
     public void enable(KitPlayer kitPlayer) {
         BukkitTask task;
-        task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            if(kitPlayer.isValid()) {
+        task = Bukkit.getScheduler().runTaskTimer(KitManager.getInstance().getPlugin(), () -> {
+            if (kitPlayer.isValid()) {
                 DannyAction action = DannyAction.values()[new Random().nextInt(DannyAction.values().length)];
                 Player player = Bukkit.getPlayer(kitPlayer.getUUID());
-                if(player == null) return;
+                if (player == null) return;
                 switch (action) {
                     case EAT_ITEM:
                         player.playSound(player.getLocation(), Sound.ENTITY_DONKEY_EAT, 10, 1);
@@ -50,7 +47,7 @@ public class DannyKit extends AbstractKit {
                         break;
                     case NEGATIVE_EFFECT:
                         player.playSound(player.getLocation(), Sound.ENTITY_DONKEY_HURT, 10, 1);
-                        player.addPotionEffect(new PotionEffect(potionEffects[new Random().nextInt(potionEffects.length)], (int)getSetting(KitSettings.EFFECT_DURATION)*20, getSetting(KitSettings.EFFECT_MULTIPLIER)));
+                        player.addPotionEffect(new PotionEffect(potionEffects[new Random().nextInt(potionEffects.length)], (int) getSetting(KitSettings.EFFECT_DURATION) * 20, getSetting(KitSettings.EFFECT_MULTIPLIER)));
                         break;
                     case SKULL_ESCALATION:
                         player.playSound(player.getLocation(), Sound.ENTITY_DONKEY_AMBIENT, 10, 1);
@@ -59,18 +56,18 @@ public class DannyKit extends AbstractKit {
                         meta.setOwningPlayer(Bukkit.getOfflinePlayer("Daannyy"));
                         stack.setItemMeta(meta);
                         for (int i = 0; i < new Random().nextInt(6); i++) {
-                            player.getWorld().dropItemNaturally( player.getLocation(), stack);
+                            player.getWorld().dropItemNaturally(player.getLocation(), stack);
                         }
                         break;
                     case DROP_ITEM:
                         player.playSound(player.getLocation(), Sound.ENTITY_DONKEY_DEATH, 10, 1);
-                        if(player.getItemInHand().getType() != Material.AIR) {
+                        if (player.getItemInHand().getType() != Material.AIR) {
                             player.dropItem(false);
                         }
                         break;
                 }
             }
-        }, 0, 10*20L);
+        }, 0, 10 * 20L);
         kitPlayer.putKitAttribute(this, task);
     }
 
@@ -88,16 +85,15 @@ public class DannyKit extends AbstractKit {
     @Override
     public void disable(KitPlayer kitPlayer) {
         BukkitTask task = kitPlayer.getKitAttribute(this);
-        task.cancel();
+        if (task != null) {
+            task.cancel();
+        }
     }
 
     public enum DannyAction {
-
         EAT_ITEM,
         NEGATIVE_EFFECT,
         SKULL_ESCALATION,
         DROP_ITEM
-
     }
-
 }

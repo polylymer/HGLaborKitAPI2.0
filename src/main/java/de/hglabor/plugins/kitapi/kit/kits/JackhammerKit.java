@@ -40,7 +40,7 @@ public class JackhammerKit extends AbstractKit {
             //RUNTER
             dig(block.getLocation(), -1, 1);
         }
-        checkUsesForCooldown(KitManager.getInstance().getPlayer(e.getPlayer()), this);
+        KitManager.getInstance().checkUsesForCooldown(e.getPlayer(), this);
     }
 
     /**

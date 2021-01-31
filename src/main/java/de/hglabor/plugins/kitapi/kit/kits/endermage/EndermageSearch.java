@@ -113,7 +113,7 @@ public class EndermageSearch extends BukkitRunnable {
         cancel();
         isSearchingForPlayers = false;
         endermagePortal.setBlockData(oldBlockData);
-        KitEvents.checkUsesForCooldown(kitPlayer, EndermageKit.INSTANCE);
+        KitManager.getInstance().checkUsesForCooldown(player, EndermageKit.INSTANCE);
     }
 
 }

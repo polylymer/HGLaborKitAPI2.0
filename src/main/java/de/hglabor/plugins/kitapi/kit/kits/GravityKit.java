@@ -52,6 +52,6 @@ public class GravityKit extends AbstractKit {
     @Override
     public void onHitLivingEntityWithKitItem(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
         entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 20 * (Integer) getSetting(KitSettings.EFFECT_DURATION), getSetting(KitSettings.EFFECT_MULTIPLIER)));
-        checkUsesForCooldown(attacker, this);
+       KitManager.getInstance().checkUsesForCooldown(attacker, this);
     }
 }

@@ -3,6 +3,7 @@ package de.hglabor.plugins.kitapi.kit;
 import com.google.common.collect.ImmutableMap;
 import de.hglabor.plugins.kitapi.config.KitApiConfig;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
+import de.hglabor.plugins.kitapi.kit.config.KitUses;
 import de.hglabor.plugins.kitapi.kit.kits.*;
 import de.hglabor.plugins.kitapi.kit.kits.endermage.EndermageKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
@@ -20,6 +21,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import static de.hglabor.plugins.kitapi.kit.config.KitSettings.USES;
+
 public final class KitManager {
     private final static KitManager instance = new KitManager();
     public final List<AbstractKit> kits;
@@ -35,6 +38,23 @@ public final class KitManager {
 
     public static KitManager getInstance() {
         return instance;
+    }
+
+    public void checkUsesForCooldown(KitPlayer kitPlayer, AbstractKit kit) {
+        if (kitPlayer.getKitAttribute(kit, KitUses.class) == null) {
+            kitPlayer.putKitAttribute(kit, new KitUses(), KitUses.class);
+        } else {
+            ((KitUses) kitPlayer.getKitAttribute(kit, KitUses.class)).increaseUse();
+        }
+        KitUses kitUses = kitPlayer.getKitAttribute(kit, KitUses.class);
+        if (kitUses.getUse() >= (Integer) kit.getSetting(USES)) {
+            kitPlayer.activateKitCooldown(kit, kit.getCooldown());
+            kitUses.resetUse();
+        }
+    }
+
+    public void checkUsesForCooldown(Player player, AbstractKit kit) {
+        checkUsesForCooldown(getPlayer(player), kit);
     }
 
     public List<Locale> getSupportedLanguages() {

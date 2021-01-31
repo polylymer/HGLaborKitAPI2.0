@@ -17,19 +17,6 @@ import static de.hglabor.plugins.kitapi.kit.config.KitSettings.USES;
 
 public abstract class KitEvents {
 
-    public static void checkUsesForCooldown(KitPlayer kitPlayer, AbstractKit kit) {
-        if (kitPlayer.getKitAttribute(kit, KitUses.class) == null) {
-            kitPlayer.putKitAttribute(kit, new KitUses(), KitUses.class);
-        } else {
-            ((KitUses) kitPlayer.getKitAttribute(kit, KitUses.class)).increaseUse();
-        }
-        KitUses kitUses = kitPlayer.getKitAttribute(kit,KitUses.class);
-        if (kitUses.getUse() >= (Integer) kit.getSetting(USES)) {
-            kitPlayer.activateKitCooldown(kit, kit.getCooldown());
-            kitUses.resetUse();
-        }
-    }
-
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
     }
 

@@ -4,6 +4,8 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.player.KitPlayerSupplier;
+import de.hglabor.plugins.kitapi.util.Utils;
+import de.hglabor.utils.localization.Localization;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -30,11 +32,11 @@ public abstract class KitEventHandler extends KitEvents {
         }
         //Players kits are disabled
         if (kitPlayer.areKitsDisabled()) {
-            //TODO  player.sendActionBar(Localization.getMessage("kit.disabled", player));
+            player.sendActionBar(Localization.INSTANCE.getMessage("kit.disabled", Utils.getPlayerLocale(player)));
             return false;
         }
         //Player is on kitcooldown
-        if (KitManager.getInstance().sendCooldownMessage(kitPlayer,kit)) {
+        if (KitManager.getInstance().sendCooldownMessage(kitPlayer, kit)) {
             return false;
         }
 

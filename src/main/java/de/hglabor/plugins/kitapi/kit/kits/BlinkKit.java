@@ -27,6 +27,6 @@ public class BlinkKit extends AbstractKit {
         player.teleport(player.getLocation().add(player.getLocation().getDirection().normalize().multiply((Integer) getSetting(KitSettings.RADIUS))));
         player.getLocation().subtract(0, 1, 0).getBlock().setType(Material.OAK_LEAVES);
         player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 100, 100);
-        checkUsesForCooldown(KitManager.getInstance().getPlayer(player), this);
+        KitManager.getInstance().checkUsesForCooldown(player, this);
     }
 }
