@@ -39,11 +39,12 @@ public class NinjaKit extends AbstractKit {
             if (!toTeleport.isOnline()) return;
             if (!lastHittedPlayer.isValid()) return;
             if (attacker.getLastHitInformation().getPlayerTimeStamp() + this.getCooldown() * 1000L > System.currentTimeMillis()) {
-                //TODO distance check einbauen
-                player.teleport(calculateNinjaBehind(toTeleport));
-                attacker.activateKitCooldown(this, this.getCooldown());
-                attacker.getLastHitInformation().setPlayerTimeStamp(0);
-                attacker.getLastHitInformation().setLastPlayer(null);
+                if (distanceBetweenPlayers(player, toTeleport) < 30) {
+                    player.teleport(calculateNinjaBehind(toTeleport));
+                    attacker.activateKitCooldown(this, this.getCooldown());
+                    attacker.getLastHitInformation().setPlayerTimeStamp(0);
+                    attacker.getLastHitInformation().setLastPlayer(null);
+                }
             }
         }
     }
@@ -54,5 +55,13 @@ public class NinjaKit extends AbstractKit {
         double nX = Math.cos(Math.toRadians(nang));
         double nZ = Math.sin(Math.toRadians(nang));
         return entity.getLocation().clone().subtract(nX, 0, nZ);
+    }
+
+    private int distanceBetweenPlayers(Player player, Entity entity) {
+        Location ninjaLocation = player.getLocation().clone();
+        Location entityLocation = entity.getLocation().clone();
+        ninjaLocation.setY(0);
+        entityLocation.setY(0);
+        return (int) ninjaLocation.distance(entityLocation);
     }
 }
