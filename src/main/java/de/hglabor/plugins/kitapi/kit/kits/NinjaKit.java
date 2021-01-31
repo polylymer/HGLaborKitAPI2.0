@@ -2,6 +2,7 @@ package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -18,6 +19,7 @@ public class NinjaKit extends AbstractKit {
     private NinjaKit() {
         super("Ninja", Material.INK_SAC, 13);
         addEvents(Collections.singletonList(PlayerToggleSneakEvent.class));
+        addSetting(KitSettings.RADIUS, (int) Math.pow(30, 2));
     }
 
     public static NinjaKit getInstance() {
@@ -39,7 +41,7 @@ public class NinjaKit extends AbstractKit {
             if (!toTeleport.isOnline()) return;
             if (!lastHittedPlayer.isValid()) return;
             if (attacker.getLastHitInformation().getPlayerTimeStamp() + this.getCooldown() * 1000L > System.currentTimeMillis()) {
-                if (distanceBetweenPlayers(player, toTeleport) < 30) {
+                if (distanceBetweenPlayers(player, toTeleport) < (int) getSetting(KitSettings.RADIUS)) {
                     player.teleport(calculateNinjaBehind(toTeleport));
                     attacker.activateKitCooldown(this, this.getCooldown());
                     attacker.getLastHitInformation().setPlayerTimeStamp(0);
@@ -62,6 +64,6 @@ public class NinjaKit extends AbstractKit {
         Location entityLocation = entity.getLocation().clone();
         ninjaLocation.setY(0);
         entityLocation.setY(0);
-        return (int) ninjaLocation.distance(entityLocation);
+        return (int) ninjaLocation.distanceSquared(entityLocation);
     }
 }
