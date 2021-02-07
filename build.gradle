@@ -22,7 +22,7 @@ allprojects {
     apply plugin: 'java'
 }
 
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_11
 
 publishing {
     publications {
@@ -57,11 +57,11 @@ bintray {
 
 dependencies {
     implementation 'org.apache.commons:commons-lang3:3.11'
+    compileOnly 'LibsDisguises:LibsDisguises:10.0.21'
     compileOnly 'com.destroystokyo.paper:paper-api:1.16.4-R0.1-SNAPSHOT'
     compileOnly 'org.bukkit:craftbukkit:1.16.4-R0.1-SNAPSHOT'
     compileOnly 'de.hglabor.utils:Localization:1.0'
     compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.0-SNAPSHOT'
-    compileOnly 'LibsDisguises:LibsDisguises:10.0.21'
 }
 
 repositories {
