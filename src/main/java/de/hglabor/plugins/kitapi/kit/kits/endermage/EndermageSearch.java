@@ -55,7 +55,7 @@ public class EndermageSearch extends BukkitRunnable {
                 player.removeMetadata(KitMetaData.HAS_BEEN_MAGED.getKey(), plugin);
                 player.sendMessage(Localization.INSTANCE.getMessage("endermage.invincibilityExpired", Utils.getPlayerLocale(player)));
             }
-        }, delay * 20L);
+        }, delay * 21L);
     }
 
     @Override

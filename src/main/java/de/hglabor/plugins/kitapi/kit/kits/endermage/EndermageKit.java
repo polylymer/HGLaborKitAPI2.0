@@ -79,8 +79,8 @@ public class EndermageKit extends AbstractKit implements Listener {
         if (!(event.getDamager() instanceof Player)) {
             return;
         }
-        Player player = (Player) event.getDamager();
-        if (player.hasMetadata(KitMetaData.HAS_BEEN_MAGED.getKey())) {
+        Player damager = (Player) event.getDamager();
+        if (damager.hasMetadata(KitMetaData.HAS_BEEN_MAGED.getKey())) {
             event.setCancelled(true);
         }
     }
