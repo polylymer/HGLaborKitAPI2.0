@@ -20,7 +20,7 @@ public class CannibalKit extends AbstractKit {
 
     private CannibalKit() {
         super("Cannibal", Material.TROPICAL_FISH);
-        addSetting(KitSettings.EFFECT_DURATION,2);
+        addSetting(KitSettings.EFFECT_DURATION,1);
         addSetting(KitSettings.EFFECT_MULTIPLIER, 1);
         addSetting(KitSettings.LIKELIHOOD,33);
         addEvents(Collections.singletonList(EntityDamageByEntityEvent.class));
@@ -50,7 +50,7 @@ public class CannibalKit extends AbstractKit {
         }
 
         if (ChanceUtils.roll(getSetting(KitSettings.LIKELIHOOD))) {
-            enemy.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, (Integer) getSetting(KitSettings.EFFECT_DURATION) * 20, (Integer) getSetting(KitSettings.EFFECT_MULTIPLIER)));
+            enemy.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, (Integer) getSetting(KitSettings.EFFECT_DURATION) * 20, getSetting(KitSettings.EFFECT_MULTIPLIER)));
         }
     }
 }
