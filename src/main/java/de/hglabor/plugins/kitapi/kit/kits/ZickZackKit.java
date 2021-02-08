@@ -22,14 +22,14 @@ public class ZickZackKit extends AbstractKit {
     private ZickZackKit() {
         super("ZickZack", Material.DIAMOND_BLOCK);
         addEvents(ImmutableList.of(EntityDamageByEntityEvent.class));
-        addSetting(KitSettings.LIKELIHOOD, 10);
+        addSetting(KitSettings.LIKELIHOOD, 7);
     }
 
     @Override
     public void enable(KitPlayer kitPlayer) {
         kitPlayer.putKitAttribute(this, new HashMap<UUID, Integer>());
     }
-    
+
     @Override
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent e, KitPlayer attacker, LivingEntity entity) {
         if (!(e.getEntity() instanceof Player && e.getDamager() instanceof Player)) {
