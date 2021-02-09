@@ -6,9 +6,10 @@ import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
-import de.hglabor.plugins.kitapi.util.CircleUtils;
 import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.utils.localization.Localization;
+import de.hglabor.utils.noriskutils.ChatUtils;
+import de.hglabor.utils.noriskutils.CircleUtils;
 import net.minecraft.server.v1_16_R3.PacketPlayOutEntityDestroy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -115,7 +116,7 @@ public class SpidermanKit extends AbstractKit implements Listener {
         }
         if (nearWall(0.5, event.getPlayer())) {
             if (kitPlayer.hasKitCooldown(this)) {
-                player.sendActionBar(Localization.INSTANCE.getMessage("spiderman.noClimbWithCooldown", Utils.getPlayerLocale(player)));
+                player.sendActionBar(Localization.INSTANCE.getMessage("spiderman.noClimbWithCooldown", ChatUtils.getPlayerLocale(player)));
                 return;
             }
             player.setVelocity(new Vector(0, (Double) getSetting(KitSettings.CLIMBVELOCITY), 0));

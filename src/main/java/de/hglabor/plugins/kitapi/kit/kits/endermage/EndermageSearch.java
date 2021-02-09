@@ -7,6 +7,7 @@ import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.utils.localization.Localization;
+import de.hglabor.utils.noriskutils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -50,10 +51,10 @@ public class EndermageSearch extends BukkitRunnable {
             EndermageProperties endermageProperties = kitPlayer.getKitProperty(KitMetaData.HAS_BEEN_MAGED);
             if (endermageProperties == null) {
                 player.removeMetadata(KitMetaData.HAS_BEEN_MAGED.getKey(), plugin);
-                player.sendMessage(Localization.INSTANCE.getMessage("endermage.invincibilityExpired", Utils.getPlayerLocale(player)));
+                player.sendMessage(Localization.INSTANCE.getMessage("endermage.invincibilityExpired", ChatUtils.getPlayerLocale(player)));
             } else if (endermageProperties.getMagedTimeStamp() + (delay * 1000L) <= System.currentTimeMillis()) {
                 player.removeMetadata(KitMetaData.HAS_BEEN_MAGED.getKey(), plugin);
-                player.sendMessage(Localization.INSTANCE.getMessage("endermage.invincibilityExpired", Utils.getPlayerLocale(player)));
+                player.sendMessage(Localization.INSTANCE.getMessage("endermage.invincibilityExpired", ChatUtils.getPlayerLocale(player)));
             }
         }, delay * 21L);
     }
@@ -101,11 +102,11 @@ public class EndermageSearch extends BukkitRunnable {
             player.sendMessage(Localization.INSTANCE.getMessage("endermage.successfulTeleport",
                     ImmutableMap.of("amount", String.valueOf(magedPeople),
                             "timeInSeconds", String.valueOf(delay)),
-                    Utils.getPlayerLocale(player)));
+                    ChatUtils.getPlayerLocale(player)));
         } else {
             player.sendMessage(Localization.INSTANCE.getMessage("endermage.gotTeleported",
                     ImmutableMap.of("timeInSeconds", String.valueOf(delay)),
-                    Utils.getPlayerLocale(player)));
+                    ChatUtils.getPlayerLocale(player)));
         }
         removeEndermageMetaDataLater(player, delay);
     }

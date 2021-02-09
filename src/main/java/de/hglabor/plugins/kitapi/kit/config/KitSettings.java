@@ -1,6 +1,6 @@
 package de.hglabor.plugins.kitapi.kit.config;
 
-import de.hglabor.plugins.kitapi.util.ItemBuilder;
+import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

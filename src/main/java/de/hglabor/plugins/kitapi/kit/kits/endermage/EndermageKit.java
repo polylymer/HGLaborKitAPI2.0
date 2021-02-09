@@ -8,6 +8,7 @@ import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.utils.localization.Localization;
+import de.hglabor.utils.noriskutils.ChatUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -51,7 +52,7 @@ public class EndermageKit extends AbstractKit implements Listener {
 
             EndermageSearch endermageRunnable = kitPlayer.getKitAttribute(this,EndermageSearch.class);
             if (endermageRunnable != null && endermageRunnable.isSearchingForPlayers) {
-                player.sendMessage(Localization.INSTANCE.getMessage("endermage.alreadySearching", Utils.getPlayerLocale(player)));
+                player.sendMessage(Localization.INSTANCE.getMessage("endermage.alreadySearching", ChatUtils.getPlayerLocale(player)));
                 return;
             }
 

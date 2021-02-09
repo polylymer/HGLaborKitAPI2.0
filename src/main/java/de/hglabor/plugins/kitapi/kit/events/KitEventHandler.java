@@ -6,6 +6,7 @@ import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.player.KitPlayerSupplier;
 import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.utils.localization.Localization;
+import de.hglabor.utils.noriskutils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -32,7 +33,7 @@ public abstract class KitEventHandler extends KitEvents {
         }
         //Players kits are disabled
         if (kitPlayer.areKitsDisabled()) {
-            player.sendActionBar(Localization.INSTANCE.getMessage("kit.disabled", Utils.getPlayerLocale(player)));
+            player.sendActionBar(Localization.INSTANCE.getMessage("kit.disabled", ChatUtils.getPlayerLocale(player)));
             return false;
         }
         //Player is on kitcooldown

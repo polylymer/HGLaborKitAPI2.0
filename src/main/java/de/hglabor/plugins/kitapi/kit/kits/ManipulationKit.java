@@ -11,6 +11,7 @@ import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.plugins.kitapi.util.pathfinder.*;
 import de.hglabor.utils.localization.Localization;
+import de.hglabor.utils.noriskutils.ChatUtils;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -68,15 +69,15 @@ public class ManipulationKit extends AbstractKit implements Listener {
                 Player manipulator = getManipulator(mob);
                 if (manipulator != null && manipulator.getUniqueId().equals(player.getUniqueId())) {
                     //NACHRICHT KOMMT 2x WEGEN 2 HÄNDEN
-                    player.sendMessage(Localization.INSTANCE.getMessage("manipulator.alreadyYourMob", Utils.getPlayerLocale(player)));
+                    player.sendMessage(Localization.INSTANCE.getMessage("manipulator.alreadyYourMob", ChatUtils.getPlayerLocale(player)));
                     return;
                 }
-                player.sendMessage(Localization.INSTANCE.getMessage("manipulator.alreadyControlled", Utils.getPlayerLocale(player)));
+                player.sendMessage(Localization.INSTANCE.getMessage("manipulator.alreadyControlled", ChatUtils.getPlayerLocale(player)));
                 return;
             }
 
             if (getManipulatedMobAmount(player) > (Integer) getSetting(KitSettings.USES)) {
-                player.sendMessage(Localization.INSTANCE.getMessage("manipulator.maxAmount", Utils.getPlayerLocale(player)));
+                player.sendMessage(Localization.INSTANCE.getMessage("manipulator.maxAmount", ChatUtils.getPlayerLocale(player)));
                 return;
             }
 
@@ -138,7 +139,7 @@ public class ManipulationKit extends AbstractKit implements Listener {
                 if (manipulator != null) {
                     manipulator.sendMessage(Localization.INSTANCE.getMessage("manipulator.mobLoose",
                             ImmutableMap.of("amount", String.valueOf(getManipulatedMobAmount(manipulator))),
-                            Utils.getPlayerLocale(manipulator)));
+                            ChatUtils.getPlayerLocale(manipulator)));
                 }
             }
         }

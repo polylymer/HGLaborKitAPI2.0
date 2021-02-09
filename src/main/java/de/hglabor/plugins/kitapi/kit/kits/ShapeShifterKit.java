@@ -5,6 +5,7 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.utils.localization.Localization;
+import de.hglabor.utils.noriskutils.ChatUtils;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
@@ -51,7 +52,7 @@ public class ShapeShifterKit extends AbstractKit {
         Player player = event.getPlayer();
         if (block != null) {
             if (DISABLED_BLOCKS.contains(block.getType()) || block.getType().name().contains("SIGN")) {
-                player.sendMessage(Localization.INSTANCE.getMessage("shapeshifter.denyTransformation", Utils.getPlayerLocale(player)));
+                player.sendMessage(Localization.INSTANCE.getMessage("shapeshifter.denyTransformation", ChatUtils.getPlayerLocale(player)));
                 return;
             }
             MiscDisguise miscDisguise = new MiscDisguise(DisguiseType.FALLING_BLOCK, block.getType());

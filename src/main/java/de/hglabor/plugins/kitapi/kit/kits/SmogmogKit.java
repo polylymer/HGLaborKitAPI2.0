@@ -4,6 +4,7 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
+import de.hglabor.utils.localization.Localization;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Sound;

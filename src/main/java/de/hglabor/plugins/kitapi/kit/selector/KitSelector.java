@@ -3,8 +3,9 @@ package de.hglabor.plugins.kitapi.kit.selector;
 import de.hglabor.plugins.kitapi.config.KitApiConfig;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
-import de.hglabor.plugins.kitapi.util.ItemBuilder;
 import de.hglabor.plugins.kitapi.util.Utils;
+import de.hglabor.utils.noriskutils.ChatUtils;
+import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -110,7 +111,7 @@ public abstract class KitSelector {
     }
 
     protected void openFirstPage(Player player) {
-        Inventory page = getPage(0, Utils.getPlayerLocale(player.getUniqueId()));
+        Inventory page = getPage(0, ChatUtils.getPlayerLocale(player.getUniqueId()));
         if (page != null) {
             player.openInventory(page);
         }
@@ -119,7 +120,7 @@ public abstract class KitSelector {
     protected boolean nextPage(String title, ItemStack clickedItem, Player player) {
         if (clickedItem.isSimilar(NEXT_PAGE_ITEM)) {
             String pageNumber = title.substring(title.length() - 1);
-            Inventory page = getPage(Integer.parseInt(pageNumber), Utils.getPlayerLocale(player.getUniqueId()));
+            Inventory page = getPage(Integer.parseInt(pageNumber), ChatUtils.getPlayerLocale(player.getUniqueId()));
             if (page != null) {
                 player.openInventory(page);
             }
@@ -131,7 +132,7 @@ public abstract class KitSelector {
     protected boolean lastPage(String title, ItemStack clickedItem, Player player) {
         if (clickedItem.isSimilar(LAST_PAGE_ITEM)) {
             String pageNumber = title.substring(title.length() - 1);
-            Inventory page = getPage(Integer.parseInt(pageNumber) - 1, Utils.getPlayerLocale(player.getUniqueId()));
+            Inventory page = getPage(Integer.parseInt(pageNumber) - 1, ChatUtils.getPlayerLocale(player.getUniqueId()));
             if (page != null) {
                 player.openInventory(page);
             }

@@ -10,6 +10,7 @@ import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.player.KitPlayerSupplier;
 import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.utils.localization.Localization;
+import de.hglabor.utils.noriskutils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -180,11 +181,11 @@ public final class KitManager {
                 if (kit.getMainKitItem() != null && hasKitItemInAnyHand(player, kit)) {
                     player.sendActionBar(Localization.INSTANCE.getMessage("kit.cooldown",
                             ImmutableMap.of("numberInSeconds", String.valueOf((cooldown) / 1000D)),
-                            Utils.getPlayerLocale(player)));
+                            ChatUtils.getPlayerLocale(player)));
                 } else if (kit.getMainKitItem() == null) {
                     player.sendActionBar(Localization.INSTANCE.getMessage("kit.cooldown",
                             ImmutableMap.of("numberInSeconds", String.valueOf((cooldown) / 1000D)),
-                            Utils.getPlayerLocale(player)));
+                            ChatUtils.getPlayerLocale(player)));
                 }
                 return true;
             }
