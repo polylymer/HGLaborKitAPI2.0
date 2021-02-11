@@ -1,4 +1,4 @@
-package de.hglabor.plugins.kitapi.player;
+package de.hglabor.plugins.kitapi.supplier;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
@@ -7,6 +7,7 @@ import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitProperties;
 import de.hglabor.plugins.kitapi.kit.config.LastHitInformation;
 import de.hglabor.plugins.kitapi.kit.kits.CopyCatKit;
+import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 
 import java.util.*;
