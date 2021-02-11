@@ -104,6 +104,7 @@ public final class KitManager {
         register(ManipulationKit.INSTANCE);
         register(EndermageKit.INSTANCE);
         register(ViperKit.INSTANCE);
+        register(LumberjackKit.INSTANCE);
     }
 
     public void register(AbstractKit kit) {
