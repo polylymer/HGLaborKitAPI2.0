@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.config;
 
 public class Cooldown {
-    private boolean hasCooldown;
+    private final boolean hasCooldown;
     private long startTime;
     private int additionalTime = 0;
 
