@@ -184,7 +184,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
                 endFight();
                 return;
             }
-            if (gladiator.getLocation().getY() < center.getY() || enemy.getLocation().getY() < center.getY()) {
+            if (gladiator.getLocation().getY() < (center.getY() + height / 2 + 2) || enemy.getLocation().getY() < (center.getY() + height / 2 + 2)) {
                 endFight();
                 return;
             }
