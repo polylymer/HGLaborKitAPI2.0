@@ -7,8 +7,9 @@ import de.hglabor.plugins.kitapi.kit.config.KitUses;
 import de.hglabor.plugins.kitapi.kit.kits.*;
 import de.hglabor.plugins.kitapi.kit.kits.endermage.EndermageKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
-import de.hglabor.plugins.kitapi.player.KitPlayerSupplier;
-import de.hglabor.plugins.kitapi.util.Utils;
+import de.hglabor.plugins.kitapi.supplier.KitItemSupplier;
+import de.hglabor.plugins.kitapi.supplier.KitItemSupplierImpl;
+import de.hglabor.plugins.kitapi.supplier.KitPlayerSupplier;
 import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
 import org.bukkit.Bukkit;
@@ -34,6 +35,7 @@ public final class KitManager {
 
     private KitManager() {
         this.kits = new ArrayList<>();
+        this.itemSupplier = KitItemSupplierImpl.INSTANCE;
         this.supportedLanguages = Arrays.asList(Locale.ENGLISH, Locale.GERMAN);
     }
 
@@ -71,9 +73,9 @@ public final class KitManager {
         return emptyKitList;
     }
 
-    public void register(KitPlayerSupplier kitPlayerSupplier, KitItemSupplier kitItemSupplier, JavaPlugin plugin) {
+    public void register(KitPlayerSupplier kitPlayerSupplier, JavaPlugin plugin) {
+        KitApiConfig.getInstance().register(plugin.getDataFolder());
         this.playerSupplier = kitPlayerSupplier;
-        this.itemSupplier = kitItemSupplier;
         this.plugin = plugin;
         register(MagmaKit.getInstance());
         register(NinjaKit.getInstance());
@@ -105,6 +107,10 @@ public final class KitManager {
         register(EndermageKit.INSTANCE);
         register(ViperKit.INSTANCE);
         register(LumberjackKit.INSTANCE);
+    }
+
+    public void setItemSupplier(KitItemSupplier itemSupplier) {
+        this.itemSupplier = itemSupplier;
     }
 
     public void register(AbstractKit kit) {

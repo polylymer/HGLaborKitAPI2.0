@@ -1,5 +1,6 @@
-package de.hglabor.plugins.kitapi.player;
+package de.hglabor.plugins.kitapi.supplier;
 
+import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.entity.Player;
 
 public interface KitPlayerSupplier {

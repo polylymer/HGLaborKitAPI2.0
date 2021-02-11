@@ -1,6 +1,6 @@
 package de.hglabor.plugins.kitapi.kit.config;
 
-public class KitUses   {
+public class KitUses {
     private int use;
 
     public void increaseUse() {

@@ -1,5 +1,6 @@
-package de.hglabor.plugins.kitapi.kit;
+package de.hglabor.plugins.kitapi.supplier;
 
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.inventory.ItemStack;
 
