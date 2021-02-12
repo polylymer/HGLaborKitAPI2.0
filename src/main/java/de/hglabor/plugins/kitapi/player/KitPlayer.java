@@ -49,4 +49,6 @@ public interface KitPlayer {
     }
 
     <T> void putKitAttribute(AbstractKit kit, T value, Class<?> clazz);
+
+    String printKits();
 }

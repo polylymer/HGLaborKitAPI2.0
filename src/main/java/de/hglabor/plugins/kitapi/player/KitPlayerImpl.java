@@ -1,4 +1,4 @@
-package de.hglabor.plugins.kitapi.supplier;
+package de.hglabor.plugins.kitapi.player;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.KitManager;
@@ -135,5 +135,12 @@ public abstract class KitPlayerImpl implements KitPlayer {
 
     public void resetKitProperties() {
         this.kitProperties.clear();
+    }
+
+    public String printKits() {
+        StringBuilder stringBuilder = new StringBuilder();
+        this.kits.forEach((kit) -> stringBuilder.append(kit.getName()).append(","));
+        stringBuilder.delete(stringBuilder.lastIndexOf(","), stringBuilder.length());
+        return stringBuilder.toString();
     }
 }
