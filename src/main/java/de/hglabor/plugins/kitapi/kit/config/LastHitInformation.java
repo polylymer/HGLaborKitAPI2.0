@@ -3,8 +3,12 @@ package de.hglabor.plugins.kitapi.kit.config;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import java.util.Optional;
+
 public class LastHitInformation {
     private Player lastPlayer;
+    private Player lastDamager;
+    private long lastDamagerTimestamp;
     private LivingEntity lastEntity;
     private long playerTimeStamp;
     private long entityTimeStamp;
@@ -45,6 +49,10 @@ public class LastHitInformation {
         return entityTimeStamp;
     }
 
+    public void setLastDamager(Player lastDamager) { this.lastDamager = lastDamager; }
+
+    public Optional<Player> getLastDamager() { return Optional.ofNullable(lastDamager); }
+
     public void setEntityTimeStamp(long entityTimeStamp) {
         this.entityTimeStamp = entityTimeStamp;
     }
@@ -52,6 +60,8 @@ public class LastHitInformation {
     private void clear() {
         lastEntity = null;
         lastPlayer = null;
+        lastDamager = null;
+        lastDamagerTimestamp = 0;
         playerTimeStamp = 0;
         entityTimeStamp = 0;
     }
