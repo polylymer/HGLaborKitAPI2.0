@@ -195,6 +195,10 @@ public final class KitApi {
         return kitSelector;
     }
 
+    public KitPlayerSupplier getPlayerSupplier() {
+        return playerSupplier;
+    }
+
     public boolean sendCooldownMessage(KitPlayer kitPlayer, AbstractKit kit) {
         if (kit.getCooldown() > 0) {
             Cooldown kitCooldown = kitPlayer.getKitCooldown(kit);

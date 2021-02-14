@@ -6,6 +6,8 @@ import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.supplier.KitPlayerSupplier;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -13,13 +15,14 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class KitItemHandler {
+public class KitItemHandler implements Listener {
     protected final KitPlayerSupplier playerSupplier;
 
-    public KitItemHandler(KitPlayerSupplier playerSupplier) {
-        this.playerSupplier = playerSupplier;
+    public KitItemHandler() {
+        this.playerSupplier = KitApi.getInstance().getPlayerSupplier();
     }
 
+    @EventHandler
     public void disableHandSwapForOffHandKits(PlayerSwapHandItemsEvent event) {
         KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
         for (AbstractKit kit : kitPlayer.getKits()) {
@@ -29,6 +32,7 @@ public abstract class KitItemHandler {
         }
     }
 
+    @EventHandler
     public void disableOffHandInventoryClick(InventoryClickEvent event) {
         KitPlayer kitPlayer = playerSupplier.getKitPlayer((Player) event.getWhoClicked());
         if (event.getRawSlot() == 45) {
@@ -40,6 +44,7 @@ public abstract class KitItemHandler {
         }
     }
 
+    @EventHandler
     public void cancelKitItemPlace(BlockPlaceEvent event) {
         KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
         for (AbstractKit kit : kitPlayer.getKits()) {
@@ -55,6 +60,7 @@ public abstract class KitItemHandler {
         }
     }
 
+    @EventHandler
     public void cancelKitItemDrop(PlayerDropItemEvent event) {
         KitPlayer KitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
         for (AbstractKit kit : KitPlayer.getKits()) {
@@ -66,6 +72,7 @@ public abstract class KitItemHandler {
         }
     }
 
+    @EventHandler
     public void avoidKitItemDropOnPlayerDeath(ItemSpawnEvent event) {
         ItemStack itemStack = event.getEntity().getItemStack();
         for (AbstractKit enabledKit : KitApi.getInstance().getEnabledKits()) {
