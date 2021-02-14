@@ -18,8 +18,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 public class KitEventHandlerImpl extends KitEventHandler implements Listener {
-    public KitEventHandlerImpl(KitPlayerSupplier playerSupplier) {
-        super(playerSupplier);
+    public KitEventHandlerImpl() {
+        super(KitApi.getInstance().getPlayerSupplier());
     }
 
     @EventHandler
