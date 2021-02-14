@@ -23,6 +23,10 @@ public abstract class KitEventHandler extends KitEvents {
             return false;
         }
 
+        if (!kitPlayer.isValid()) {
+            return false;
+        }
+
         if (!kit.getKitEvents().contains(event.getClass())) {
             return false;
         }
