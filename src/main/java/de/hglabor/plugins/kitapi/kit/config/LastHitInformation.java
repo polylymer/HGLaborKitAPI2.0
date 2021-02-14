@@ -8,8 +8,8 @@ import java.util.Optional;
 public class LastHitInformation {
     private Player lastPlayer;
     private Player lastDamager;
-    private long lastDamagerTimestamp;
     private LivingEntity lastEntity;
+    private long lastDamagerTimestamp;
     private long playerTimeStamp;
     private long entityTimeStamp;
 
@@ -55,6 +55,10 @@ public class LastHitInformation {
 
     public void setEntityTimeStamp(long entityTimeStamp) {
         this.entityTimeStamp = entityTimeStamp;
+    }
+
+    public long getLastDamagerTimestamp() {
+        return lastDamagerTimestamp;
     }
 
     private void clear() {
