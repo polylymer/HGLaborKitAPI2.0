@@ -14,34 +14,52 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 public abstract class AbstractKit extends KitEvents {
+    private static final String KIT_ITEM_DESC = ChatColor.RED + "Kititem";
     private final String name;
-    private final Map<KitSettings, Object> settings = new HashMap<>();
-    private final Map<Locale, ItemStack> displayItems = new HashMap<>();
-    private List<ItemStack> additionalKitItems = new ArrayList<>();
-    private Set<Class<? extends Event>> kitEvents = new HashSet<>();
-    private Set<Class<? extends Event>> cooldownLessEvents = new HashSet<>();
-    private boolean sendCooldownMessage = true;
     private ItemStack mainKitItem;
+
+
+    /**
+     * Some kits get items which are placeable for everyone
+     * e.g. Redstoner
+     */
+    private final List<ItemStack> additionalKitItems;
+
+    /**
+     * Used for customizing specific values of a kit
+     * e.g. likelihood, cooldown, radius
+     */
+    private final Map<KitSettings, Object> settings;
+
+    /**
+     * Each language has a different itemstack
+     */
+    private final Map<Locale, ItemStack> displayItems;
+
+    /**
+     * Register the events the kit is using,
+     * so the KitEventHandler can handle them
+     */
+    private final Set<Class<? extends Event>> kitEvents;
 
     /**
      * use this to toggle gamemode specific kits
      */
     private boolean isEnabled = true;
+
     /**
      * enable this to activate a kit in a specific phase
      */
     private boolean isUsable;
 
+    /**
+     * Edgecase since Revive is using Offhand -> conflict with giving kititems
+     */
     private boolean usesOffHand;
-    private boolean isThrowable;
-    private boolean isPlaceable;
+
 
     protected AbstractKit(String name, Material material) {
         this(name, new ItemStack(material));
-    }
-
-    public void setUsesOffHand(boolean usesOffHand) {
-        this.usesOffHand = usesOffHand;
     }
 
     protected AbstractKit(String name, Material material, int cooldown) {
@@ -49,8 +67,17 @@ public abstract class AbstractKit extends KitEvents {
         this.setCooldown(cooldown);
     }
 
+    protected AbstractKit(String name, Material material, List<ItemStack> additionalKitItems) {
+        this(name, new ItemStack(material));
+        this.additionalKitItems.addAll(additionalKitItems);
+    }
+
     protected AbstractKit(String name, ItemStack displayItem) {
         this.name = name;
+        this.settings = new HashMap<>();
+        this.displayItems = new HashMap<>();
+        this.kitEvents = new HashSet<>();
+        this.additionalKitItems = new ArrayList<>();
         this.setDisplayItem(displayItem);
     }
 
@@ -86,27 +113,23 @@ public abstract class AbstractKit extends KitEvents {
     }
 
     public void setMainKitItem(Material material, boolean unbreakable) {
-        if (unbreakable) {
-            mainKitItem = new ItemBuilder(material).setDescription(ChatColor.RED + "Kititem").setUnbreakable().build();
-        } else {
-            mainKitItem = new ItemBuilder(material).setDescription(ChatColor.RED + "Kititem").build();
-        }
+        mainKitItem = new ItemBuilder(material).setDescription(KIT_ITEM_DESC).setUnbreakable(unbreakable).build();
     }
 
     public void setMainKitItem(Material material, int size) {
-        mainKitItem = new ItemBuilder(material).setDescription(ChatColor.RED + "Kititem").setAmount(size).build();
+        mainKitItem = new ItemBuilder(material).setDescription(KIT_ITEM_DESC).setAmount(size).build();
+    }
+
+    public void setMainKitItem(Material material) {
+        mainKitItem = new ItemBuilder(material).setDescription(KIT_ITEM_DESC).build();
+    }
+
+    public void setMainKitItem(Material material, String name) {
+        mainKitItem = new ItemBuilder(material).setDescription(KIT_ITEM_DESC).setName(ChatColor.BLUE + name).build();
     }
 
     public ItemStack getMainKitItem() {
         return mainKitItem;
-    }
-
-    public void setMainKitItem(Material material) {
-        mainKitItem = new ItemBuilder(material).setDescription(ChatColor.RED + "Kititem").build();
-    }
-
-    public void setMainKitItem(Material material, String name) {
-        mainKitItem = new ItemBuilder(material).setDescription(ChatColor.RED + "Kititem").setName(ChatColor.BLUE + name).build();
     }
 
     /**
@@ -114,10 +137,6 @@ public abstract class AbstractKit extends KitEvents {
      */
     public void addEvents(List<Class<? extends Event>> events) {
         kitEvents.addAll(events);
-    }
-
-    public void addCoolDownLessEvents(List<Class<? extends Event>> events) {
-        cooldownLessEvents.addAll(events);
     }
 
     public List<ItemStack> getKitItems() {
@@ -129,6 +148,10 @@ public abstract class AbstractKit extends KitEvents {
             kitItems.addAll(additionalKitItems);
         }
         return kitItems;
+    }
+
+    public void setUsesOffHand(boolean usesOffHand) {
+        this.usesOffHand = usesOffHand;
     }
 
     /**
@@ -172,8 +195,12 @@ public abstract class AbstractKit extends KitEvents {
         return usesOffHand;
     }
 
-    public boolean isPlaceable() {
-        return isPlaceable;
+    public boolean isUsable() {
+        return isUsable;
+    }
+
+    public void setUsable(boolean usable) {
+        isUsable = usable;
     }
 
     public Set<Class<? extends Event>> getKitEvents() {
