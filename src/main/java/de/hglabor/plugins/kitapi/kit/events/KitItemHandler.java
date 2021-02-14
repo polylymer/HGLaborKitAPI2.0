@@ -50,11 +50,7 @@ public class KitItemHandler implements Listener {
         for (AbstractKit kit : kitPlayer.getKits()) {
             for (ItemStack kitItem : kit.getKitItems()) {
                 if (event.getItemInHand().isSimilar(kitItem)) {
-                    if (!kit.isPlaceable()) {
-                        event.setCancelled(true);
-                    } else {
-                        event.setCancelled(kitPlayer.hasKitCooldown(kit));
-                    }
+                    event.setCancelled(true);
                 }
             }
         }
