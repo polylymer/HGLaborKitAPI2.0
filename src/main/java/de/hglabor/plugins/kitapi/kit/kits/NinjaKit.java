@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
@@ -29,10 +29,10 @@ public class NinjaKit extends AbstractKit {
     @Override
     public void onPlayerToggleSneakEvent(PlayerToggleSneakEvent event) {
         Player player = event.getPlayer();
-        KitPlayer attacker = KitManager.getInstance().getPlayer(player);
+        KitPlayer attacker = KitApi.getInstance().getPlayer(player);
         if (attacker == null || attacker.getLastHitInformation() == null || attacker.getLastHitInformation().getLastPlayer() == null)
             return;
-        KitPlayer lastHittedPlayer = KitManager.getInstance().getPlayer(attacker.getLastHitInformation().getLastPlayer());
+        KitPlayer lastHittedPlayer = KitApi.getInstance().getPlayer(attacker.getLastHitInformation().getLastPlayer());
         if (lastHittedPlayer == null) {
             return;
         }

@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Material;
@@ -37,7 +37,7 @@ public class StomperKit extends AbstractKit {
                 }
                 if (livingEntity instanceof Player) {
                     Player playerEntity = (Player) livingEntity;
-                    KitPlayer kitPlayer = KitManager.getInstance().getPlayer(playerEntity);
+                    KitPlayer kitPlayer = KitApi.getInstance().getPlayer(playerEntity);
                     if (kitPlayer.isValid()) {
                         if (!playerEntity.isSneaking()) {
                             livingEntity.damage(STOMPER_DAMAGE);

@@ -1,12 +1,11 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -41,9 +40,9 @@ public class ReviveKit extends AbstractKit {
     @Override
     public void onEntityResurrect(EntityResurrectEvent event) {
         Player player = (Player) event.getEntity();
-        KitPlayer kitPlayer = KitManager.getInstance().getPlayer(player);
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         kitPlayer.putKitAttribute(this, kitPlayer.getKitAttribute(this) != null ? (Integer) kitPlayer.getKitAttribute(this) + 1 : 1);
-        Bukkit.getScheduler().runTaskLater(KitManager.getInstance().getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> {
             giveTotem(kitPlayer, player);
         }, (long) getCooldown() * 20 * (Integer) kitPlayer.getKitAttribute(this));
     }

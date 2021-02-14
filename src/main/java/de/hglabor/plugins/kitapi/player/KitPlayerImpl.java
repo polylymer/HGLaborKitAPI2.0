@@ -1,13 +1,12 @@
 package de.hglabor.plugins.kitapi.player;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitProperties;
 import de.hglabor.plugins.kitapi.kit.config.LastHitInformation;
 import de.hglabor.plugins.kitapi.kit.kits.CopyCatKit;
-import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 
 import java.util.*;
@@ -27,7 +26,7 @@ public abstract class KitPlayerImpl implements KitPlayer {
         this.kitCooldowns = new HashMap<>();
         this.kitProperties = new HashMap<>();
         this.lastHitInformation = new LastHitInformation();
-        this.kits = KitManager.getInstance().emptyKitList();
+        this.kits = KitApi.getInstance().emptyKitList();
     }
 
     @Override
@@ -101,7 +100,7 @@ public abstract class KitPlayerImpl implements KitPlayer {
     public void activateKitCooldown(AbstractKit kit, int seconds) {
         if (hasKit(kit) && !kitCooldowns.getOrDefault(kit, new Cooldown(false)).hasCooldown()) {
             kitCooldowns.put(kit, new Cooldown(true, System.currentTimeMillis()));
-            Bukkit.getScheduler().runTaskLater(KitManager.getInstance().getPlugin(), () -> kitCooldowns.put(kit, new Cooldown(false)),// (seconds + additionalKitCooldowns.getOrDefault(kit, 0)) * 20);
+            Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> kitCooldowns.put(kit, new Cooldown(false)),// (seconds + additionalKitCooldowns.getOrDefault(kit, 0)) * 20);
                     (seconds) * 20L);
         }
     }

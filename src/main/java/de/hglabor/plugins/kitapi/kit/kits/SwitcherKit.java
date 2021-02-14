@@ -2,7 +2,7 @@ package de.hglabor.plugins.kitapi.kit.kits;
 
 import com.google.common.collect.ImmutableList;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.ChatColor;
@@ -36,7 +36,7 @@ public class SwitcherKit extends AbstractKit implements Listener {
         if (!(e.getEntity().getShooter() instanceof Player)) {
             return;
         }
-        e.getEntity().setMetadata(KitMetaData.SWITCHER_BALL.getKey(), new FixedMetadataValue(KitManager.getInstance().getPlugin(), ""));
+        e.getEntity().setMetadata(KitMetaData.SWITCHER_BALL.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
     }
 
     @EventHandler
@@ -52,7 +52,7 @@ public class SwitcherKit extends AbstractKit implements Listener {
         }
 
         Player shooter = (Player) e.getEntity().getShooter();
-        KitPlayer kitPlayer = KitManager.getInstance().getPlayer(shooter);
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(shooter);
         if (!kitPlayer.isValid()) {
             return;
         }
@@ -61,7 +61,7 @@ public class SwitcherKit extends AbstractKit implements Listener {
         if (e.getHitEntity() != null) {
             Entity hit = e.getHitEntity();
             if (hit instanceof Player) {
-                KitPlayer kitEntity = KitManager.getInstance().getPlayer((Player) hit);
+                KitPlayer kitEntity = KitApi.getInstance().getPlayer((Player) hit);
                 if (!kitEntity.isValid()) {
                     return;
                 }
@@ -74,7 +74,7 @@ public class SwitcherKit extends AbstractKit implements Listener {
             }
             hit.sendMessage(ChatColor.LIGHT_PURPLE + "SWITCHEROOOOO");
             shooter.sendMessage(ChatColor.LIGHT_PURPLE + "SWITCHEROOOOO");
-            KitManager.getInstance().getPlayer(shooter).activateKitCooldown(this, this.getCooldown());
+            KitApi.getInstance().getPlayer(shooter).activateKitCooldown(this, this.getCooldown());
         }
     }
 }

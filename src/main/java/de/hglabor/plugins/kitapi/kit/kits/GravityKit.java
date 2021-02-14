@@ -2,7 +2,7 @@ package de.hglabor.plugins.kitapi.kit.kits;
 
 import com.google.common.collect.ImmutableList;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
@@ -38,7 +38,7 @@ public class GravityKit extends AbstractKit {
 
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
-        KitPlayer kitPlayer = KitManager.getInstance().getPlayer(event.getPlayer());
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(event.getPlayer());
         Player player = event.getPlayer();
         if (player.hasPotionEffect(PotionEffectType.LEVITATION)) {
             kitPlayer.activateKitCooldown(this, this.getCooldown());
@@ -51,6 +51,6 @@ public class GravityKit extends AbstractKit {
     @Override
     public void onHitLivingEntityWithKitItem(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
         entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 20 * (Integer) getSetting(KitSettings.EFFECT_DURATION), getSetting(KitSettings.EFFECT_MULTIPLIER)));
-        KitManager.getInstance().checkUsesForCooldown(attacker, this);
+        KitApi.getInstance().checkUsesForCooldown(attacker, this);
     }
 }

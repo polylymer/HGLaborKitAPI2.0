@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -46,14 +46,14 @@ public class CopyCatKit extends AbstractKit {
 
         if (oldCopiedKit != null) {
             oldCopiedKit.disable(killer);
-            KitManager.getInstance().removeKitItems(oldCopiedKit, Bukkit.getPlayer(killer.getUUID()));
+            KitApi.getInstance().removeKitItems(oldCopiedKit, Bukkit.getPlayer(killer.getUUID()));
         }
 
         //CopyCat(NewKit)
         killer.putKitAttribute(this, newKit);
 
         //ENABLE NEW KIT
-        KitManager.getInstance().giveKitItemsIfSlotEmpty(killer, newKit);
+        KitApi.getInstance().giveKitItemsIfSlotEmpty(killer, newKit);
         newKit.enable(killer);
     }
 }

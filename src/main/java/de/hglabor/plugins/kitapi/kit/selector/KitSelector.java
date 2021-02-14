@@ -2,30 +2,35 @@ package de.hglabor.plugins.kitapi.kit.selector;
 
 import de.hglabor.plugins.kitapi.config.KitApiConfig;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
-import de.hglabor.plugins.kitapi.util.Utils;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.utils.noriskutils.ChatUtils;
 import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
-public abstract class KitSelector {
-    protected final int MAX_AMOUNT_OF_KITS = 35;
-    protected final String kitSelectorTitle = "KitSelector";
-    protected final ItemStack LAST_PAGE_ITEM = new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setName(ChatColor.RED + "<-").build();
-    protected final ItemStack NEXT_PAGE_ITEM = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).setName(ChatColor.GREEN + "->").build();
+public abstract class KitSelector implements Listener {
+    protected final int MAX_AMOUNT_OF_KITS;
+    protected final String KIT_SELECTOR_TITLE;
+    protected final ItemStack LAST_PAGE_ITEM;
+    protected final ItemStack NEXT_PAGE_ITEM;
     protected List<ItemStack> kitSelectorItems;
-    protected Map<java.util.Locale, List<Inventory>> kitPages;
+    protected Map<Locale, List<Inventory>> kitPages;
 
     public KitSelector() {
+        this.MAX_AMOUNT_OF_KITS = 35;
+        this.KIT_SELECTOR_TITLE = "KitSelector";
+        this.LAST_PAGE_ITEM = new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setName(ChatColor.RED + "<-").build();
+        this.NEXT_PAGE_ITEM = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).setName(ChatColor.GREEN + "->").build();
         this.kitPages = new HashMap<>();
         this.kitSelectorItems = new ArrayList<>();
     }
@@ -34,11 +39,13 @@ public abstract class KitSelector {
 
     protected abstract void onInventoryClick(InventoryClickEvent event);
 
-    public void register() {
+    public void load() {
         kitSelectorItems.clear();
         for (int i = 0; i < KitApiConfig.getInstance().getInteger("kit.amount"); i++) {
             kitSelectorItems.add(i, new ItemBuilder(Material.CHEST).setName("KitSelector " + (i + 1)).build());
         }
+        kitPages.clear();
+        KitApi.getInstance().getSupportedLanguages().forEach(supportedLanguage -> kitPages.put(supportedLanguage, new ArrayList<>()));
         this.createKitPages();
     }
 
@@ -46,19 +53,18 @@ public abstract class KitSelector {
         return kitSelectorItems.stream().anyMatch(itemStack::isSimilar);
     }
 
-    public void createKitPages() {
-        this.resetKitPages();
-        for (Locale language : KitManager.getInstance().getSupportedLanguages()) {
+    private void createKitPages() {
+        for (Locale language : KitApi.getInstance().getSupportedLanguages()) {
             int LAST_PAGE_SLOT = 18;
             int NEXT_PAGE_SLOT = 26;
             for (int i = 0; i < pageAmount(); i++) {
-                Inventory kitSelectorPage = Bukkit.createInventory(null, 45, kitSelectorTitle + " " + (i + 1));
+                Inventory kitSelectorPage = Bukkit.createInventory(null, 45, KIT_SELECTOR_TITLE + " " + (i + 1));
                 int inventorySlot = 1;
                 int start = i * MAX_AMOUNT_OF_KITS;
-                int end = Math.min(i * MAX_AMOUNT_OF_KITS + MAX_AMOUNT_OF_KITS, KitManager.getInstance().getEnabledKits().size());
+                int end = Math.min(i * MAX_AMOUNT_OF_KITS + MAX_AMOUNT_OF_KITS, KitApi.getInstance().getEnabledKits().size());
                 for (int j = start; j < end; j++) {
                     inventorySlot = inventorySlotNumber(inventorySlot);
-                    AbstractKit kit = KitManager.getInstance().getAlphabeticallyKit(j);
+                    AbstractKit kit = KitApi.getInstance().getAlphabeticallyKit(j);
                     kitSelectorPage.setItem(inventorySlot, kit.getDisplayItem(language));
                     inventorySlot++;
                 }
@@ -68,7 +74,7 @@ public abstract class KitSelector {
                 kitPages.add(kitSelectorPage);
             }
             if (pageAmount() == 0) {
-                Inventory kitSelectorPage = Bukkit.createInventory(null, 45, kitSelectorTitle + " " + (1));
+                Inventory kitSelectorPage = Bukkit.createInventory(null, 45, KIT_SELECTOR_TITLE + " " + (1));
                 kitSelectorPage.setItem(LAST_PAGE_SLOT, LAST_PAGE_ITEM);
                 kitSelectorPage.setItem(NEXT_PAGE_SLOT, NEXT_PAGE_ITEM);
                 List<Inventory> kitPages = this.kitPages.get(language);
@@ -77,21 +83,16 @@ public abstract class KitSelector {
         }
     }
 
-    public Inventory getPage(int index, java.util.Locale locale) {
+    private Inventory getPage(int index, Locale locale) {
         return (index >= 0) && (index < kitPages.get(locale).size()) ? kitPages.get(locale).get(index) : null;
     }
 
     private int pageAmount() {
-        int enabledKits = KitManager.getInstance().getEnabledKits().size();
+        int enabledKits = KitApi.getInstance().getEnabledKits().size();
         int safeAmount = enabledKits / MAX_AMOUNT_OF_KITS;
         int rest = enabledKits % MAX_AMOUNT_OF_KITS;
         if (rest > 0) safeAmount++;
         return safeAmount;
-    }
-
-    private void resetKitPages() {
-        kitPages.clear();
-        KitManager.getInstance().getSupportedLanguages().forEach(supportedLanguage -> kitPages.put(supportedLanguage, new ArrayList<>()));
     }
 
     private int inventorySlotNumber(int slot) {
@@ -123,8 +124,8 @@ public abstract class KitSelector {
             Inventory page = getPage(Integer.parseInt(pageNumber), ChatUtils.getPlayerLocale(player.getUniqueId()));
             if (page != null) {
                 player.openInventory(page);
+                return true;
             }
-            return true;
         }
         return false;
     }
@@ -135,8 +136,8 @@ public abstract class KitSelector {
             Inventory page = getPage(Integer.parseInt(pageNumber) - 1, ChatUtils.getPlayerLocale(player.getUniqueId()));
             if (page != null) {
                 player.openInventory(page);
+                return true;
             }
-            return true;
         }
         return false;
     }

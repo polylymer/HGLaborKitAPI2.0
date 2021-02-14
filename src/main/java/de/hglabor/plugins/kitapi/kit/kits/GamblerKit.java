@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.RandomCollection;
 import org.bukkit.Bukkit;
@@ -62,12 +62,12 @@ public class GamblerKit extends AbstractKit implements Listener {
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        KitPlayer kitPlayer = KitManager.getInstance().getPlayer(player);
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         int tick = 2;
         kitPlayer.activateKitCooldown(this, this.getCooldown());
         GambleWin gambleWin = new GambleWin(kitPlayer, player, 3, tick);
         kitPlayer.putKitAttribute(this, gambleWin);
-        gambleWin.runTaskTimer(KitManager.getInstance().getPlugin(), 0, tick);
+        gambleWin.runTaskTimer(KitApi.getInstance().getPlugin(), 0, tick);
     }
 
     private void initRandomEffects() {
@@ -97,17 +97,17 @@ public class GamblerKit extends AbstractKit implements Listener {
         goodPotionEffects.add("Invisibility", 1, p -> p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, potionDauer, 0)));
 
         RandomCollection<Consumer<Player>> goodItems = new RandomCollection<>();
-        goodItems.add("§6Wood", 1, p -> KitManager.getInstance().giveKitItemsIfSlotEmpty(
-                KitManager.getInstance().getPlayer(p), this,
+        goodItems.add("§6Wood", 1, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(
+                KitApi.getInstance().getPlayer(p), this,
                 Collections.singletonList(new ItemStack(Material.OAK_PLANKS, 10))));
-        goodItems.add("§6Recraft", 1, p -> KitManager.getInstance().giveKitItemsIfSlotEmpty(
-                KitManager.getInstance().getPlayer(p), this,
+        goodItems.add("§6Recraft", 1, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(
+                KitApi.getInstance().getPlayer(p), this,
                 Arrays.asList(
                         new ItemStack(Material.RED_MUSHROOM, 10),
                         new ItemStack(Material.BROWN_MUSHROOM, 10),
                         new ItemStack(Material.BOWL, 10)
                 )));
-        goodItems.add("§9Water Bucket", 1, p -> KitManager.getInstance().giveKitItemsIfSlotEmpty(KitManager.getInstance().getPlayer(p), this,
+        goodItems.add("§9Water Bucket", 1, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(KitApi.getInstance().getPlayer(p), this,
                 Collections.singletonList(new ItemStack(Material.WATER_BUCKET))));
 
         RandomCollection<Consumer<Player>> cantBeClassified = new RandomCollection<>();

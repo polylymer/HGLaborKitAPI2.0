@@ -1,17 +1,15 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -35,7 +33,7 @@ public class DiggerKit extends AbstractKit {
         if (clickedBlock != null) {
             Block block = clickedBlock.getLocation().add(0, 1, 0).getBlock();
             reduceKitItem(event, player);
-            KitPlayer kitPlayer = KitManager.getInstance().getPlayer(event.getPlayer());
+            KitPlayer kitPlayer = KitApi.getInstance().getPlayer(event.getPlayer());
             kitPlayer.activateKitCooldown(this, this.getCooldown());
             new BukkitRunnable() {
                 @Override
@@ -67,7 +65,7 @@ public class DiggerKit extends AbstractKit {
                     player.getWorld().playSound(player.getLocation(), Sound.BLOCK_STONE_BREAK, 10, 1);
                 }
 
-            }.runTaskLater(KitManager.getInstance().getPlugin(), 15);
+            }.runTaskLater(KitApi.getInstance().getPlugin(), 15);
         }
     }
 

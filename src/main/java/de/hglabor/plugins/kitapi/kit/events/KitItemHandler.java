@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.events;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.supplier.KitPlayerSupplier;
 import org.bukkit.Material;
@@ -68,7 +68,7 @@ public abstract class KitItemHandler {
 
     public void avoidKitItemDropOnPlayerDeath(ItemSpawnEvent event) {
         ItemStack itemStack = event.getEntity().getItemStack();
-        for (AbstractKit enabledKit : KitManager.getInstance().getEnabledKits()) {
+        for (AbstractKit enabledKit : KitApi.getInstance().getEnabledKits()) {
             for (ItemStack kitItem : enabledKit.getKitItems()) {
                 if (kitItem.isSimilar(itemStack)) {
                     itemStack.setType(Material.AIR);

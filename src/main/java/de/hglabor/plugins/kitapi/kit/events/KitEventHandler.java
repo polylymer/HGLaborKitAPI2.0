@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.events;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.supplier.KitPlayerSupplier;
 import de.hglabor.utils.localization.Localization;
@@ -36,7 +36,7 @@ public abstract class KitEventHandler extends KitEvents {
             return false;
         }
         //Player is on kitcooldown
-        if (KitManager.getInstance().sendCooldownMessage(kitPlayer, kit)) {
+        if (KitApi.getInstance().sendCooldownMessage(kitPlayer, kit)) {
             return false;
         }
 
@@ -54,7 +54,7 @@ public abstract class KitEventHandler extends KitEvents {
             return false;
         }
 
-        if (!KitManager.getInstance().hasKitItemInAnyHand(player, kit)) {
+        if (!KitApi.getInstance().hasKitItemInAnyHand(player, kit)) {
             return false;
         }
 

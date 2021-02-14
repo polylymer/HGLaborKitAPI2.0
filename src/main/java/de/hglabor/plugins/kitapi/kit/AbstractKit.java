@@ -1,5 +1,6 @@
 package de.hglabor.plugins.kitapi.kit;
 
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.kit.events.KitEvents;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
@@ -78,7 +79,7 @@ public abstract class AbstractKit extends KitEvents {
      * kititem which will be shown in the kitselector
      */
     private void setDisplayItem(ItemStack item) {
-        for (Locale supportedLanguage : KitManager.getInstance().getSupportedLanguages()) {
+        for (Locale supportedLanguage : KitApi.getInstance().getSupportedLanguages()) {
             String[] description = Localization.INSTANCE.getMessage(name.toLowerCase() + "." + "description", supportedLanguage).split("#");
             displayItems.put(supportedLanguage, new ItemBuilder(item.clone()).setName(ChatColor.RED + name).setDescription(description).build());
         }

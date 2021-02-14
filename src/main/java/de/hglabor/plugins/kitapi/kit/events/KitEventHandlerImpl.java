@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.events;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.supplier.KitPlayerSupplier;
 import org.bukkit.entity.LivingEntity;
@@ -127,8 +127,8 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
         if (killer != null) {
             KitPlayer kitPlayer = playerSupplier.getKitPlayer(killer);
             useKit(event, kitPlayer, kit -> kit.onPlayerKillsPlayer(
-                    KitManager.getInstance().getPlayer(killer),
-                    KitManager.getInstance().getPlayer(event.getEntity())));
+                    KitApi.getInstance().getPlayer(killer),
+                    KitApi.getInstance().getPlayer(event.getEntity())));
         }
     }
 

@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.util.Utils;
 import org.bukkit.Bukkit;
@@ -40,7 +40,7 @@ public class JackhammerKit extends AbstractKit {
             //RUNTER
             dig(block.getLocation(), -1, 1);
         }
-        KitManager.getInstance().checkUsesForCooldown(e.getPlayer(), this);
+        KitApi.getInstance().checkUsesForCooldown(e.getPlayer(), this);
     }
 
     /**
@@ -50,7 +50,7 @@ public class JackhammerKit extends AbstractKit {
     private void dig(Location loc, int direction, int delay) {
         final Location currentLocation = loc.clone();
 
-        Bukkit.getScheduler().runTaskTimer(KitManager.getInstance().getPlugin(), bukkitTask -> {
+        Bukkit.getScheduler().runTaskTimer(KitApi.getInstance().getPlugin(), bukkitTask -> {
             if (!Utils.isUnbreakableLaborBlock(currentLocation.getBlock())) {
                 currentLocation.getBlock().setType(Material.AIR);
                 loc.getWorld().spawnParticle(Particle.ASH, currentLocation.clone().add(.5, 0, .5), 100);
