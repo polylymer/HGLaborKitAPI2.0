@@ -50,7 +50,7 @@ public abstract class AbstractKit extends KitEvents {
     /**
      * enable this to activate a kit in a specific phase
      */
-    private boolean isUsable;
+    private boolean isUsable = true;
 
     /**
      * Edgecase since Revive is using Offhand -> conflict with giving kititems

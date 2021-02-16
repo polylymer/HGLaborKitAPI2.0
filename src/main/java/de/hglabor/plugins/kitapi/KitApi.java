@@ -79,7 +79,6 @@ public final class KitApi {
 
     public void register(KitPlayerSupplier kitPlayerSupplier, KitSelector kitSelector, JavaPlugin plugin) {
         KitApiConfig.getInstance().register(plugin.getDataFolder());
-        kitSelector.load();
         this.playerSupplier = kitPlayerSupplier;
         this.kitSelector = kitSelector;
         this.plugin = plugin;
@@ -113,6 +112,7 @@ public final class KitApi {
         register(ManipulationKit.INSTANCE);
         register(EndermageKit.INSTANCE);
         register(ViperKit.INSTANCE);
+        kitSelector.load();
     }
 
     public void setItemSupplier(KitItemSupplier itemSupplier) {
@@ -126,6 +126,7 @@ public final class KitApi {
         kitApiConfig.loadKit(kit);
         kit.setEnabled(kitApiConfig.getBoolean("kit" + "." + kit.getName() + "." + "enabled"));
         kit.setCooldown(kitApiConfig.getInteger("kit" + "." + kit.getName() + "." + "cooldown"));
+        kit.setUsable(kitApiConfig.getBoolean("kit" + "." + kit.getName() + "." + "usable"));
         if (kit instanceof Listener) {
             plugin.getServer().getPluginManager().registerEvents((Listener) kit,plugin);
         }

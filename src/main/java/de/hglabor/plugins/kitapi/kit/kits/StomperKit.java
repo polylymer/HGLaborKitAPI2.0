@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Material;
@@ -43,6 +43,8 @@ public class StomperKit extends AbstractKit {
                             livingEntity.damage(STOMPER_DAMAGE);
                             livingEntity.setVelocity(livingEntity.getVelocity().setY(livingEntity.getVelocity().getY() * STOMPER_DAMAGE / 4));
                         }
+                        kitPlayer.getLastHitInformation().setLastDamager(player);
+                        kitPlayer.getLastHitInformation().setLastDamagerTimestamp(System.currentTimeMillis());
                         playerEntity.playSound(playerEntity.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.05f, 1);
                     }
                 } else {

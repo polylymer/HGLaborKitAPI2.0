@@ -18,10 +18,15 @@ public class LastHitDetection implements Listener {
             KitPlayer enemy = KitApi.getInstance().getPlayer((Player) event.getEntity());
             if (attacker.isValid() && enemy.isValid()) {
                 LastHitInformation lastHitInformation = attacker.getLastHitInformation();
-                lastHitInformation.setPlayerTimeStamp(System.currentTimeMillis());
+                long NOW = System.currentTimeMillis();
+                lastHitInformation.setPlayerTimeStamp(NOW);
                 lastHitInformation.setLastPlayer((Player) event.getEntity());
-                lastHitInformation.setEntityTimeStamp(System.currentTimeMillis());
+                lastHitInformation.setEntityTimeStamp(NOW);
                 lastHitInformation.setLastEntity((LivingEntity) event.getEntity());
+
+                LastHitInformation lastHitInformationEnemy = enemy.getLastHitInformation();
+                lastHitInformationEnemy.setLastDamager((Player) event.getDamager());
+                lastHitInformationEnemy.setLastDamagerTimestamp(NOW);
             }
         } else if (event.getDamager() instanceof Player && event.getEntity() instanceof LivingEntity) {
             KitPlayer attacker = KitApi.getInstance().getPlayer((Player) event.getDamager());

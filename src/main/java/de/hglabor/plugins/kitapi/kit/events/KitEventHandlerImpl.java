@@ -51,7 +51,7 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
 
     @EventHandler
     public void onCraftItem(CraftItemEvent event) {
-        KitPlayer kitPlayer = playerSupplier.getKitPlayer((Player) event.getInventory().getViewers().get(0));
+        KitPlayer kitPlayer = playerSupplier.getKitPlayer((Player) event.getWhoClicked());
         useKit(event, kitPlayer, kit -> kit.onCraftItem(event));
     }
 

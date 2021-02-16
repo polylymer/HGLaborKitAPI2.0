@@ -1,13 +1,14 @@
 package de.hglabor.plugins.kitapi.player;
 
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitProperties;
 import de.hglabor.plugins.kitapi.kit.config.LastHitInformation;
 import de.hglabor.plugins.kitapi.kit.kits.CopyCatKit;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -90,6 +91,16 @@ public abstract class KitPlayerImpl implements KitPlayer {
     }
 
     public abstract boolean isValid();
+
+    @Override
+    public boolean isInCombat() {
+        Optional<Player> lastDamager = lastHitInformation.getLastDamager();
+        if (lastDamager.isPresent()) {
+            KitPlayer damager = KitApi.getInstance().getPlayer(lastDamager.get());
+            return damager.isValid() && lastHitInformation.getLastDamagerTimestamp() + 10 * 1000L > System.currentTimeMillis();
+        }
+        return false;
+    }
 
     @Override
     public void disableKits(boolean kitsDisabled) {

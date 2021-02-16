@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.events;
 
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.supplier.KitPlayerSupplier;
 import de.hglabor.utils.localization.Localization;
@@ -20,6 +20,10 @@ public abstract class KitEventHandler extends KitEvents {
     public boolean canUseKit(Event event, KitPlayer kitPlayer, AbstractKit kit) {
         Player player = Bukkit.getPlayer(kitPlayer.getUUID());
         if (player == null) {
+            return false;
+        }
+
+        if (!kit.isUsable()) {
             return false;
         }
 

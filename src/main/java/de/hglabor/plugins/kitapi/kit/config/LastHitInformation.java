@@ -51,6 +51,10 @@ public class LastHitInformation {
 
     public void setLastDamager(Player lastDamager) { this.lastDamager = lastDamager; }
 
+    public void setLastDamagerTimestamp(long lastDamagerTimestamp) {
+        this.lastDamagerTimestamp = lastDamagerTimestamp;
+    }
+
     public Optional<Player> getLastDamager() { return Optional.ofNullable(lastDamager); }
 
     public void setEntityTimeStamp(long entityTimeStamp) {
