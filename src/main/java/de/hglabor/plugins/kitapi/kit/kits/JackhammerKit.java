@@ -9,7 +9,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import java.util.Collections;
@@ -29,16 +28,20 @@ public class JackhammerKit extends AbstractKit {
 
     @Override
     public void onBlockBreakWithKitItem(BlockBreakEvent e) {
-        Block block = e.getBlock();
-        Material above = block.getRelative(BlockFace.UP).getType();
-        Material below = block.getRelative(BlockFace.DOWN).getType();
+        Location blockLoc = e.getBlock().getLocation();
+        Block above = blockLoc.clone().add(0, 1,0).getBlock();
+        Block below = blockLoc.clone().subtract(0, 1,0).getBlock();
 
-        if (above != Material.AIR && below == Material.AIR) {
-            //HOCH
-            dig(block.getLocation(), 1, 1);
-        } else if (above == Material.AIR) {
-            //RUNTER
-            dig(block.getLocation(), -1, 1);
+        if (above.getType().isAir() || above.getType().getHardness() == 100.0f) {
+            // DOWN
+            dig(blockLoc, -1, 1);
+        } else if (below.getType().isAir() || below.getType().getHardness() == 100.0f) {
+            // UP
+            dig(blockLoc, 1, 1);
+        } else {
+            // UP & DOWN but with half dig speed
+            dig(blockLoc, 1, 2);
+            dig(blockLoc, -1, 2);
         }
         KitApi.getInstance().checkUsesForCooldown(e.getPlayer(), this);
     }
@@ -53,7 +56,7 @@ public class JackhammerKit extends AbstractKit {
         Bukkit.getScheduler().runTaskTimer(KitApi.getInstance().getPlugin(), bukkitTask -> {
             if (!Utils.isUnbreakableLaborBlock(currentLocation.getBlock())) {
                 currentLocation.getBlock().setType(Material.AIR);
-                loc.getWorld().spawnParticle(Particle.ASH, currentLocation.clone().add(.5, 0, .5), 100);
+                loc.getWorld().spawnParticle(Particle.ASH, currentLocation.clone().add(.5, 0, .5), 10);
                 currentLocation.add(0, direction, 0);
                 if (currentLocation.getBlock().getType() == Material.BEDROCK) {
                     bukkitTask.cancel();
