@@ -112,6 +112,7 @@ public final class KitApi {
         register(ManipulationKit.INSTANCE);
         register(EndermageKit.INSTANCE);
         register(ViperKit.INSTANCE);
+        register(LumberjackKit.INSTANCE);
         kitSelector.load();
     }
 
