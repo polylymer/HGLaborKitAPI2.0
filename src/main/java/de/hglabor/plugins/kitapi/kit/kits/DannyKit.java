@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.ChanceUtils;
@@ -35,7 +35,7 @@ public class DannyKit extends AbstractKit {
     @Override
     public void enable(KitPlayer kitPlayer) {
         BukkitTask task;
-        task = Bukkit.getScheduler().runTaskTimer(KitManager.getInstance().getPlugin(), () -> {
+        task = Bukkit.getScheduler().runTaskTimer(KitApi.getInstance().getPlugin(), () -> {
             if (kitPlayer.isValid()) {
                 DannyAction action = DannyAction.values()[new Random().nextInt(DannyAction.values().length)];
                 Player player = Bukkit.getPlayer(kitPlayer.getUUID());

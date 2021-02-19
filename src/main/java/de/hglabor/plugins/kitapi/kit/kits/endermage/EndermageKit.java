@@ -2,11 +2,10 @@ package de.hglabor.plugins.kitapi.kit.kits.endermage;
 
 import com.google.common.collect.ImmutableList;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
-import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
 import org.bukkit.Material;
@@ -44,7 +43,7 @@ public class EndermageKit extends AbstractKit implements Listener {
         Block endermagePortal = event.getClickedBlock();
         if (endermagePortal != null) {
             Player player = event.getPlayer();
-            KitPlayer kitPlayer = KitManager.getInstance().getPlayer(player);
+            KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
 
             if (player.hasMetadata(KitMetaData.INGLADIATOR.getKey())) {
                 return;
@@ -60,7 +59,7 @@ public class EndermageKit extends AbstractKit implements Listener {
             endermagePortal.setType(Material.END_PORTAL_FRAME);
             EndermageSearch newEndermageRunnable = new EndermageSearch(player, endermagePortal, oldBlockData);
             kitPlayer.putKitAttribute(this, newEndermageRunnable,EndermageSearch.class);
-            newEndermageRunnable.runTaskTimer(KitManager.getInstance().getPlugin(), 0, 20);
+            newEndermageRunnable.runTaskTimer(KitApi.getInstance().getPlugin(), 0, 20);
         }
     }
 

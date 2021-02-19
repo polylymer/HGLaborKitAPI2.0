@@ -4,11 +4,10 @@ import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
-import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.plugins.kitapi.util.pathfinder.*;
 import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
@@ -81,8 +80,8 @@ public class ManipulationKit extends AbstractKit implements Listener {
                 return;
             }
 
-            mob.setMetadata(KitMetaData.MANIPULATED_MOB.getKey(), new FixedMetadataValue(KitManager.getInstance().getPlugin(), ""));
-            mob.setMetadata(player.getUniqueId().toString(), new FixedMetadataValue(KitManager.getInstance().getPlugin(), ""));
+            mob.setMetadata(KitMetaData.MANIPULATED_MOB.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
+            mob.setMetadata(player.getUniqueId().toString(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
 
             addMob(player, mob);
             boolean attack = mob.getType() != EntityType.CREEPER && mob.getType() != EntityType.SKELETON;
@@ -146,7 +145,7 @@ public class ManipulationKit extends AbstractKit implements Listener {
     }
 
     private void addMob(Player player, Entity mob) {
-        KitPlayer kitPlayer = KitManager.getInstance().getPlayer(player);
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         Set<UUID> controlledMobs = kitPlayer.getKitAttribute(this);
         controlledMobs.add(mob.getUniqueId());
     }
@@ -154,14 +153,14 @@ public class ManipulationKit extends AbstractKit implements Listener {
     private void removeMob(Mob mob) {
         Player player = getManipulator(mob);
         if (player != null) {
-            KitPlayer kitPlayer = KitManager.getInstance().getPlayer(player);
+            KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
             Set<UUID> controlledMobs = kitPlayer.getKitAttribute(this);
             controlledMobs.remove(mob.getUniqueId());
         }
     }
 
     private int getManipulatedMobAmount(Player player) {
-        KitPlayer kitPlayer = KitManager.getInstance().getPlayer(player);
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         Set<UUID> controlledMobs = kitPlayer.getKitAttribute(this);
         return controlledMobs.size();
     }
@@ -172,7 +171,7 @@ public class ManipulationKit extends AbstractKit implements Listener {
 
     private Player getManipulator(Mob entity) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            KitPlayer kitPlayer = KitManager.getInstance().getPlayer(player);
+            KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
             if (kitPlayer.isValid() && entity.hasMetadata(kitPlayer.getUUID().toString())) {
                 return player;
             }

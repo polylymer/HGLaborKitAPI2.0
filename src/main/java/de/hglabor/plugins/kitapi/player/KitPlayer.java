@@ -32,6 +32,8 @@ public interface KitPlayer {
 
     boolean isValid();
 
+    boolean isInCombat();
+
     void disableKits(boolean shouldDisable);
 
     void activateKitCooldown(AbstractKit kit, int cooldown);
@@ -49,4 +51,6 @@ public interface KitPlayer {
     }
 
     <T> void putKitAttribute(AbstractKit kit, T value, Class<?> clazz);
+
+    String printKits();
 }

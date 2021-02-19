@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.ItemBuilder;
@@ -33,9 +33,9 @@ public class SpitKit extends AbstractKit implements Listener {
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        KitPlayer kitPlayer = KitManager.getInstance().getPlayer(player);
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         Entity entity = player.launchProjectile(LlamaSpit.class);
-        entity.setMetadata(KitMetaData.SPIT_PROJECTILE.getKey(), new FixedMetadataValue(KitManager.getInstance().getPlugin(), ""));
+        entity.setMetadata(KitMetaData.SPIT_PROJECTILE.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
         player.playSound(player.getLocation(), Sound.ENTITY_LLAMA_SPIT, 100, 100);
         kitPlayer.activateKitCooldown(this, this.getCooldown());
     }

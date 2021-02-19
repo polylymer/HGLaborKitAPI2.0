@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.events;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.supplier.KitPlayerSupplier;
 import org.bukkit.entity.LivingEntity;
@@ -18,8 +18,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 public class KitEventHandlerImpl extends KitEventHandler implements Listener {
-    public KitEventHandlerImpl(KitPlayerSupplier playerSupplier) {
-        super(playerSupplier);
+    public KitEventHandlerImpl() {
+        super(KitApi.getInstance().getPlayerSupplier());
     }
 
     @EventHandler
@@ -51,7 +51,7 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
 
     @EventHandler
     public void onCraftItem(CraftItemEvent event) {
-        KitPlayer kitPlayer = playerSupplier.getKitPlayer((Player) event.getInventory().getViewers().get(0));
+        KitPlayer kitPlayer = playerSupplier.getKitPlayer((Player) event.getWhoClicked());
         useKit(event, kitPlayer, kit -> kit.onCraftItem(event));
     }
 
@@ -127,8 +127,8 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
         if (killer != null) {
             KitPlayer kitPlayer = playerSupplier.getKitPlayer(killer);
             useKit(event, kitPlayer, kit -> kit.onPlayerKillsPlayer(
-                    KitManager.getInstance().getPlayer(killer),
-                    KitManager.getInstance().getPlayer(event.getEntity())));
+                    KitApi.getInstance().getPlayer(killer),
+                    KitApi.getInstance().getPlayer(event.getEntity())));
         }
     }
 

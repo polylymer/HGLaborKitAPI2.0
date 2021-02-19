@@ -37,8 +37,8 @@ public final class KitApiConfig {
         try {
             kitConfiguration.addDefault("kit" + "." + kit.getName() + "." + "enabled", kit.isEnabled());
             kitConfiguration.addDefault("kit" + "." + kit.getName() + "." + "cooldown", kit.getCooldown());
+            kitConfiguration.addDefault("kit" + "." + kit.getName() + "." + "usable", kit.isUsable());
             kitConfiguration.options().copyDefaults(true);
-            kitConfiguration.set("kit" + "." + kit.getName() + "." + "cooldown", kit.getCooldown());
             kitConfiguration.save(kitFile);
         } catch (IOException e) {
             e.printStackTrace();

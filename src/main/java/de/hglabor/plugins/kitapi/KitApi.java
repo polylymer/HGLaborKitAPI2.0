@@ -1,11 +1,13 @@
-package de.hglabor.plugins.kitapi.kit;
+package de.hglabor.plugins.kitapi;
 
 import com.google.common.collect.ImmutableMap;
 import de.hglabor.plugins.kitapi.config.KitApiConfig;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
 import de.hglabor.plugins.kitapi.kit.config.KitUses;
 import de.hglabor.plugins.kitapi.kit.kits.*;
 import de.hglabor.plugins.kitapi.kit.kits.endermage.EndermageKit;
+import de.hglabor.plugins.kitapi.kit.selector.KitSelector;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.supplier.KitItemSupplier;
 import de.hglabor.plugins.kitapi.supplier.KitItemSupplierImpl;
@@ -14,6 +16,7 @@ import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,22 +28,23 @@ import java.util.stream.Collectors;
 
 import static de.hglabor.plugins.kitapi.kit.config.KitSettings.USES;
 
-public final class KitManager {
-    private final static KitManager instance = new KitManager();
-    public final List<AbstractKit> kits;
+public final class KitApi {
+    private final static KitApi INSTANCE = new KitApi();
+    private final List<AbstractKit> kits;
     private final List<Locale> supportedLanguages;
+    private KitSelector kitSelector;
     private KitPlayerSupplier playerSupplier;
     private KitItemSupplier itemSupplier;
     private JavaPlugin plugin;
 
-    private KitManager() {
+    private KitApi() {
         this.kits = new ArrayList<>();
         this.itemSupplier = KitItemSupplierImpl.INSTANCE;
         this.supportedLanguages = Arrays.asList(Locale.ENGLISH, Locale.GERMAN);
     }
 
-    public static KitManager getInstance() {
-        return instance;
+    public static KitApi getInstance() {
+        return INSTANCE;
     }
 
     public void checkUsesForCooldown(KitPlayer kitPlayer, AbstractKit kit) {
@@ -73,10 +77,12 @@ public final class KitManager {
         return emptyKitList;
     }
 
-    public void register(KitPlayerSupplier kitPlayerSupplier, JavaPlugin plugin) {
+    public void register(KitPlayerSupplier kitPlayerSupplier, KitSelector kitSelector, JavaPlugin plugin) {
         KitApiConfig.getInstance().register(plugin.getDataFolder());
         this.playerSupplier = kitPlayerSupplier;
+        this.kitSelector = kitSelector;
         this.plugin = plugin;
+        plugin.getServer().getPluginManager().registerEvents(kitSelector,plugin);
         register(MagmaKit.getInstance());
         register(NinjaKit.getInstance());
         register(NoneKit.getInstance());
@@ -107,6 +113,7 @@ public final class KitManager {
         register(EndermageKit.INSTANCE);
         register(ViperKit.INSTANCE);
         register(LumberjackKit.INSTANCE);
+        kitSelector.load();
     }
 
     public void setItemSupplier(KitItemSupplier itemSupplier) {
@@ -120,10 +127,18 @@ public final class KitManager {
         kitApiConfig.loadKit(kit);
         kit.setEnabled(kitApiConfig.getBoolean("kit" + "." + kit.getName() + "." + "enabled"));
         kit.setCooldown(kitApiConfig.getInteger("kit" + "." + kit.getName() + "." + "cooldown"));
+        kit.setUsable(kitApiConfig.getBoolean("kit" + "." + kit.getName() + "." + "usable"));
+        if (kit instanceof Listener) {
+            plugin.getServer().getPluginManager().registerEvents((Listener) kit,plugin);
+        }
     }
 
     public List<AbstractKit> getEnabledKits() {
         return kits.stream().filter(AbstractKit::isEnabled).collect(Collectors.toList());
+    }
+
+    public List<AbstractKit> getAllKits() {
+        return kits;
     }
 
     public AbstractKit getAlphabeticallyKit(int index) {
@@ -176,6 +191,14 @@ public final class KitManager {
 
     public JavaPlugin getPlugin() {
         return plugin;
+    }
+
+    public KitSelector getKitSelector() {
+        return kitSelector;
+    }
+
+    public KitPlayerSupplier getPlayerSupplier() {
+        return playerSupplier;
     }
 
     public boolean sendCooldownMessage(KitPlayer kitPlayer, AbstractKit kit) {

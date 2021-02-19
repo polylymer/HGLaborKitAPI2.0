@@ -7,7 +7,7 @@ import com.sk89q.worldedit.regions.AbstractRegion;
 import com.sk89q.worldedit.regions.CylinderRegion;
 import com.sk89q.worldedit.regions.Region;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
@@ -64,8 +64,8 @@ public class GladiatorKit extends AbstractKit implements Listener {
             return;
         }
 
-        enemy.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitManager.getInstance().getPlugin(), ""));
-        player.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitManager.getInstance().getPlugin(), ""));
+        enemy.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
+        player.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
 
         Region gladiatorRegion = getGladiatorLocation(player.getLocation().clone().set(player.getLocation().getX(), 90, player.getLocation().getZ()), radius, height);
         Location center = BukkitAdapter.adapt(world, gladiatorRegion.getCenter());
@@ -77,13 +77,13 @@ public class GladiatorKit extends AbstractKit implements Listener {
 
         for (BlockVector3 blockVector3 : gladiatorRegion) {
             Block block = world.getBlockAt(BukkitAdapter.adapt(world, blockVector3));
-            block.setMetadata(KitMetaData.GLADIATOR_BLOCK.getKey(), new FixedMetadataValue(KitManager.getInstance().getPlugin(), ""));
+            block.setMetadata(KitMetaData.GLADIATOR_BLOCK.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
         }
 
-        KitPlayer kitPlayer = KitManager.getInstance().getPlayer(player);
-        GladiatorFight gladiatorFight = new GladiatorFight(gladiatorRegion, kitPlayer, KitManager.getInstance().getPlayer(enemy), radius, height);
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
+        GladiatorFight gladiatorFight = new GladiatorFight(gladiatorRegion, kitPlayer, KitApi.getInstance().getPlayer(enemy), radius, height);
         kitPlayer.putKitAttribute(this, gladiatorFight);
-        gladiatorFight.runTaskTimer(KitManager.getInstance().getPlugin(), 0, 20);
+        gladiatorFight.runTaskTimer(KitApi.getInstance().getPlugin(), 0, 20);
     }
 
 
@@ -204,8 +204,8 @@ public class GladiatorKit extends AbstractKit implements Listener {
         private void endFight() {
             gladiatorKitOwner.putKitAttribute(GladiatorKit.this, null);
 
-            gladiator.removeMetadata(KitMetaData.INGLADIATOR.getKey(), KitManager.getInstance().getPlugin());
-            enemy.removeMetadata(KitMetaData.INGLADIATOR.getKey(), KitManager.getInstance().getPlugin());
+            gladiator.removeMetadata(KitMetaData.INGLADIATOR.getKey(), KitApi.getInstance().getPlugin());
+            enemy.removeMetadata(KitMetaData.INGLADIATOR.getKey(), KitApi.getInstance().getPlugin());
 
             gladiator.removePotionEffect(PotionEffectType.WITHER);
             enemy.removePotionEffect(PotionEffectType.WITHER);

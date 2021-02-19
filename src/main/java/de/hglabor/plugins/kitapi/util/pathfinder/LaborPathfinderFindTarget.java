@@ -1,6 +1,6 @@
 package de.hglabor.plugins.kitapi.util.pathfinder;
 
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import net.minecraft.server.v1_16_R3.EntityInsentient;
 import net.minecraft.server.v1_16_R3.EntityPlayer;
@@ -24,7 +24,7 @@ public class LaborPathfinderFindTarget extends PathfinderGoal {
         this.mob = mob;
         this.safe = safe;
         this.attack = attack;
-        this.kitPlayer = KitManager.getInstance().getPlayer(Bukkit.getPlayer(safe));
+        this.kitPlayer = KitApi.getInstance().getPlayer(Bukkit.getPlayer(safe));
     }
 
     @Override

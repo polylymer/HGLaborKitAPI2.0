@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Location;
@@ -48,14 +48,14 @@ public class ThorKit extends AbstractKit implements Listener {
             } else {
                 Block block = highestBlockLocation.add(0, 1, 0).getBlock();
                 block.setType(Material.NETHERRACK);
-                block.setMetadata(KitMetaData.THOR_BLOCK.getKey(), new FixedMetadataValue(KitManager.getInstance().getPlugin(), ""));
+                block.setMetadata(KitMetaData.THOR_BLOCK.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
             }
         }
         if (!ifExploded)
             world.getHighestBlockAt(location).getLocation().add(0, 1, 0).getBlock().setType(Material.FIRE);
         else
             highestBlock.getLocation().getWorld().createExplosion(highestBlockLocation, 4, true, true, event.getPlayer());
-        KitPlayer kitPlayer = KitManager.getInstance().getPlayer(event.getPlayer());
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(event.getPlayer());
         kitPlayer.activateKitCooldown(this, this.getCooldown());
     }
 

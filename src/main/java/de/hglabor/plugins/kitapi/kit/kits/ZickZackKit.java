@@ -2,7 +2,7 @@ package de.hglabor.plugins.kitapi.kit.kits;
 
 import com.google.common.collect.ImmutableList;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Material;
@@ -53,7 +53,7 @@ public class ZickZackKit extends AbstractKit {
         if (!(attacker instanceof Player)) {
             return;
         }
-        KitPlayer kitPlayer = KitManager.getInstance().getPlayer(player);
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         int likelihood = getSetting(KitSettings.LIKELIHOOD);
         Map<UUID, Integer> combo = kitPlayer.getKitAttribute(this);
         if (combo.containsKey(attacker.getUniqueId())) {

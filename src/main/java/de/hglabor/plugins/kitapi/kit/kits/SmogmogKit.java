@@ -1,10 +1,9 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
-import de.hglabor.utils.localization.Localization;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -42,7 +41,7 @@ public class SmogmogKit extends AbstractKit implements Listener {
         cloud.setRadius(((Integer) getSetting(KitSettings.RADIUS)).floatValue());
         cloud.setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE, false, false));
         cloud.setRadius(((Integer) getSetting(KitSettings.RADIUS)).floatValue());
-        KitPlayer kitPlayer = KitManager.getInstance().getPlayer(e.getPlayer());
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(e.getPlayer());
         kitPlayer.activateKitCooldown(this, this.getCooldown());
         e.getPlayer().getLocation().getWorld().playSound(e.getPlayer().getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 0.2f, 0);
     }

@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -27,6 +27,6 @@ public class BlinkKit extends AbstractKit {
         player.teleport(player.getLocation().add(player.getLocation().getDirection().normalize().multiply((Integer) getSetting(KitSettings.RADIUS))));
         player.getLocation().subtract(0, 1, 0).getBlock().setType(Material.OAK_LEAVES);
         player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 100, 100);
-        KitManager.getInstance().checkUsesForCooldown(player, this);
+        KitApi.getInstance().checkUsesForCooldown(player, this);
     }
 }

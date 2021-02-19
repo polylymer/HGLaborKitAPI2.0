@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.supplier;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.KitManager;
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -66,7 +66,7 @@ public class KitItemSupplierImpl implements KitItemSupplier {
                     cancel();
                 }
             }
-        }.runTaskTimer(KitManager.getInstance().getPlugin(), 0, 20);
+        }.runTaskTimer(KitApi.getInstance().getPlugin(), 0, 20);
     }
 
     private void addKitItemsToInventory(KitPlayer kitPlayer, AbstractKit kit, List<ItemStack> extraItems) {
@@ -104,7 +104,7 @@ public class KitItemSupplierImpl implements KitItemSupplier {
                     cancel();
                 }
             }
-        }.runTaskTimer(KitManager.getInstance().getPlugin(), 0, 20);
+        }.runTaskTimer(KitApi.getInstance().getPlugin(), 0, 20);
     }
 
     private void addItemsToInventory(KitPlayer kitPlayer, List<ItemStack> itemStacks) {
@@ -133,6 +133,6 @@ public class KitItemSupplierImpl implements KitItemSupplier {
                     cancel();
                 }
             }
-        }.runTaskTimer(KitManager.getInstance().getPlugin(), 0, 20);
+        }.runTaskTimer(KitApi.getInstance().getPlugin(), 0, 20);
     }
 }
