@@ -8,6 +8,7 @@ import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 
@@ -126,6 +127,10 @@ public abstract class AbstractKit extends KitEvents {
 
     public void setMainKitItem(Material material, String name) {
         mainKitItem = new ItemBuilder(material).setDescription(KIT_ITEM_DESC).setName(ChatColor.BLUE + name).build();
+    }
+
+    public void setMainKitItem(ItemStack item) {
+        mainKitItem = new ItemBuilder(item.clone()).setDescription(KIT_ITEM_DESC).build();
     }
 
     public ItemStack getMainKitItem() {
