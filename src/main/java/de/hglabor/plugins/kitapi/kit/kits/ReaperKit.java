@@ -21,8 +21,9 @@ public class ReaperKit extends AbstractKit {
         super("Reaper", Material.WITHER_SKELETON_SKULL, 15);
         addSetting(KitSettings.USES, 2);
         setMainKitItem(getDisplayMaterial());
-        addSetting(KitSettings.LIKELIHOOD,22);
+        addSetting(KitSettings.LIKELIHOOD,100);
         addSetting(KitSettings.EFFECT_DURATION,3);
+        addSetting(KitSettings.EFFECT_MULTIPLIER,1);
         addEvents(Arrays.asList(PlayerInteractEvent.class, EntityDamageByEntityEvent.class));
     }
 
