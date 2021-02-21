@@ -23,7 +23,7 @@ public class ReaperKit extends AbstractKit {
     private ReaperKit() {
         super("Reaper", Material.WITHER_SKELETON_SKULL, 15);
         addSetting(KitSettings.USES, 2);
-        setMainKitItem(new ItemBuilder(Material.STONE_HOE).setEnchantment(Enchantment.DAMAGE_ALL, 3).setUnbreakable(true).build());
+        setMainKitItem(new ItemBuilder(Material.STONE_HOE).setEnchantment(Enchantment.VANISHING_CURSE, 1).setUnbreakable(true).build());
         addSetting(KitSettings.LIKELIHOOD, 100);
         addSetting(KitSettings.EFFECT_DURATION, 3);
         addSetting(KitSettings.EFFECT_MULTIPLIER, 1);
