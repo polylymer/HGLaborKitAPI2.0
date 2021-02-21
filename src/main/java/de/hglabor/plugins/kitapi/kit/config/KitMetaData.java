@@ -5,6 +5,7 @@ public enum KitMetaData {
     GLADIATOR_BLOCK,
     HAS_BEEN_MAGED,
     SWITCHER_BALL,
+    GRAPPLER_ARROW,
     FEAST_BLOCK,
     UNBREAKABLE_BLOCK,
     SPIT_SOUP,

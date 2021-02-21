@@ -7,6 +7,7 @@ import de.hglabor.plugins.kitapi.kit.config.Cooldown;
 import de.hglabor.plugins.kitapi.kit.config.KitUses;
 import de.hglabor.plugins.kitapi.kit.kits.*;
 import de.hglabor.plugins.kitapi.kit.kits.endermage.EndermageKit;
+import de.hglabor.plugins.kitapi.kit.kits.grappler.GrapplerKit;
 import de.hglabor.plugins.kitapi.kit.selector.KitSelector;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.supplier.KitItemSupplier;
@@ -114,6 +115,7 @@ public final class KitApi {
         register(ViperKit.INSTANCE);
         register(LumberjackKit.INSTANCE);
         register(ReaperKit.INSTANCE);
+        register(GrapplerKit.INSTANCE);
         kitSelector.load();
     }
 

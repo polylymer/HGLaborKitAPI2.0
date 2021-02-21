@@ -33,9 +33,6 @@ public class SwitcherKit extends AbstractKit implements Listener {
 
     @Override
     public void onProjectileLaunch(ProjectileLaunchEvent e) {
-        if (!(e.getEntity().getShooter() instanceof Player)) {
-            return;
-        }
         e.getEntity().setMetadata(KitMetaData.SWITCHER_BALL.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
     }
 
