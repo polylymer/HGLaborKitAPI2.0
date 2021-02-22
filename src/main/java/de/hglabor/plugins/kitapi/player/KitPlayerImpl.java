@@ -20,6 +20,7 @@ public abstract class KitPlayerImpl implements KitPlayer {
     protected final Map<KitMetaData, KitProperties> kitProperties;
     protected final LastHitInformation lastHitInformation;
     protected boolean kitsDisabled;
+    protected boolean inInventory;
 
     public KitPlayerImpl(UUID uuid) {
         this.uuid = uuid;
@@ -133,6 +134,16 @@ public abstract class KitPlayerImpl implements KitPlayer {
             kitAttributes.put(kit, new HashMap<>());
         }
         kitAttributes.get(kit).put(clazz, t);
+    }
+
+    @Override
+    public boolean isInInventory() {
+        return inInventory;
+    }
+
+    @Override
+    public void setInInventory(boolean value) {
+        this.inInventory = value;
     }
 
     public void resetKitAttributes() {
