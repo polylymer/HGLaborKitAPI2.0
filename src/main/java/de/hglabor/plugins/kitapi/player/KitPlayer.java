@@ -18,6 +18,10 @@ public interface KitPlayer {
 
     boolean areKitsDisabled();
 
+    boolean isInInventory();
+
+    void setInInventory(boolean value);
+
     void setKit(AbstractKit kit, int index);
 
     boolean hasKitCooldown(AbstractKit kit);
