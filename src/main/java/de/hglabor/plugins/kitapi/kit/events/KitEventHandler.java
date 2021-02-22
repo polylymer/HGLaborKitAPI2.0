@@ -32,9 +32,13 @@ public abstract class KitEventHandler extends KitEvents {
             return false;
         }
 
+        Logger.debug(String.format("%s, %s", kit.getName(), event.getEventName()));
+
         if (!kit.getKitEvents().contains(event.getClass())) {
-            return false;
+            //Complete Garbage I hope this doesnt break something
+            if (kit.getKitEvents().stream().noneMatch(kitEvent -> event.getClass().getSuperclass().equals(kitEvent))) return false;
         }
+
         //Player doesnt have kit
         if (!kitPlayer.hasKit(kit)) {
             return false;

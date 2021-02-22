@@ -116,6 +116,8 @@ public final class KitApi {
         register(LumberjackKit.INSTANCE);
         register(ReaperKit.INSTANCE);
         register(GrapplerKit.INSTANCE);
+        register(ClawKit.INSTANCE);
+        register(AutomaticKit.INSTANCE);
         kitSelector.load();
     }
 
