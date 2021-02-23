@@ -6,8 +6,8 @@ import com.sk89q.worldedit.math.Vector2;
 import com.sk89q.worldedit.regions.AbstractRegion;
 import com.sk89q.worldedit.regions.CylinderRegion;
 import com.sk89q.worldedit.regions.Region;
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
@@ -38,7 +38,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
         super("Gladiator", Material.IRON_BARS);
         setMainKitItem(getDisplayMaterial());
         addSetting(MATERIAL, Material.GLASS);
-        addSetting(KitSettings.RADIUS, 11);
+        addSetting(KitSettings.RADIUS, 15);
         addSetting(KitSettings.HEIGHT, 10);
         addEvents(Collections.singletonList(PlayerInteractAtEntityEvent.class));
     }
@@ -67,7 +67,8 @@ public class GladiatorKit extends AbstractKit implements Listener {
         enemy.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
         player.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
 
-        Region gladiatorRegion = getGladiatorLocation(player.getLocation().clone().set(player.getLocation().getX(), 90, player.getLocation().getZ()), radius, height);
+        //Adding +1 so player cant build up and escape
+        Region gladiatorRegion = getGladiatorLocation(player.getLocation().clone().set(player.getLocation().getX(), 90, player.getLocation().getZ()), radius, height + 1);
         Location center = BukkitAdapter.adapt(world, gladiatorRegion.getCenter());
 
         WorldEditUtils.createCylinder(player.getWorld(), center, radius - 1, true, 1, material);
@@ -168,6 +169,10 @@ public class GladiatorKit extends AbstractKit implements Listener {
         }
 
         public void init() {
+            gladiatorKitOwner.getLastHitInformation().setLastPlayer(enemy);
+            gladiatorKitOwner.getLastHitInformation().setPlayerTimeStamp(System.currentTimeMillis());
+            enemyKitOwner.getLastHitInformation().setLastDamager(gladiator);
+            enemyKitOwner.getLastHitInformation().setLastDamagerTimestamp(System.currentTimeMillis());
             gladiator.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 40, 20));
             enemy.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 40, 20));
             gladiator.teleport(new Location(world, center.getX() + radius / 2D, center.getY() + 1, center.getZ(), 90, 0));
@@ -184,7 +189,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
                 endFight();
                 return;
             }
-            if (gladiator.getLocation().getY() < center.getY() || enemy.getLocation().getY() < center.getY()) {	
+            if (gladiator.getLocation().getY() < center.getY() || enemy.getLocation().getY() < center.getY()) {
                 endFight();
                 return;
             }
@@ -229,18 +234,10 @@ public class GladiatorKit extends AbstractKit implements Listener {
 
         private void damageIntruders() {
             for (Player unknownPlayer : Bukkit.getOnlinePlayers()) {
-
-                if (!unknownPlayer.getGameMode().equals(GameMode.SURVIVAL)) {
-                    continue;
-                }
-
-                if (unknownPlayer == gladiator || unknownPlayer == enemy) {
-                    continue;
-                }
-
-                if (region.contains(BukkitAdapter.asBlockVector(unknownPlayer.getLocation()))) {
+                if (!unknownPlayer.getGameMode().equals(GameMode.SURVIVAL)) continue;
+                if (unknownPlayer == gladiator || unknownPlayer == enemy) continue;
+                if (region.contains(BukkitAdapter.asBlockVector(unknownPlayer.getLocation())))
                     unknownPlayer.damage(5);
-                }
             }
         }
     }
