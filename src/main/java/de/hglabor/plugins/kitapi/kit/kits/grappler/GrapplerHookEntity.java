@@ -1,7 +1,5 @@
 package de.hglabor.plugins.kitapi.kit.kits.grappler;
 
-import de.hglabor.plugins.kitapi.util.Logger;
-import net.minecraft.server.v1_16_R3.Entity;
 import net.minecraft.server.v1_16_R3.EntityFishingHook;
 import net.minecraft.server.v1_16_R3.EntityHuman;
 import net.minecraft.server.v1_16_R3.World;

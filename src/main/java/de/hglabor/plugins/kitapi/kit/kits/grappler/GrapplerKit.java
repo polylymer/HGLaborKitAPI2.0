@@ -5,6 +5,8 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
+import de.hglabor.utils.localization.Localization;
+import de.hglabor.utils.noriskutils.ChatUtils;
 import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,18 +28,21 @@ import org.bukkit.inventory.meta.CrossbowMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class GrapplerKit extends AbstractKit implements Listener {
     public final static GrapplerKit INSTANCE = new GrapplerKit();
     private final ItemStack grapplerArrow;
+    private final Map<UUID, Long> onCooldown;
+    private final int spamCooldown;
 
     private GrapplerKit() {
-        super("Grappler", Material.CROSSBOW, 60);
+        super("Grappler", Material.CROSSBOW, 45);
         this.grapplerArrow = new ItemBuilder(Material.ARROW).setName("Grappler Arrow").build();
+        this.onCooldown = new HashMap<>();
+        this.spamCooldown = 2;
         setMainKitItem(new ItemBuilder(Material.CROSSBOW).setUnbreakable(true).build());
-        addSetting(KitSettings.USES, 3);
+        addSetting(KitSettings.USES, 2);
         addEvents(List.of(ProjectileLaunchEvent.class, PlayerInteractEvent.class));
     }
 
@@ -48,10 +53,12 @@ public class GrapplerKit extends AbstractKit implements Listener {
             Player shooter = (Player) event.getEntity().getShooter();
             if (shooter != null) {
                 removeGrapplerHook(projectile);
-                Vector vector = getVectorForPoints(shooter.getLocation(), event.getEntity().getLocation());
+                boolean inCombat = projectile.hasMetadata(KitMetaData.KITPLAYER_IS_IN_COMBAT.getKey());
+                Vector vector = getVectorForPoints(shooter.getLocation(), event.getEntity().getLocation(), inCombat);
                 Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> {
                     shooter.setGravity(true);
                     shooter.setVelocity(vector);
+                    if (inCombat) shooter.sendMessage(Localization.INSTANCE.getMessage("grappler.inCombat",ChatUtils.getPlayerLocale(shooter)));
                 }, 0);
             }
             event.setCancelled(true);
@@ -74,13 +81,20 @@ public class GrapplerKit extends AbstractKit implements Listener {
             GrapplerHookEntity grapplerHookEntity = new GrapplerHookEntity(((CraftPlayer) player).getHandle(), ((CraftWorld) player.getWorld()).getHandle(), 1, 1);
             ((CraftWorld) player.getWorld()).getHandle().addEntity(grapplerHookEntity);
             projectile.addPassenger(grapplerHookEntity.getBukkitEntity());
-            KitApi.getInstance().checkUsesForCooldown(player, this);
+            if (kitPlayer.isInCombat()) {
+                projectile.setMetadata(KitMetaData.KITPLAYER_IS_IN_COMBAT.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
+                KitApi.getInstance().checkUsesForCooldown(player, this);
+            }
         }
     }
 
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+        if (hasInternalCooldown(player)) {
+            player.sendMessage(Localization.INSTANCE.getMessage("kit.spamPrevention", ChatUtils.getPlayerLocale(player)));
+            return;
+        }
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         getCrossBow(player).ifPresent(itemStack -> {
             CrossbowMeta crossbowMeta = (CrossbowMeta) itemStack.getItemMeta();
@@ -88,15 +102,30 @@ public class GrapplerKit extends AbstractKit implements Listener {
                 crossbowMeta.addChargedProjectile(grapplerArrow);
                 kitPlayer.putKitAttribute(this, true, Boolean.class);
                 itemStack.setItemMeta(crossbowMeta);
+                onCooldown.put(player.getUniqueId(), System.currentTimeMillis() + spamCooldown * 1000L);
             }
         });
     }
 
-    private Vector getVectorForPoints(Location l1, Location l2) {
+    private boolean hasInternalCooldown(Player player) {
+        if (onCooldown.containsKey(player.getUniqueId())) {
+            Long coolDown = onCooldown.get(player.getUniqueId());
+            if (System.currentTimeMillis() > coolDown) {
+                onCooldown.remove(player.getUniqueId());
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private Vector getVectorForPoints(Location l1, Location l2, boolean inCombat) {
+        final double boost = inCombat ? 0.1 : 1.0;
+        final double height = inCombat ? -0.008 : -0.08;
         double t = l2.distance(l1);
-        double vX = (1.0 + 0.07 * t) * (l2.getX() - l1.getX()) / t;
-        double vY = (1.0 + 0.03 * t) * (l2.getY() - l1.getY()) / t - 0.5 * -0.08 * t;
-        double vZ = (1.0 + 0.07 * t) * (l2.getZ() - l1.getZ()) / t;
+        double vX = (boost + 0.07 * t) * (l2.getX() - l1.getX()) / t;
+        double vY = (boost + 0.03 * t) * (l2.getY() - l1.getY()) / t - 0.5 * height * t;
+        double vZ = (boost + 0.07 * t) * (l2.getZ() - l1.getZ()) / t;
         return new Vector(vX, vY, vZ);
     }
 

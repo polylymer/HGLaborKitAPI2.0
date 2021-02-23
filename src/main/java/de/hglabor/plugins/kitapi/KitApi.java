@@ -6,6 +6,7 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
 import de.hglabor.plugins.kitapi.kit.config.KitUses;
 import de.hglabor.plugins.kitapi.kit.kits.*;
+import de.hglabor.plugins.kitapi.kit.kits.beam.BeamKit;
 import de.hglabor.plugins.kitapi.kit.kits.endermage.EndermageKit;
 import de.hglabor.plugins.kitapi.kit.kits.grappler.GrapplerKit;
 import de.hglabor.plugins.kitapi.kit.selector.KitSelector;
@@ -118,6 +119,7 @@ public final class KitApi {
         register(GrapplerKit.INSTANCE);
         register(ClawKit.INSTANCE);
         register(AutomaticKit.INSTANCE);
+      //  register(BeamKit.INSTANCE);
         kitSelector.load();
     }
 
@@ -210,9 +212,9 @@ public final class KitApi {
         if (kit.getCooldown() > 0) {
             Cooldown kitCooldown = kitPlayer.getKitCooldown(kit);
             Player player = Bukkit.getPlayer(kitPlayer.getUUID());
+            if (player == null) return false;
             if (kitCooldown.hasCooldown()) {
                 long cooldown = (kitCooldown.getStartTime() + (kit.getCooldown() * 1000L + kitCooldown.getAdditionalTime() * 1000L)) - System.currentTimeMillis();
-                assert player != null;
                 if (kit.getMainKitItem() != null && hasKitItemInAnyHand(player, kit)) {
                     player.sendActionBar(Localization.INSTANCE.getMessage("kit.cooldown",
                             ImmutableMap.of("numberInSeconds", String.valueOf((cooldown) / 1000D)),
