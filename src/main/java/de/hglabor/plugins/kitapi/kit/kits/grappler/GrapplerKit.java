@@ -56,9 +56,13 @@ public class GrapplerKit extends AbstractKit implements Listener {
                 boolean inCombat = projectile.hasMetadata(KitMetaData.KITPLAYER_IS_IN_COMBAT.getKey());
                 Vector vector = getVectorForPoints(shooter.getLocation(), event.getEntity().getLocation(), inCombat);
                 Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> {
+                    KitPlayer player = KitApi.getInstance().getPlayer(shooter);
+                    if (!player.isValid())
+                        return;
                     shooter.setGravity(true);
                     shooter.setVelocity(vector);
-                    if (inCombat) shooter.sendMessage(Localization.INSTANCE.getMessage("grappler.inCombat",ChatUtils.getPlayerLocale(shooter)));
+                    if (inCombat)
+                        shooter.sendMessage(Localization.INSTANCE.getMessage("grappler.inCombat", ChatUtils.getPlayerLocale(shooter)));
                 }, 0);
             }
             event.setCancelled(true);
