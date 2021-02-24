@@ -226,6 +226,11 @@ public class GladiatorKit extends AbstractKit implements Listener {
                 enemy.teleport(oldLocationEnemy);
             }
 
+            for (BlockVector3 blockVector3 : region) {
+                Block block = world.getBlockAt(BukkitAdapter.adapt(world, blockVector3));
+                block.removeMetadata(KitMetaData.GLADIATOR_BLOCK.getKey(), KitApi.getInstance().getPlugin());
+            }
+
             gladiatorKitOwner.activateKitCooldown(GladiatorKit.this, GladiatorKit.this.getCooldown());
 
             WorldEditUtils.createCylinder(world, center, radius, true, height, Material.AIR);
