@@ -25,14 +25,14 @@ public class StomperKit extends AbstractKit {
     public void onEntityDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player) {
             if (!event.getCause().equals(EntityDamageEvent.DamageCause.FALL)) return;
-            Player player = (Player) event.getEntity();
+            Player stomper = (Player) event.getEntity();
             final double STOMPER_DAMAGE = event.getDamage();
-            player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1, 1);
+            stomper.playSound(stomper.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1, 1);
             if (STOMPER_DAMAGE > 4) {
                 event.setDamage(4);
             }
-            for (LivingEntity livingEntity : player.getWorld().getNearbyEntitiesByType(LivingEntity.class, player.getLocation(), ((Integer) getSetting(KitSettings.RADIUS)).doubleValue())) {
-                if (livingEntity == player) {
+            for (LivingEntity livingEntity : stomper.getWorld().getNearbyEntitiesByType(LivingEntity.class, stomper.getLocation(), ((Integer) getSetting(KitSettings.RADIUS)).doubleValue())) {
+                if (livingEntity == stomper) {
                     continue;
                 }
                 if (livingEntity instanceof Player) {
@@ -40,15 +40,15 @@ public class StomperKit extends AbstractKit {
                     KitPlayer kitPlayer = KitApi.getInstance().getPlayer(playerEntity);
                     if (kitPlayer.isValid()) {
                         if (!playerEntity.isSneaking()) {
-                            livingEntity.damage(STOMPER_DAMAGE);
+                            livingEntity.damage(STOMPER_DAMAGE, stomper);
                             livingEntity.setVelocity(livingEntity.getVelocity().setY(livingEntity.getVelocity().getY() * STOMPER_DAMAGE / 4));
                         }
-                        kitPlayer.getLastHitInformation().setLastDamager(player);
+                        kitPlayer.getLastHitInformation().setLastDamager(stomper);
                         kitPlayer.getLastHitInformation().setLastDamagerTimestamp(System.currentTimeMillis());
                         playerEntity.playSound(playerEntity.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.05f, 1);
                     }
                 } else {
-                    livingEntity.damage(STOMPER_DAMAGE);
+                    livingEntity.damage(STOMPER_DAMAGE, stomper);
                     livingEntity.setVelocity(livingEntity.getVelocity().setY(livingEntity.getVelocity().getY() * STOMPER_DAMAGE / 4));
                 }
             }
