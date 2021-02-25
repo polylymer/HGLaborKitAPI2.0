@@ -5,6 +5,7 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.LivingEntity;
@@ -37,6 +38,10 @@ public class AnchorKit extends AbstractKit {
 
     @Override
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
+        if (entity instanceof Player) {
+            ((Player) entity).playSound(entity.getLocation(), Sound.BLOCK_ANVIL_HIT, 1, 1);
+        }
+        attacker.getBukkitPlayer().ifPresent(player -> player.playSound(entity.getLocation(), Sound.BLOCK_ANVIL_HIT, 1, 1));
         setKnockbackAttribute(entity);
         Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> resetKnockbackAttribute(entity), 1);
     }
