@@ -122,6 +122,8 @@ public final class KitApi {
         register(AnchorKit.INSTANCE);
         register(BarbarianKit.INSTANCE);
         register(TurtleKit.INSTANCE);
+        register(GrandpaKit.INSTANCE);
+        register(BerserkerKit.INSTANCE);
       //  register(BeamKit.INSTANCE);
         kitSelector.load();
     }

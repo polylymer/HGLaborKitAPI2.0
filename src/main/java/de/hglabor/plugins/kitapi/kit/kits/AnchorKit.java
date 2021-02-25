@@ -22,7 +22,7 @@ public class AnchorKit extends AbstractKit {
 
     private AnchorKit() {
         super("Anchor", Material.ANVIL);
-        Collections.singletonList(EntityDamageByEntityEvent.class);
+        addEvents(Collections.singletonList(EntityDamageByEntityEvent.class));
     }
 
     @Override
