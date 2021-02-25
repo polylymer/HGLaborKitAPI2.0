@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.supplier;
 
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -17,6 +17,7 @@ public class KitItemSupplierImpl implements KitItemSupplier {
     private KitItemSupplierImpl() {
     }
 
+
     @Override
     public void giveKitItems(KitPlayer kitPlayer, AbstractKit abstractKit) {
         addKitItemsToInventory(kitPlayer, abstractKit);
@@ -30,6 +31,16 @@ public class KitItemSupplierImpl implements KitItemSupplier {
     @Override
     public void giveItems(KitPlayer kitPlayer, List<ItemStack> list) {
         addItemsToInventory(kitPlayer, list);
+    }
+
+    @Override
+    public void giveKitItemsDirectly(KitPlayer kitPlayer, AbstractKit kit) {
+        Player player = Bukkit.getPlayer(kitPlayer.getUUID());
+        if (player != null) if (kit.isUsingOffHand()) {
+            player.getInventory().setItemInOffHand(kit.getMainKitItem());
+        } else {
+            kit.getKitItems().forEach(kitItem -> player.getInventory().addItem(kitItem));
+        }
     }
 
     private void addKitItemsToInventory(KitPlayer kitPlayer, AbstractKit kit) {
