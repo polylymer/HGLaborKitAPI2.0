@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,10 +23,11 @@ import java.util.UUID;
 public class BarbarianKit extends AbstractKit {
     public static final BarbarianKit INSTANCE = new BarbarianKit();
 
-    Map<UUID, Integer> playerBarbarianLevel;
+    private final Map<UUID, Integer> playerBarbarianLevel;
 
     private BarbarianKit() {
         super("Barbarian", Material.WOODEN_SWORD);
+        playerBarbarianLevel = new HashMap<>();
         setMainKitItem(new ItemBuilder(Material.WOODEN_SWORD).setLocalizedName(this.getName()).setUnbreakable(true).build());
         addEvents(Collections.singletonList(PlayerDeathEvent.class));
     }
