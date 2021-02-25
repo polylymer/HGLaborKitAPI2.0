@@ -5,8 +5,10 @@ import de.hglabor.plugins.kitapi.kit.config.Cooldown;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitProperties;
 import de.hglabor.plugins.kitapi.kit.config.LastHitInformation;
+import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface KitPlayer {
@@ -33,6 +35,8 @@ public interface KitPlayer {
     <T extends KitProperties> void putKitPropety(KitMetaData key, T property);
 
     UUID getUUID();
+
+    Optional<Player> getBukkitPlayer();
 
     boolean isValid();
 
