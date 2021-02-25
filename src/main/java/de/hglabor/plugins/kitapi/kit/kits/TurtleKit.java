@@ -17,7 +17,7 @@ import java.util.Collections;
 public class TurtleKit extends AbstractKit {
     public static final TurtleKit INSTANCE = new TurtleKit();
 
-    protected TurtleKit() {
+    private TurtleKit() {
         super("Turtle", Material.TURTLE_HELMET);
         addEvents(Collections.singletonList(EntityDamageByEntityEvent.class));
     }
