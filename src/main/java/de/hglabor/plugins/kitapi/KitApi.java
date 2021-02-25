@@ -120,6 +120,7 @@ public final class KitApi {
         register(ClawKit.INSTANCE);
         register(AutomaticKit.INSTANCE);
         register(AnchorKit.INSTANCE);
+        register(BarbarianKit.INSTANCE);
       //  register(BeamKit.INSTANCE);
         kitSelector.load();
     }
