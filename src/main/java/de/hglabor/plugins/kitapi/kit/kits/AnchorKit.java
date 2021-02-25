@@ -6,6 +6,7 @@ import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -16,7 +17,6 @@ import java.util.Collections;
  * @author Hotkeyyy
  * @since 2021/02/25
  */
-
 public class AnchorKit extends AbstractKit {
     public static final AnchorKit INSTANCE = new AnchorKit();
 
@@ -26,35 +26,33 @@ public class AnchorKit extends AbstractKit {
     }
 
     @Override
-    public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
-        if (entity instanceof Player) {
-            if (KitApi.getInstance().getPlayer((Player) entity).hasKit(this) || attacker.hasKit(this)) {
-                setKnockbackAttribute((LivingEntity) entity);
-                Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> resetKnockbackAttribute((LivingEntity) entity), 1);
-            }
-        } else if (attacker.hasKit(this)) {
-            setKnockbackAttribute((LivingEntity) entity);
-            Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> resetKnockbackAttribute((LivingEntity) entity), 1);
-        }
-
-    }
-
-    private static void setKnockbackAttribute(LivingEntity e) {
-        e.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-    }
-
-    private static void resetKnockbackAttribute(LivingEntity e) {
-        e.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0);
-    }
-
-    @Override
     public void disable(KitPlayer kitPlayer) {
-        resetKnockbackAttribute(Bukkit.getPlayer(kitPlayer.getUUID()));
+        kitPlayer.getBukkitPlayer().ifPresent(this::resetKnockbackAttribute);
     }
 
     @Override
     public void enable(KitPlayer kitPlayer) {
-        setKnockbackAttribute(Bukkit.getPlayer(kitPlayer.getUUID()));
+        kitPlayer.getBukkitPlayer().ifPresent(this::setKnockbackAttribute);
+    }
+
+    @Override
+    public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
+        setKnockbackAttribute(entity);
+        Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> resetKnockbackAttribute(entity), 1);
+    }
+
+    private void setKnockbackAttribute(LivingEntity entity) {
+        AttributeInstance attribute = entity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
+        if (attribute != null) {
+            attribute.setBaseValue(1.0);
+        }
+    }
+
+    private void resetKnockbackAttribute(LivingEntity entity) {
+        AttributeInstance attribute = entity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
+        if (attribute != null) {
+            attribute.setBaseValue(0.0);
+        }
     }
 }
 
