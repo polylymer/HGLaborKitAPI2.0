@@ -211,4 +211,8 @@ public abstract class AbstractKit extends KitEvents {
     public Set<Class<? extends Event>> getKitEvents() {
         return kitEvents;
     }
+
+    public boolean isKitItem(ItemStack itemStack) {
+        return false;
+    }
 }

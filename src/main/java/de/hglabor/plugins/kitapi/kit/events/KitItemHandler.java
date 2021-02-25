@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.events;
 
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.supplier.KitPlayerSupplier;
 import org.bukkit.Material;
@@ -49,7 +49,7 @@ public class KitItemHandler implements Listener {
         KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
         for (AbstractKit kit : kitPlayer.getKits()) {
             for (ItemStack kitItem : kit.getKitItems()) {
-                if (event.getItemInHand().isSimilar(kitItem)) {
+                if (event.getItemInHand().isSimilar(kitItem) || kit.isKitItem(event.getItemInHand())) {
                     event.setCancelled(true);
                 }
             }
@@ -59,9 +59,10 @@ public class KitItemHandler implements Listener {
     @EventHandler
     public void cancelKitItemDrop(PlayerDropItemEvent event) {
         KitPlayer KitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
+        ItemStack droppedItem = event.getItemDrop().getItemStack();
         for (AbstractKit kit : KitPlayer.getKits()) {
             for (ItemStack kitItem : kit.getKitItems()) {
-                if (kitItem.isSimilar(event.getItemDrop().getItemStack())) {
+                if (kitItem.isSimilar(droppedItem) || kit.isKitItem(droppedItem)) {
                     event.setCancelled(true);
                 }
             }
@@ -71,10 +72,11 @@ public class KitItemHandler implements Listener {
     @EventHandler
     public void avoidKitItemDropOnPlayerDeath(ItemSpawnEvent event) {
         ItemStack itemStack = event.getEntity().getItemStack();
-        for (AbstractKit enabledKit : KitApi.getInstance().getEnabledKits()) {
-            for (ItemStack kitItem : enabledKit.getKitItems()) {
-                if (kitItem.isSimilar(itemStack)) {
+        for (AbstractKit kit : KitApi.getInstance().getEnabledKits()) {
+            for (ItemStack kitItem : kit.getKitItems()) {
+                if (kitItem.isSimilar(itemStack) || kit.isKitItem(itemStack)) {
                     itemStack.setType(Material.AIR);
+                    itemStack.setAmount(0);
                     event.getEntity().remove();
                 }
             }

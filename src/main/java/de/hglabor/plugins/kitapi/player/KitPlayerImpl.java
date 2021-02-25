@@ -146,6 +146,11 @@ public abstract class KitPlayerImpl implements KitPlayer {
         this.inInventory = value;
     }
 
+    @Override
+    public Optional<Player> getBukkitPlayer() {
+        return Optional.ofNullable(Bukkit.getPlayer(uuid));
+    }
+
     public void resetKitAttributes() {
         this.kitAttributes.clear();
     }
