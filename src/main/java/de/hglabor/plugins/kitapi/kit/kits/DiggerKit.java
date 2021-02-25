@@ -62,7 +62,7 @@ public class DiggerKit extends AbstractKit {
                             }
                         }
                     }
-                    player.getWorld().playSound(player.getLocation(), Sound.BLOCK_STONE_BREAK, 10, 1);
+                    player.getWorld().playSound(player.getLocation(), Sound.BLOCK_STONE_BREAK, 1.8f, 1);
                 }
 
             }.runTaskLater(KitApi.getInstance().getPlugin(), 15);
