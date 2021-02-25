@@ -138,6 +138,10 @@ public final class KitApi {
         }
     }
 
+    public KitItemSupplier getItemSupplier() {
+        return itemSupplier;
+    }
+
     public List<AbstractKit> getEnabledKits() {
         return kits.stream().filter(AbstractKit::isEnabled).collect(Collectors.toList());
     }
