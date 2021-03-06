@@ -1,7 +1,9 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.Bukkit;
@@ -23,11 +25,14 @@ import java.util.UUID;
  */
 public class BarbarianKit extends AbstractKit {
     public static final BarbarianKit INSTANCE = new BarbarianKit();
+    @IntArg
+    private final int moduloSteps;
 
     private final Map<UUID, Integer> playerBarbarianLevel;
 
     private BarbarianKit() {
         super("Barbarian", Material.WOODEN_SWORD);
+        moduloSteps = 1;
         playerBarbarianLevel = new HashMap<>();
         setMainKitItem(new ItemBuilder(Material.WOODEN_SWORD).setLocalizedName(this.getName()).setUnbreakable(true).build());
     }
@@ -44,6 +49,9 @@ public class BarbarianKit extends AbstractKit {
         if (!isKitItem(barbarianSword)) {
             return;
         }
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
+        //TODO MIT Keys replacen sheeeesh
+        kitPlayer.putKitAttribute();
         if (!playerBarbarianLevel.containsKey(killerUUID)) playerBarbarianLevel.put(killerUUID, 1);
         else playerBarbarianLevel.put(killerUUID, playerBarbarianLevel.get(killerUUID) + 1);
         //TODO KitAttribute and dynamic values

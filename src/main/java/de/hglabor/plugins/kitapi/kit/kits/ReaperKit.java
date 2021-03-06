@@ -22,13 +22,9 @@ public class ReaperKit extends AbstractKit {
     @IntArg
     private final int maxUses;
     @IntArg
-    private final int likelihood;
+    private final int likelihood, blueWitherLikelihood;
     @IntArg
-    private final int blueWitherLikelihood;
-    @IntArg
-    private final int witherDuration;
-    @IntArg
-    private final int witherAmplifier;
+    private final int witherDuration, witherAmplifier;
 
     private ReaperKit() {
         super("Reaper", Material.WITHER_SKELETON_SKULL, 15);
