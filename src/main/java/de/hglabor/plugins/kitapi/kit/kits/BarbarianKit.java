@@ -1,6 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.Bukkit;
@@ -29,9 +30,9 @@ public class BarbarianKit extends AbstractKit {
         super("Barbarian", Material.WOODEN_SWORD);
         playerBarbarianLevel = new HashMap<>();
         setMainKitItem(new ItemBuilder(Material.WOODEN_SWORD).setLocalizedName(this.getName()).setUnbreakable(true).build());
-        addEvents(Collections.singletonList(PlayerDeathEvent.class));
     }
 
+    @KitEvent(clazz = PlayerDeathEvent.class)
     @Override
     public void onPlayerKillsPlayer(KitPlayer killer, KitPlayer dead) {
         Player player = Bukkit.getPlayer(killer.getUUID());
