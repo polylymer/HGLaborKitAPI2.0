@@ -2,11 +2,9 @@ package de.hglabor.plugins.kitapi.config;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
-import de.hglabor.plugins.kitapi.kit.settings.DoubleArg;
-import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
-import de.hglabor.plugins.kitapi.kit.settings.IntArg;
-import de.hglabor.plugins.kitapi.kit.settings.LongArg;
+import de.hglabor.plugins.kitapi.kit.settings.*;
 import de.hglabor.utils.noriskutils.ReflectionUtils;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 import org.bukkit.util.NumberConversions;
@@ -75,6 +73,8 @@ public final class KitApiConfig {
                     kitConfiguration.addDefault(key(kit, name), ReflectionUtils.getDouble(field, kit));
                 } else if (annotation.annotationType().equals(LongArg.class)) {
                     kitConfiguration.addDefault(key(kit, name), ReflectionUtils.getLong(field, kit));
+                } else if (annotation.annotationType().equals(MaterialArg.class)) {
+                    kitConfiguration.addDefault(key(kit, name), ((Material) ReflectionUtils.get(field, kit)).name());
                 }
             }
         }
@@ -93,6 +93,8 @@ public final class KitApiConfig {
                     ReflectionUtils.set(field, kit, NumberConversions.toDouble(kitConfiguration.get(key(kit, name))));
                 } else if (annotation.annotationType().equals(LongArg.class)) {
                     ReflectionUtils.set(field, kit, NumberConversions.toLong(kitConfiguration.get(key(kit, name))));
+                } else if (annotation.annotationType().equals(MaterialArg.class)) {
+                    ReflectionUtils.set(field, kit, Material.valueOf(kitConfiguration.getString(key(kit, name))));
                 }
             }
         }
