@@ -5,6 +5,7 @@ import de.hglabor.plugins.kitapi.config.KitApiConfig;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
 import de.hglabor.plugins.kitapi.kit.config.KitUses;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.kits.*;
 import de.hglabor.plugins.kitapi.kit.kits.endermage.EndermageKit;
 import de.hglabor.plugins.kitapi.kit.kits.grappler.GrapplerKit;
@@ -17,10 +18,13 @@ import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -83,7 +87,7 @@ public final class KitApi {
         this.playerSupplier = kitPlayerSupplier;
         this.kitSelector = kitSelector;
         this.plugin = plugin;
-        plugin.getServer().getPluginManager().registerEvents(kitSelector,plugin);
+        plugin.getServer().getPluginManager().registerEvents(kitSelector, plugin);
         register(MagmaKit.getInstance());
         register(NinjaKit.getInstance());
         register(NoneKit.getInstance());
@@ -123,29 +127,28 @@ public final class KitApi {
         register(TurtleKit.INSTANCE);
         register(GrandpaKit.INSTANCE);
         register(BerserkerKit.INSTANCE);
-      //  register(BeamKit.INSTANCE);
+        //  register(BeamKit.INSTANCE);
         kitSelector.load();
-    }
-
-    public void setItemSupplier(KitItemSupplier itemSupplier) {
-        this.itemSupplier = itemSupplier;
     }
 
     public void register(AbstractKit kit) {
         System.out.println(kit.getName());
         kits.add(kit);
         KitApiConfig kitApiConfig = KitApiConfig.getInstance();
-        kitApiConfig.loadKit(kit);
-        kit.setEnabled(kitApiConfig.getBoolean("kit" + "." + kit.getName() + "." + "enabled"));
-        kit.setCooldown(kitApiConfig.getInteger("kit" + "." + kit.getName() + "." + "cooldown"));
-        kit.setUsable(kitApiConfig.getBoolean("kit" + "." + kit.getName() + "." + "usable"));
+        kitApiConfig.add(kit);
+        kitApiConfig.load(kit);
         if (kit instanceof Listener) {
-            plugin.getServer().getPluginManager().registerEvents((Listener) kit,plugin);
+            plugin.getServer().getPluginManager().registerEvents((Listener) kit, plugin);
         }
     }
 
+
     public KitItemSupplier getItemSupplier() {
         return itemSupplier;
+    }
+
+    public void setItemSupplier(KitItemSupplier itemSupplier) {
+        this.itemSupplier = itemSupplier;
     }
 
     public List<AbstractKit> getEnabledKits() {
