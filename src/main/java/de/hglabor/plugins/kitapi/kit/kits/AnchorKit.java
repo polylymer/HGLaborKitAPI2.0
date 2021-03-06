@@ -2,6 +2,7 @@ package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -23,7 +24,6 @@ public class AnchorKit extends AbstractKit {
 
     private AnchorKit() {
         super("Anchor", Material.ANVIL);
-        addEvents(Collections.singletonList(EntityDamageByEntityEvent.class));
     }
 
     @Override
@@ -36,6 +36,7 @@ public class AnchorKit extends AbstractKit {
         kitPlayer.getBukkitPlayer().ifPresent(this::setKnockbackAttribute);
     }
 
+    @KitEvent
     @Override
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
         if (entity instanceof Player) {
