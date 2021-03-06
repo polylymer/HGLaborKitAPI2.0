@@ -10,6 +10,9 @@ import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.IntArg;
+import de.hglabor.plugins.kitapi.kit.settings.MaterialArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.WorldEditUtils;
 import org.bukkit.*;
@@ -33,14 +36,19 @@ import static de.hglabor.plugins.kitapi.kit.config.KitSettings.MATERIAL;
 
 public class GladiatorKit extends AbstractKit implements Listener {
     public final static GladiatorKit INSTANCE = new GladiatorKit();
+    @IntArg(min = 3)
+    private final int radius;
+    @IntArg
+    private final int height;
+    @MaterialArg
+    private final Material material;
 
     private GladiatorKit() {
         super("Gladiator", Material.IRON_BARS);
         setMainKitItem(getDisplayMaterial());
-        addSetting(MATERIAL, Material.GLASS);
-        addSetting(KitSettings.RADIUS, 15);
-        addSetting(KitSettings.HEIGHT, 10);
-        addEvents(Collections.singletonList(PlayerInteractAtEntityEvent.class));
+        radius = 15;
+        height = 10;
+        material = Material.GLASS;
     }
 
     @Override
@@ -51,14 +59,12 @@ public class GladiatorKit extends AbstractKit implements Listener {
         }
     }
 
+    @KitEvent
     @Override
     public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
         Player enemy = (Player) event.getRightClicked();
         World world = player.getWorld();
-        int radius = getSetting(KitSettings.RADIUS);
-        int height = getSetting(KitSettings.HEIGHT);
-        Material material = getSetting(KitSettings.MATERIAL);
 
         if (player.hasMetadata(KitMetaData.INGLADIATOR.getKey()) || enemy.hasMetadata(KitMetaData.INGLADIATOR.getKey())) {
             return;
