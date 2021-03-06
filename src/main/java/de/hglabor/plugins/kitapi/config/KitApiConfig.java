@@ -2,8 +2,10 @@ package de.hglabor.plugins.kitapi.config;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.DoubleArg;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
+import de.hglabor.plugins.kitapi.kit.settings.LongArg;
 import de.hglabor.utils.noriskutils.ReflectionUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
@@ -32,14 +34,65 @@ public final class KitApiConfig {
         return "kit" + "." + kit.getName() + "." + "settings" + "." + fieldName;
     }
 
-    public void load(AbstractKit kit) {
+    public void register(File pluginFolder) {
+        try {
+            kitFile = new File(pluginFolder, "kitConfig.yml");
+            if (!kitFile.exists()) {
+                kitFile.createNewFile();
+            }
+            kitConfiguration = YamlConfiguration.loadConfiguration(kitFile);
+            kitConfiguration.addDefault("kit.amount", 1);
+            kitConfiguration.addDefault("debug", false);
+            kitConfiguration.options().copyDefaults(true);
+            kitConfiguration.save(kitFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void add(AbstractKit kit) {
+        try {
+            kitConfiguration.addDefault("kit" + "." + kit.getName() + "." + "enabled", kit.isEnabled());
+            kitConfiguration.addDefault("kit" + "." + kit.getName() + "." + "cooldown", kit.getCooldown());
+            kitConfiguration.addDefault("kit" + "." + kit.getName() + "." + "usable", kit.isUsable());
+            registerAnnotations(kit);
+            kitConfiguration.options().copyDefaults(true);
+            kitConfiguration.save(kitFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void registerAnnotations(AbstractKit kit) {
         for (Field field : kit.getClass().getDeclaredFields()) {
             String name = field.getName();
             for (Annotation annotation : field.getDeclaredAnnotations()) {
                 if (annotation.annotationType().equals(IntArg.class)) {
-                    ReflectionUtils.set(field, kit, kitConfiguration.get(key(kit, name)));
+                    kitConfiguration.addDefault(key(kit, name), ReflectionUtils.getInt(field, kit));
+                } else if (annotation.annotationType().equals(FloatArg.class)) {
+                    kitConfiguration.addDefault(key(kit, name), ReflectionUtils.getFloat(field, kit));
+                } else if (annotation.annotationType().equals(DoubleArg.class)) {
+                    kitConfiguration.addDefault(key(kit, name), ReflectionUtils.getDouble(field, kit));
+                } else if (annotation.annotationType().equals(LongArg.class)) {
+                    kitConfiguration.addDefault(key(kit, name), ReflectionUtils.getLong(field, kit));
+                }
+            }
+        }
+    }
+
+    public void load(AbstractKit kit) {
+        for (Field field : kit.getClass().getDeclaredFields()) {
+            String name = field.getName();
+            for (Annotation annotation : field.getDeclaredAnnotations()) {
+                System.out.println(kitConfiguration.get(key(kit, name)));
+                if (annotation.annotationType().equals(IntArg.class)) {
+                    ReflectionUtils.set(field, kit, NumberConversions.toInt(kitConfiguration.get(key(kit, name))));
                 } else if (annotation.annotationType().equals(FloatArg.class)) {
                     ReflectionUtils.set(field, kit, NumberConversions.toFloat(kitConfiguration.get(key(kit, name))));
+                } else if (annotation.annotationType().equals(DoubleArg.class)) {
+                    ReflectionUtils.set(field, kit, NumberConversions.toDouble(kitConfiguration.get(key(kit, name))));
+                } else if (annotation.annotationType().equals(LongArg.class)) {
+                    ReflectionUtils.set(field, kit, NumberConversions.toLong(kitConfiguration.get(key(kit, name))));
                 }
             }
         }
@@ -68,48 +121,6 @@ public final class KitApiConfig {
                     }
                 }
             }
-        }
-    }
-
-    private void registerAnnotations(AbstractKit kit) {
-        for (Field field : kit.getClass().getDeclaredFields()) {
-            String name = field.getName();
-            for (Annotation annotation : field.getDeclaredAnnotations()) {
-                if (annotation.annotationType().equals(IntArg.class)) {
-                    kitConfiguration.addDefault(key(kit, name), ReflectionUtils.getInt(field, kit));
-                } else if (annotation.annotationType().equals(FloatArg.class)) {
-                    kitConfiguration.addDefault(key(kit, name), ReflectionUtils.getFloat(field, kit));
-                }
-            }
-        }
-    }
-
-    public void register(File pluginFolder) {
-        try {
-            kitFile = new File(pluginFolder, "kitConfig.yml");
-            if (!kitFile.exists()) {
-                kitFile.createNewFile();
-            }
-            kitConfiguration = YamlConfiguration.loadConfiguration(kitFile);
-            kitConfiguration.addDefault("kit.amount", 1);
-            kitConfiguration.addDefault("debug", false);
-            kitConfiguration.options().copyDefaults(true);
-            kitConfiguration.save(kitFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void add(AbstractKit kit) {
-        try {
-            kitConfiguration.addDefault("kit" + "." + kit.getName() + "." + "enabled", kit.isEnabled());
-            kitConfiguration.addDefault("kit" + "." + kit.getName() + "." + "cooldown", kit.getCooldown());
-            kitConfiguration.addDefault("kit" + "." + kit.getName() + "." + "usable", kit.isUsable());
-            registerAnnotations(kit);
-            kitConfiguration.options().copyDefaults(true);
-            kitConfiguration.save(kitFile);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

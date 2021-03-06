@@ -1,9 +1,8 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import com.google.common.collect.ImmutableList;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -11,7 +10,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 
@@ -30,7 +28,6 @@ public class TankKit extends AbstractKit {
         explosionSizePlayer = 6F;
         explosionSizeEntity = 3F;
         explosionSizeRecraft = 1F;
-        addEvents(ImmutableList.of(EntityDeathEvent.class, PlayerDeathEvent.class, EntityDamageEvent.class, CraftItemEvent.class));
     }
 
     @KitEvent

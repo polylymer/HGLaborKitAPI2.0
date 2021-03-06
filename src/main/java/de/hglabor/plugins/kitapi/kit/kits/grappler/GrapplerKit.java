@@ -3,7 +3,8 @@ package de.hglabor.plugins.kitapi.kit.kits.grappler;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
-import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
@@ -28,22 +29,27 @@ import org.bukkit.inventory.meta.CrossbowMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class GrapplerKit extends AbstractKit implements Listener {
     public final static GrapplerKit INSTANCE = new GrapplerKit();
     private final ItemStack grapplerArrow;
     private final Map<UUID, Long> onCooldown;
+    @IntArg
     private final int spamCooldown;
+    @IntArg
+    private final int maxUses;
 
     private GrapplerKit() {
         super("Grappler", Material.CROSSBOW, 45);
+        spamCooldown = 2;
+        maxUses = 2;
         this.grapplerArrow = new ItemBuilder(Material.ARROW).setName("Grappler Arrow").build();
         this.onCooldown = new HashMap<>();
-        this.spamCooldown = 2;
         setMainKitItem(new ItemBuilder(Material.CROSSBOW).setUnbreakable(true).build());
-        addSetting(KitSettings.USES, 2);
-        addEvents(List.of(ProjectileLaunchEvent.class, PlayerInteractEvent.class));
     }
 
     @EventHandler
@@ -70,6 +76,7 @@ public class GrapplerKit extends AbstractKit implements Listener {
         }
     }
 
+    @KitEvent
     @Override
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
         Player player = (Player) event.getEntity().getShooter();
@@ -87,11 +94,12 @@ public class GrapplerKit extends AbstractKit implements Listener {
             projectile.addPassenger(grapplerHookEntity.getBukkitEntity());
             if (kitPlayer.isInCombat()) {
                 projectile.setMetadata(KitMetaData.KITPLAYER_IS_IN_COMBAT.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
-                KitApi.getInstance().checkUsesForCooldown(player, this);
+                KitApi.getInstance().checkUsesForCooldown(player, this, maxUses);
             }
         }
     }
 
+    @KitEvent
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Player player = event.getPlayer();

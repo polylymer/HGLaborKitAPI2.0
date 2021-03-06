@@ -5,7 +5,6 @@ import de.hglabor.plugins.kitapi.config.KitApiConfig;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
 import de.hglabor.plugins.kitapi.kit.config.KitUses;
-import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.kits.*;
 import de.hglabor.plugins.kitapi.kit.kits.endermage.EndermageKit;
 import de.hglabor.plugins.kitapi.kit.kits.grappler.GrapplerKit;
@@ -18,20 +17,15 @@ import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
-
-import static de.hglabor.plugins.kitapi.kit.config.KitSettings.USES;
 
 public final class KitApi {
     private final static KitApi INSTANCE = new KitApi();
@@ -52,21 +46,21 @@ public final class KitApi {
         return INSTANCE;
     }
 
-    public void checkUsesForCooldown(KitPlayer kitPlayer, AbstractKit kit) {
+    public void checkUsesForCooldown(KitPlayer kitPlayer, AbstractKit kit, int maxUses) {
         if (kitPlayer.getKitAttribute(kit, KitUses.class) == null) {
             kitPlayer.putKitAttribute(kit, new KitUses(), KitUses.class);
         } else {
             ((KitUses) kitPlayer.getKitAttribute(kit, KitUses.class)).increaseUse();
         }
         KitUses kitUses = kitPlayer.getKitAttribute(kit, KitUses.class);
-        if (kitUses.getUse() >= (Integer) kit.getSetting(USES)) {
+        if (kitUses.getUse() > maxUses) {
             kitPlayer.activateKitCooldown(kit, kit.getCooldown());
             kitUses.resetUse();
         }
     }
 
-    public void checkUsesForCooldown(Player player, AbstractKit kit) {
-        checkUsesForCooldown(getPlayer(player), kit);
+    public void checkUsesForCooldown(Player player, AbstractKit kit, int maxUses) {
+        checkUsesForCooldown(getPlayer(player), kit,maxUses );
     }
 
     public List<Locale> getSupportedLanguages() {
@@ -141,7 +135,6 @@ public final class KitApi {
             plugin.getServer().getPluginManager().registerEvents((Listener) kit, plugin);
         }
     }
-
 
     public KitItemSupplier getItemSupplier() {
         return itemSupplier;

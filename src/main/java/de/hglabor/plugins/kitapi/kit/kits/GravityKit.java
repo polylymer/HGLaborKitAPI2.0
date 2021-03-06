@@ -1,9 +1,9 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import com.google.common.collect.ImmutableList;
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
-import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,14 +16,19 @@ import org.bukkit.potion.PotionEffectType;
 
 public class GravityKit extends AbstractKit {
     public static final GravityKit INSTANCE = new GravityKit();
+    @IntArg
+    private final int maxUses;
+    @IntArg(min = 0)
+    private final int gravityAmplifier;
+    @IntArg(min = 1)
+    private final int gravityDuration;
 
-    protected GravityKit() {
+    private GravityKit() {
         super("Gravity", Material.MAGENTA_GLAZED_TERRACOTTA, 30);
         setMainKitItem(getDisplayMaterial());
-        addSetting(KitSettings.EFFECT_MULTIPLIER, 3);
-        addSetting(KitSettings.EFFECT_DURATION, 1);
-        addSetting(KitSettings.USES, 3);
-        addEvents(ImmutableList.of(PlayerInteractEvent.class, EntityDamageByEntityEvent.class));
+        maxUses = 3;
+        gravityAmplifier = 3;
+        gravityDuration = 1;
     }
 
     @Override
@@ -36,6 +41,7 @@ public class GravityKit extends AbstractKit {
         }
     }
 
+    @KitEvent
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(event.getPlayer());
@@ -44,13 +50,14 @@ public class GravityKit extends AbstractKit {
             kitPlayer.activateKitCooldown(this, this.getCooldown());
             player.removePotionEffect(PotionEffectType.LEVITATION);
         } else {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, Integer.MAX_VALUE, (Integer) getSetting(KitSettings.EFFECT_MULTIPLIER)));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, Integer.MAX_VALUE, gravityAmplifier));
         }
     }
 
+    @KitEvent
     @Override
     public void onHitLivingEntityWithKitItem(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
-        entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 20 * (Integer) getSetting(KitSettings.EFFECT_DURATION), getSetting(KitSettings.EFFECT_MULTIPLIER)));
-        KitApi.getInstance().checkUsesForCooldown(attacker, this);
+        entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 20 * gravityDuration, gravityAmplifier));
+        KitApi.getInstance().checkUsesForCooldown(attacker, this, maxUses);
     }
 }
