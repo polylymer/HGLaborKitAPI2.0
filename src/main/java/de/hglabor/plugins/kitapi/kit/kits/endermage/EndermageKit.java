@@ -26,7 +26,7 @@ public class EndermageKit extends AbstractKit implements Listener {
     private final int maxUses, invulnerabilityAfterMage, searchTime;
     @DoubleArg
     private final double searchRadius;
-    private final String attributeKey;
+    private final String attributeKey, hasBeenMagedKey;
     @FloatArg(min = 0.0F)
     private final float cooldown;
 
@@ -37,6 +37,7 @@ public class EndermageKit extends AbstractKit implements Listener {
         searchRadius = 4D;
         invulnerabilityAfterMage = 5;
         searchTime = 5;
+        hasBeenMagedKey = this.getName() + "hasBeenMaged";
         attributeKey = this.getName() + "Runnable";
         setMainKitItem(getDisplayMaterial());
     }
@@ -81,7 +82,7 @@ public class EndermageKit extends AbstractKit implements Listener {
             return;
         }
         Player player = (Player) event.getEntity();
-        if (player.hasMetadata(KitMetaData.HAS_BEEN_MAGED.getKey())) {
+        if (player.hasMetadata(hasBeenMagedKey)) {
             event.setCancelled(true);
         }
     }
@@ -92,7 +93,7 @@ public class EndermageKit extends AbstractKit implements Listener {
             return;
         }
         Player damager = (Player) event.getDamager();
-        if (damager.hasMetadata(KitMetaData.HAS_BEEN_MAGED.getKey())) {
+        if (damager.hasMetadata(hasBeenMagedKey)) {
             event.setCancelled(true);
         }
     }
@@ -115,6 +116,15 @@ public class EndermageKit extends AbstractKit implements Listener {
 
     public String getAttributeKey() {
         return attributeKey;
+    }
+
+    public String getHasBeenMagedKey() {
+        return hasBeenMagedKey;
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }
 

@@ -47,12 +47,12 @@ public class EndermageSearch extends BukkitRunnable {
     private void removeEndermageMetaDataLater(Player player, int delay) {
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            EndermageProperties endermageProperties = kitPlayer.getKitProperty(KitMetaData.HAS_BEEN_MAGED);
+            EndermageProperties endermageProperties = kitPlayer.getKitAttribute(EndermageKit.INSTANCE.getHasBeenMagedKey());
             if (endermageProperties == null) {
-                player.removeMetadata(KitMetaData.HAS_BEEN_MAGED.getKey(), plugin);
+                player.removeMetadata(EndermageKit.INSTANCE.getHasBeenMagedKey(), plugin);
                 player.sendMessage(Localization.INSTANCE.getMessage("endermage.invincibilityExpired", ChatUtils.getPlayerLocale(player)));
             } else if (endermageProperties.getMagedTimeStamp() + (delay * 1000L) <= System.currentTimeMillis()) {
-                player.removeMetadata(KitMetaData.HAS_BEEN_MAGED.getKey(), plugin);
+                player.removeMetadata(EndermageKit.INSTANCE.getHasBeenMagedKey(), plugin);
                 player.sendMessage(Localization.INSTANCE.getMessage("endermage.invincibilityExpired", ChatUtils.getPlayerLocale(player)));
             }
         }, delay * 21L);
@@ -95,8 +95,8 @@ public class EndermageSearch extends BukkitRunnable {
         int delay = EndermageKit.INSTANCE.getInvulnerabilityAfterMage();
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         player.teleport(endermagePortal.getLocation().clone().add(0, 1, 0));
-        player.setMetadata(KitMetaData.HAS_BEEN_MAGED.getKey(), new FixedMetadataValue(plugin, ""));
-        kitPlayer.putKitPropety(KitMetaData.HAS_BEEN_MAGED, new EndermageProperties(System.currentTimeMillis()));
+        player.setMetadata(EndermageKit.INSTANCE.getHasBeenMagedKey(), new FixedMetadataValue(plugin, ""));
+        kitPlayer.putKitAttribute(EndermageKit.INSTANCE.getHasBeenMagedKey(), new EndermageProperties(System.currentTimeMillis()));
         if (isMage) {
             player.sendMessage(Localization.INSTANCE.getMessage("endermage.successfulTeleport",
                     ImmutableMap.of("amount", String.valueOf(magedPeople),

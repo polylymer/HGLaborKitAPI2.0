@@ -59,6 +59,10 @@ public final class KitApi {
         }
     }
 
+    public String cooldownKey(AbstractKit kit) {
+        return kit.getName() + "cooldown";
+    }
+
     public void checkUsesForCooldown(Player player, AbstractKit kit, int maxUses) {
         checkUsesForCooldown(getPlayer(player), kit, maxUses);
     }
@@ -79,13 +83,13 @@ public final class KitApi {
     public void enableKit(AbstractKit kit, boolean isEnabled) {
         kit.setEnabled(isEnabled);
         if (isEnabled) {
+            Bukkit.getPluginManager().registerEvents((Listener) kit, plugin);
             for (Player player : Bukkit.getOnlinePlayers()) {
                 KitPlayer kitPlayer = playerSupplier.getKitPlayer(player);
                 if (kitPlayer.hasKit(kit)) {
                     kit.enable(kitPlayer);
                 }
             }
-            Bukkit.getPluginManager().registerEvents((Listener) kit, plugin);
         } else {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 kit.disable(playerSupplier.getKitPlayer(player));

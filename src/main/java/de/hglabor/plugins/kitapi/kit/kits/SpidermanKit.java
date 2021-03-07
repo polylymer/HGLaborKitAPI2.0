@@ -1,8 +1,8 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import com.google.common.collect.ImmutableList;
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
@@ -118,7 +118,7 @@ public class SpidermanKit extends AbstractKit implements Listener {
             return;
         }
         if (nearWall(0.5, event.getPlayer())) {
-            if (kitPlayer.hasKitCooldown(this)) {
+            if (kitPlayer.getKitCooldown(this).hasCooldown()) {
                 player.sendActionBar(Localization.INSTANCE.getMessage("spiderman.noClimbWithCooldown", ChatUtils.getPlayerLocale(player)));
                 return;
             }
