@@ -5,6 +5,7 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
@@ -36,9 +37,12 @@ import static de.hglabor.plugins.kitapi.kit.config.KitSettings.SHOOTINGVELOCITY;
 
 public class SpidermanKit extends AbstractKit implements Listener {
     public static final SpidermanKit INSTANCE = new SpidermanKit();
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
     private SpidermanKit() {
-        super("Spiderman", Material.COBWEB, 45);
+        super("Spiderman", Material.COBWEB);
+        cooldown = 45;
         setMainKitItem(getDisplayMaterial());
         addEvents(ImmutableList.of(PlayerInteractEvent.class));
         addSetting(KitSettings.RADIUS, 5);
@@ -51,7 +55,7 @@ public class SpidermanKit extends AbstractKit implements Listener {
         Player player = event.getPlayer();
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
 
-        kitPlayer.activateKitCooldown(this, this.getCooldown());
+        kitPlayer.activateKitCooldown(this);
 
         final Vector direction = player.getEyeLocation().getDirection();
 
@@ -144,5 +148,10 @@ public class SpidermanKit extends AbstractKit implements Listener {
             location.getBlock().setType(Material.COBWEB);
         }
         return result;
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }

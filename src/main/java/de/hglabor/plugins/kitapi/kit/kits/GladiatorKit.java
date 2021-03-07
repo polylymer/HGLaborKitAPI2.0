@@ -235,7 +235,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
                 block.removeMetadata(KitMetaData.GLADIATOR_BLOCK.getKey(), KitApi.getInstance().getPlugin());
             }
 
-            gladiatorKitOwner.activateKitCooldown(GladiatorKit.this, GladiatorKit.this.getCooldown());
+            gladiatorKitOwner.activateKitCooldown(GladiatorKit.this);
 
             WorldEditUtils.createCylinder(world, center, radius, true, height, Material.AIR);
             cancel();

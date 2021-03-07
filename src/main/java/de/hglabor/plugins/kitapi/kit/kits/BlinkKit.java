@@ -3,6 +3,7 @@ package de.hglabor.plugins.kitapi.kit.kits;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -15,10 +16,13 @@ public class BlinkKit extends AbstractKit {
     private final int maxUses;
     @IntArg
     private final int blinkDistance;
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
     private BlinkKit() {
-        super("Blink", Material.NETHER_STAR, 15);
+        super("Blink", Material.NETHER_STAR);
         setMainKitItem(getDisplayMaterial());
+        cooldown = 15F;
         maxUses = 4;
         blinkDistance = 4;
     }
@@ -31,5 +35,10 @@ public class BlinkKit extends AbstractKit {
         player.getLocation().subtract(0, 1, 0).getBlock().setType(Material.OAK_LEAVES);
         player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 100, 100);
         KitApi.getInstance().checkUsesForCooldown(player, this, maxUses);
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }

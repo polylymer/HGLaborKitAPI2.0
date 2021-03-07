@@ -3,6 +3,8 @@ package de.hglabor.plugins.kitapi.kit.kits;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -10,21 +12,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class RogueKit extends AbstractKit {
     public static final RogueKit INSTANCE = new RogueKit();
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
     private RogueKit() {
         super("Rogue", Material.GRAY_DYE);
-        setCooldown(40);
+        cooldown = 40F;
         setMainKitItem(getDisplayMaterial());
         addSetting(KitSettings.RADIUS, 10);
         addSetting(KitSettings.EFFECT_DURATION, 15);
-        addEvents(Collections.singletonList(PlayerInteractEvent.class));
     }
 
+    @KitEvent
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -41,7 +44,7 @@ public class RogueKit extends AbstractKit {
             }
         }
         player.sendMessage("You disabled the kits of " + counter + " players");
-        kitPlayer.activateKitCooldown(this, this.getCooldown());
+        kitPlayer.activateKitCooldown(this);
     }
 
     private List<KitPlayer> getKitPlayerInRadius(Player player) {
@@ -53,5 +56,10 @@ public class RogueKit extends AbstractKit {
             }
         }
         return enemies;
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }

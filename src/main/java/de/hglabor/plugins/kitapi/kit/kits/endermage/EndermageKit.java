@@ -5,6 +5,7 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.DoubleArg;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.localization.Localization;
@@ -26,9 +27,12 @@ public class EndermageKit extends AbstractKit implements Listener {
     @DoubleArg
     private final double searchRadius;
     private final String attributeKey;
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
     private EndermageKit() {
-        super("Endermage", Material.END_PORTAL_FRAME, 15);
+        super("Endermage", Material.END_PORTAL_FRAME);
+        cooldown = 15F;
         maxUses = 5;
         searchRadius = 4D;
         invulnerabilityAfterMage = 5;

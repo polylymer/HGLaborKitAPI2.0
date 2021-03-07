@@ -4,6 +4,7 @@ import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.util.Utils;
 import org.bukkit.Bukkit;
@@ -22,9 +23,12 @@ public class JackhammerKit extends AbstractKit {
     public final static JackhammerKit INSTANCE = new JackhammerKit();
     @IntArg
     private final int maxUses = 5;
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
     private JackhammerKit() {
-        super("Jackhammer", Material.STONE_AXE, 20);
+        super("Jackhammer", Material.STONE_AXE);
+        cooldown = 20F;
         setMainKitItem(getDisplayMaterial(), true);
     }
 
@@ -68,5 +72,10 @@ public class JackhammerKit extends AbstractKit {
                 bukkitTask.cancel();
             }
         }, 0, delay);
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }

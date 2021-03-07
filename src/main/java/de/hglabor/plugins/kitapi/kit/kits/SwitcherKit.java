@@ -1,9 +1,10 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import com.google.common.collect.ImmutableList;
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -23,12 +24,14 @@ import java.util.List;
 public class SwitcherKit extends AbstractKit implements Listener {
     public static final SwitcherKit INSTANCE = new SwitcherKit();
     private final List<Material> disabledBlocks = Arrays.asList(Material.AIR, Material.BARRIER, Material.BEDROCK, Material.END_PORTAL_FRAME);
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
     private SwitcherKit() {
         super("Switcher", Material.SNOWBALL);
+        cooldown = 5;
         setMainKitItem(getDisplayMaterial(), 16);
         addEvents(ImmutableList.of(ProjectileHitEvent.class, ProjectileLaunchEvent.class));
-        setCooldown(5);
     }
 
     @Override
@@ -71,7 +74,12 @@ public class SwitcherKit extends AbstractKit implements Listener {
             }
             hit.sendMessage(ChatColor.LIGHT_PURPLE + "SWITCHEROOOOO");
             shooter.sendMessage(ChatColor.LIGHT_PURPLE + "SWITCHEROOOOO");
-            KitApi.getInstance().getPlayer(shooter).activateKitCooldown(this, this.getCooldown());
+            KitApi.getInstance().getPlayer(shooter).activateKitCooldown(this);
         }
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }

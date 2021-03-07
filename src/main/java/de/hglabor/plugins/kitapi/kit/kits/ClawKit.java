@@ -3,6 +3,8 @@ package de.hglabor.plugins.kitapi.kit.kits;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,21 +20,22 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import java.util.List;
-
 
 public class ClawKit extends AbstractKit implements Listener {
     public final static ClawKit INSTANCE = new ClawKit();
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
     private ClawKit() {
-        super("Claw", Material.SHEARS, 12);
+        super("Claw", Material.SHEARS);
+        cooldown = 12F;
         setMainKitItem(getDisplayMaterial(), true);
         addSetting(KitSettings.RADIUS, 15);
         addSetting(KitSettings.EFFECT_DURATION, 5);
         addSetting(KitSettings.EFFECT_MULTIPLIER, 10);
-        addEvents(List.of(PlayerInteractEvent.class));
     }
 
+    @KitEvent
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -48,7 +51,7 @@ public class ClawKit extends AbstractKit implements Listener {
             ;
         }
 
-        hgPlayer.activateKitCooldown(this, this.getCooldown());
+        hgPlayer.activateKitCooldown(this);
     }
 
 
@@ -63,5 +66,10 @@ public class ClawKit extends AbstractKit implements Listener {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * (Integer) getSetting(KitSettings.EFFECT_DURATION), (Integer) getSetting(KitSettings.EFFECT_MULTIPLIER)));
             }
         }
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }

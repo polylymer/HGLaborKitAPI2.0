@@ -3,6 +3,7 @@ package de.hglabor.plugins.kitapi.kit.kits;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.ChanceUtils;
@@ -25,9 +26,12 @@ public class ReaperKit extends AbstractKit {
     private final int likelihood, blueWitherLikelihood;
     @IntArg
     private final int witherDuration, witherAmplifier;
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
     private ReaperKit() {
-        super("Reaper", Material.WITHER_SKELETON_SKULL, 15);
+        super("Reaper", Material.WITHER_SKELETON_SKULL);
+        cooldown = 15F;
         maxUses = 2;
         likelihood = 100;
         blueWitherLikelihood = 5;
@@ -54,5 +58,10 @@ public class ReaperKit extends AbstractKit {
         }
         witherSkull.setVelocity(player.getLocation().getDirection().multiply(1.5));
         KitApi.getInstance().checkUsesForCooldown(player, this, maxUses);
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }

@@ -3,6 +3,7 @@ package de.hglabor.plugins.kitapi.kit.kits;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -22,9 +23,12 @@ import java.util.Random;
 
 public class SmogmogKit extends AbstractKit implements Listener {
     public final static SmogmogKit INSTANCE = new SmogmogKit();
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
     private SmogmogKit() {
-        super("Smogmog", Material.POPPED_CHORUS_FRUIT, 20);
+        super("Smogmog", Material.POPPED_CHORUS_FRUIT);
+        cooldown = 20;
         addSetting(KitSettings.EFFECT_DURATION, 3);
         addSetting(KitSettings.RADIUS, 8);
         setMainKitItem(getDisplayMaterial());
@@ -42,7 +46,7 @@ public class SmogmogKit extends AbstractKit implements Listener {
         cloud.setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE, false, false));
         cloud.setRadius(((Integer) getSetting(KitSettings.RADIUS)).floatValue());
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(e.getPlayer());
-        kitPlayer.activateKitCooldown(this, this.getCooldown());
+        kitPlayer.activateKitCooldown(this);
         e.getPlayer().getLocation().getWorld().playSound(e.getPlayer().getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 0.2f, 0);
     }
 
@@ -55,5 +59,10 @@ public class SmogmogKit extends AbstractKit implements Listener {
                 e.setCancelled(true);
             }
         }
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }

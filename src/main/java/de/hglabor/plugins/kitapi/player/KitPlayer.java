@@ -44,7 +44,9 @@ public interface KitPlayer {
 
     void disableKits(boolean shouldDisable);
 
-    void activateKitCooldown(AbstractKit kit, int cooldown);
+    void activateKitCooldown(AbstractKit kit);
+
+    void clearCooldown(AbstractKit kit);
 
     Cooldown getKitCooldown(AbstractKit kit);
 

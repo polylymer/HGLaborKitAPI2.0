@@ -4,6 +4,7 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -18,9 +19,12 @@ import java.util.Collections;
 
 public class DiggerKit extends AbstractKit {
     public static final DiggerKit INSTANCE = new DiggerKit();
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
     protected DiggerKit() {
-        super("Digger", Material.DRAGON_EGG, 12);
+        super("Digger", Material.DRAGON_EGG);
+        cooldown = 12F;
         setMainKitItem(getDisplayMaterial(), 16);
         addSetting(KitSettings.RADIUS, 6);
         addEvents(Collections.singletonList(PlayerInteractEvent.class));
@@ -34,7 +38,7 @@ public class DiggerKit extends AbstractKit {
             Block block = clickedBlock.getLocation().add(0, 1, 0).getBlock();
             reduceKitItem(event, player);
             KitPlayer kitPlayer = KitApi.getInstance().getPlayer(event.getPlayer());
-            kitPlayer.activateKitCooldown(this, this.getCooldown());
+            kitPlayer.activateKitCooldown(this);
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -76,5 +80,10 @@ public class DiggerKit extends AbstractKit {
                 itemStack.subtract();
             }
         }
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }

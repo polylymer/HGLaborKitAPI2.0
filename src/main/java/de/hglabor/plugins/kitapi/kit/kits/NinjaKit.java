@@ -3,6 +3,8 @@ package de.hglabor.plugins.kitapi.kit.kits;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -11,14 +13,14 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
-import java.util.Collections;
-
 public class NinjaKit extends AbstractKit {
     private final static NinjaKit instance = new NinjaKit();
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
     private NinjaKit() {
-        super("Ninja", Material.INK_SAC, 13);
-        addEvents(Collections.singletonList(PlayerToggleSneakEvent.class));
+        super("Ninja", Material.INK_SAC);
+        cooldown = 13F;
         addSetting(KitSettings.RADIUS, (int) Math.pow(30, 2));
     }
 
@@ -26,6 +28,7 @@ public class NinjaKit extends AbstractKit {
         return instance;
     }
 
+    @KitEvent
     @Override
     public void onPlayerToggleSneakEvent(PlayerToggleSneakEvent event) {
         Player player = event.getPlayer();
@@ -43,7 +46,7 @@ public class NinjaKit extends AbstractKit {
             if (attacker.getLastHitInformation().getPlayerTimeStamp() + this.getCooldown() * 1000L > System.currentTimeMillis()) {
                 if (distanceBetweenPlayers(player, toTeleport) < (int) getSetting(KitSettings.RADIUS)) {
                     player.teleport(calculateNinjaBehind(toTeleport));
-                    attacker.activateKitCooldown(this, this.getCooldown());
+                    attacker.activateKitCooldown(this);
                     attacker.getLastHitInformation().setPlayerTimeStamp(0);
                     attacker.getLastHitInformation().setLastPlayer(null);
                 }
@@ -65,5 +68,10 @@ public class NinjaKit extends AbstractKit {
         ninjaLocation.setY(0);
         entityLocation.setY(0);
         return (int) ninjaLocation.distanceSquared(entityLocation);
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }

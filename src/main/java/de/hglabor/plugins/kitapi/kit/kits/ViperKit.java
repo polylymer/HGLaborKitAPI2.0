@@ -23,7 +23,6 @@ public class ViperKit extends AbstractKit {
         addEvents(Collections.singletonList(EntityDamageByEntityEvent.class));
     }
 
-
     @Override
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
         if (ChanceUtils.roll(getSetting(KitSettings.LIKELIHOOD))) {

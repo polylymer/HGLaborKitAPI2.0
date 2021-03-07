@@ -4,6 +4,7 @@ import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.localization.Localization;
@@ -43,9 +44,12 @@ public class GrapplerKit extends AbstractKit implements Listener {
     @IntArg
     private final int maxUses;
     private final String hasShotKey;
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
     private GrapplerKit() {
-        super("Grappler", Material.CROSSBOW, 45);
+        super("Grappler", Material.CROSSBOW);
+        cooldown = 45;
         spamCooldown = 2;
         maxUses = 2;
         hasShotKey = this.getName() + "hasShoot";

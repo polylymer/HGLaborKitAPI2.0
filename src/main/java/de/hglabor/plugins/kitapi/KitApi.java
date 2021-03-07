@@ -53,7 +53,7 @@ public final class KitApi {
         }
         AtomicInteger kitUses = kitPlayer.getKitAttribute(key);
         if (kitUses.getAndIncrement() > maxUses) {
-            kitPlayer.activateKitCooldown(kit, kit.getCooldown());
+            kitPlayer.activateKitCooldown(kit);
             kitUses.set(0);
         }
     }
@@ -215,16 +215,22 @@ public final class KitApi {
         if (kit.getCooldown() > 0) {
             Cooldown kitCooldown = kitPlayer.getKitCooldown(kit);
             Player player = Bukkit.getPlayer(kitPlayer.getUUID());
-            if (player == null) return false;
+            if (player == null) {
+                return false;
+            }
             if (kitCooldown.hasCooldown()) {
-                long cooldown = (kitCooldown.getStartTime() + (kit.getCooldown() * 1000L + kitCooldown.getAdditionalTime() * 1000L)) - System.currentTimeMillis();
+                long timeLeft = (kitCooldown.getEndTime()) - System.currentTimeMillis();
+                if (timeLeft <= 0) {
+                    kitPlayer.clearCooldown(kit);
+                    return false;
+                }
                 if (kit.getMainKitItem() != null && hasKitItemInAnyHand(player, kit)) {
                     player.sendActionBar(Localization.INSTANCE.getMessage("kit.cooldown",
-                            ImmutableMap.of("numberInSeconds", String.valueOf((cooldown) / 1000D)),
+                            ImmutableMap.of("numberInSeconds", String.valueOf(timeLeft  / 1000D)),
                             ChatUtils.getPlayerLocale(player)));
                 } else if (kit.getMainKitItem() == null) {
                     player.sendActionBar(Localization.INSTANCE.getMessage("kit.cooldown",
-                            ImmutableMap.of("numberInSeconds", String.valueOf((cooldown) / 1000D)),
+                            ImmutableMap.of("numberInSeconds", String.valueOf(timeLeft / 1000D)),
                             ChatUtils.getPlayerLocale(player)));
                 }
                 return true;

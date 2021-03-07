@@ -3,6 +3,7 @@ package de.hglabor.plugins.kitapi.kit.kits;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,9 +20,12 @@ import java.util.Collections;
 
 public class ThorKit extends AbstractKit implements Listener {
     public static final ThorKit INSTANCE = new ThorKit();
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
-    protected ThorKit() {
-        super("Thor", Material.WOODEN_AXE, 10);
+    private ThorKit() {
+        super("Thor", Material.WOODEN_AXE);
+        cooldown = 10;
         setMainKitItem(getDisplayMaterial(), true);
         addEvents(Collections.singletonList(PlayerInteractEvent.class));
     }
@@ -56,7 +60,7 @@ public class ThorKit extends AbstractKit implements Listener {
         else
             highestBlock.getLocation().getWorld().createExplosion(highestBlockLocation, 4, true, true, event.getPlayer());
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(event.getPlayer());
-        kitPlayer.activateKitCooldown(this, this.getCooldown());
+        kitPlayer.activateKitCooldown(this);
     }
 
     @EventHandler
@@ -73,5 +77,10 @@ public class ThorKit extends AbstractKit implements Listener {
                 }
             }
         });
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }

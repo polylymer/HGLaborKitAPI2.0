@@ -8,7 +8,6 @@ import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 
@@ -17,32 +16,26 @@ import java.util.*;
 public abstract class AbstractKit extends KitEvents {
     private static final String KIT_ITEM_DESC = ChatColor.RED + "Kititem";
     private final String name;
-    private ItemStack mainKitItem;
-
-
     /**
      * Some kits get items which are placeable for everyone
      * e.g. Redstoner
      */
     private final List<ItemStack> additionalKitItems;
-
     /**
      * Used for customizing specific values of a kit
      * e.g. likelihood, cooldown, radius
      */
     private final Map<KitSettings, Object> settings;
-
     /**
      * Each language has a different itemstack
      */
     private final Map<Locale, ItemStack> displayItems;
-
     /**
      * Register the events the kit is using,
      * so the KitEventHandler can handle them
      */
     private final Set<Class<? extends Event>> kitEvents;
-
+    private ItemStack mainKitItem;
     /**
      * use this to toggle gamemode specific kits
      */
@@ -58,14 +51,8 @@ public abstract class AbstractKit extends KitEvents {
      */
     private boolean usesOffHand;
 
-
     protected AbstractKit(String name, Material material) {
         this(name, new ItemStack(material));
-    }
-
-    protected AbstractKit(String name, Material material, int cooldown) {
-        this(name, new ItemStack(material));
-        this.setCooldown(cooldown);
     }
 
     protected AbstractKit(String name, Material material, List<ItemStack> additionalKitItems) {
@@ -121,20 +108,20 @@ public abstract class AbstractKit extends KitEvents {
         mainKitItem = new ItemBuilder(material).setDescription(KIT_ITEM_DESC).setAmount(size).build();
     }
 
-    public void setMainKitItem(Material material) {
-        mainKitItem = new ItemBuilder(material).setDescription(KIT_ITEM_DESC).build();
-    }
-
     public void setMainKitItem(Material material, String name) {
         mainKitItem = new ItemBuilder(material).setDescription(KIT_ITEM_DESC).setName(ChatColor.BLUE + name).build();
     }
 
-    public void setMainKitItem(ItemStack item) {
-        mainKitItem = new ItemBuilder(item.clone()).setDescription(KIT_ITEM_DESC).build();
-    }
-
     public ItemStack getMainKitItem() {
         return mainKitItem;
+    }
+
+    public void setMainKitItem(Material material) {
+        mainKitItem = new ItemBuilder(material).setDescription(KIT_ITEM_DESC).build();
+    }
+
+    public void setMainKitItem(ItemStack item) {
+        mainKitItem = new ItemBuilder(item.clone()).setDescription(KIT_ITEM_DESC).build();
     }
 
     /**
@@ -172,12 +159,8 @@ public abstract class AbstractKit extends KitEvents {
         return (T) this.settings.getOrDefault(settings, null);
     }
 
-    public int getCooldown() {
-        return (int) settings.getOrDefault(KitSettings.COOLDOWN, 0);
-    }
-
-    public void setCooldown(int seconds) {
-        settings.put(KitSettings.COOLDOWN, seconds);
+    public float getCooldown() {
+        return 0.0F;
     }
 
     public String getName() {

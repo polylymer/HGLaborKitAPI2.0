@@ -109,12 +109,15 @@ public abstract class KitPlayerImpl implements KitPlayer {
     }
 
     @Override
-    public void activateKitCooldown(AbstractKit kit, int seconds) {
-        if (hasKit(kit) && !kitCooldowns.getOrDefault(kit, new Cooldown(false)).hasCooldown()) {
-            kitCooldowns.put(kit, new Cooldown(true, System.currentTimeMillis()));
-            Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> kitCooldowns.put(kit, new Cooldown(false)),// (seconds + additionalKitCooldowns.getOrDefault(kit, 0)) * 20);
-                    (seconds) * 20L);
+    public void activateKitCooldown(AbstractKit kit) {
+        if (hasKit(kit) && !kitCooldowns.getOrDefault(kit, new Cooldown(false)).hasCooldown()) { 
+            kitCooldowns.put(kit, new Cooldown(true, kit.getCooldown()));
         }
+    }
+
+    @Override
+    public void clearCooldown(AbstractKit kit) {
+        kitCooldowns.remove(kit);
     }
 
     @Override

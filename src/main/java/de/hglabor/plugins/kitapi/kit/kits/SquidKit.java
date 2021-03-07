@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -20,9 +21,12 @@ import java.util.List;
 
 public class SquidKit extends AbstractKit {
     public final static SquidKit INSTANCE = new SquidKit();
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
     private SquidKit() {
-        super("Squid", Material.SQUID_SPAWN_EGG, 13);
+        super("Squid", Material.SQUID_SPAWN_EGG);
+        cooldown = 13;
         addEvents(ImmutableList.of(PlayerToggleSneakEvent.class));
         addSetting(KitSettings.RADIUS, 5);
         addSetting(KitSettings.EFFECT_DURATION, 3);
@@ -49,7 +53,7 @@ public class SquidKit extends AbstractKit {
             }
         }
         if (counter > 0) {
-            kitPlayer.activateKitCooldown(this, this.getCooldown());
+            kitPlayer.activateKitCooldown(this);
         }
     }
 
@@ -62,6 +66,11 @@ public class SquidKit extends AbstractKit {
             }
         }
         return enemies;
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }
 
