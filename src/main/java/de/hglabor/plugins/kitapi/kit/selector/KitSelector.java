@@ -1,8 +1,8 @@
 package de.hglabor.plugins.kitapi.kit.selector;
 
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.config.KitApiConfig;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.utils.noriskutils.ChatUtils;
 import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.Bukkit;
@@ -16,7 +16,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 
 public abstract class KitSelector implements Listener {
     protected final int MAX_AMOUNT_OF_KITS;
@@ -83,7 +82,7 @@ public abstract class KitSelector implements Listener {
         }
     }
 
-    private Inventory getPage(int index, Locale locale) {
+    public Inventory getPage(int index, Locale locale) {
         return (index >= 0) && (index < kitPages.get(locale).size()) ? kitPages.get(locale).get(index) : null;
     }
 
@@ -121,11 +120,11 @@ public abstract class KitSelector implements Listener {
     protected boolean nextPage(String title, ItemStack clickedItem, Player player) {
         if (clickedItem.isSimilar(NEXT_PAGE_ITEM)) {
             String pageNumber = title.substring(title.length() - 1);
-            Inventory page = getPage(Integer.parseInt(pageNumber), ChatUtils.getPlayerLocale(player.getUniqueId()));
+            Inventory page = getPage(Integer.parseInt(pageNumber), ChatUtils.getPlayerLocale(player));
             if (page != null) {
                 player.openInventory(page);
-                return true;
             }
+            return true;
         }
         return false;
     }
@@ -133,11 +132,11 @@ public abstract class KitSelector implements Listener {
     protected boolean lastPage(String title, ItemStack clickedItem, Player player) {
         if (clickedItem.isSimilar(LAST_PAGE_ITEM)) {
             String pageNumber = title.substring(title.length() - 1);
-            Inventory page = getPage(Integer.parseInt(pageNumber) - 1, ChatUtils.getPlayerLocale(player.getUniqueId()));
+            Inventory page = getPage(Integer.parseInt(pageNumber) - 1 - 1, ChatUtils.getPlayerLocale(player));
             if (page != null) {
                 player.openInventory(page);
-                return true;
             }
+            return true;
         }
         return false;
     }
