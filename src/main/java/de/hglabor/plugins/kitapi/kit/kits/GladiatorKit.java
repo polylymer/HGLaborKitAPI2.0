@@ -9,7 +9,6 @@ import com.sk89q.worldedit.regions.Region;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
-import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.kit.settings.MaterialArg;
@@ -29,16 +28,13 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Collections;
 import java.util.Random;
-
-import static de.hglabor.plugins.kitapi.kit.config.KitSettings.MATERIAL;
 
 public class GladiatorKit extends AbstractKit implements Listener {
     public final static GladiatorKit INSTANCE = new GladiatorKit();
     @IntArg(min = 3)
     private final int radius;
-    @IntArg
+    @IntArg(min = 3)
     private final int height;
     @MaterialArg
     private final Material material;
@@ -136,7 +132,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
 
     private void changeGladiatorBlock(Cancellable event, Block block) {
         event.setCancelled(true);
-        if (block.getType().equals(getSetting(MATERIAL))) {
+        if (block.getType().equals(material)) {
             block.setType(Material.GREEN_STAINED_GLASS);
         } else if (block.getType().equals(Material.GREEN_STAINED_GLASS)) {
             block.setType(Material.YELLOW_STAINED_GLASS);
