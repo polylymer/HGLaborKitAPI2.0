@@ -23,7 +23,7 @@ public class TankKit extends AbstractKit {
     @FloatArg(min = 0.1F, max = 100F)
     private final float explosionSizeRecraft;
 
-    protected TankKit() {
+    private TankKit() {
         super("Tank", Material.TNT);
         explosionSizePlayer = 6F;
         explosionSizeEntity = 3F;

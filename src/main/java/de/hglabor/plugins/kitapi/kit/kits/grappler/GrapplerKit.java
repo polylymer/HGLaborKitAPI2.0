@@ -163,4 +163,9 @@ public class GrapplerKit extends AbstractKit implements Listener {
         }
         return Optional.empty();
     }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
+    }
 }

@@ -11,8 +11,7 @@ public enum KitMetaData {
     SPIT_SOUP,
     SPIT_PROJECTILE,
     SPIDERMAN_SNOWBALL,
-    MANIPULATED_MOB,
-    THOR_BLOCK,;
+    MANIPULATED_MOB;
 
     public String getKey() {
         return name();

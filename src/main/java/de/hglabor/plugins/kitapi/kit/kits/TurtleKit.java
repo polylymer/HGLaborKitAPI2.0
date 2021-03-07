@@ -14,7 +14,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
  * @author Hotkeyyy
  * @since 2021/02/25
  */
-
 public class TurtleKit extends AbstractKit {
     public static final TurtleKit INSTANCE = new TurtleKit();
 

@@ -1,9 +1,11 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
-import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
+import de.hglabor.plugins.kitapi.kit.settings.IntArg;
+import de.hglabor.plugins.kitapi.kit.settings.PotionTypeArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -18,36 +20,41 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
-import java.util.Collections;
 import java.util.Random;
 
 public class SmogmogKit extends AbstractKit implements Listener {
     public final static SmogmogKit INSTANCE = new SmogmogKit();
     @FloatArg(min = 0.0F)
-    private final float cooldown;
+    private final float cooldown, radius;
+    @IntArg
+    private final int effectDuration;
+    @PotionTypeArg
+    private final PotionType potionType;
 
     private SmogmogKit() {
         super("Smogmog", Material.POPPED_CHORUS_FRUIT);
         cooldown = 20;
-        addSetting(KitSettings.EFFECT_DURATION, 3);
-        addSetting(KitSettings.RADIUS, 8);
+        radius = 8F;
+        effectDuration = 3;
+        potionType = PotionType.INSTANT_DAMAGE;
         setMainKitItem(getDisplayMaterial());
-        addEvents(Collections.singletonList(PlayerInteractEvent.class));
     }
 
+    @KitEvent
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent e) {
-        AreaEffectCloud cloud = (AreaEffectCloud) e.getPlayer().getWorld().spawnEntity(e.getPlayer().getLocation(), EntityType.AREA_EFFECT_CLOUD);
-        cloud.setCustomName(e.getPlayer().getUniqueId().toString());
+        Player player = e.getPlayer();
+        AreaEffectCloud cloud = (AreaEffectCloud) player.getWorld().spawnEntity(player.getLocation(), EntityType.AREA_EFFECT_CLOUD);
+        cloud.setCustomName(player.getUniqueId().toString());
         cloud.setColor(Color.fromBGR(new Random().nextInt(255), new Random().nextInt(255), new Random().nextInt(255)));
-        cloud.setDuration((Integer) getSetting(KitSettings.EFFECT_DURATION) * 20);
-        cloud.setSource(e.getPlayer());
-        cloud.setRadius(((Integer) getSetting(KitSettings.RADIUS)).floatValue());
-        cloud.setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE, false, false));
-        cloud.setRadius(((Integer) getSetting(KitSettings.RADIUS)).floatValue());
-        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(e.getPlayer());
+        cloud.setDuration(effectDuration * 20);
+        cloud.setSource(player);
+        cloud.setRadius(radius);
+        cloud.setBasePotionData(new PotionData(potionType, false, false));
+        cloud.setRadius(radius);
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         kitPlayer.activateKitCooldown(this);
-        e.getPlayer().getLocation().getWorld().playSound(e.getPlayer().getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 0.2f, 0);
+        player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 0.2f, 0);
     }
 
     @EventHandler

@@ -3,16 +3,20 @@ package de.hglabor.plugins.kitapi.command;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.settings.*;
+import de.hglabor.plugins.kitapi.util.ReflectionUtils;
 import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.utils.noriskutils.PermissionUtils;
-import de.hglabor.utils.noriskutils.ReflectionUtils;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.CustomArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 import org.bukkit.util.NumberConversions;
 
 import java.lang.annotation.Annotation;
@@ -66,11 +70,27 @@ public class KitSettingsCommand {
                     } else if (ReflectionUtils.isBool(field)) {
                         boolean bool = Boolean.parseBoolean(value);
                         replacement = value;
-                        KitApi.getInstance().enableKit(kit,bool);
+                        KitApi.getInstance().enableKit(kit, bool);
                     } else if (ReflectionUtils.isMaterial(field)) {
                         Material material = Material.valueOf(value);
                         replacement = material.name();
                         ReflectionUtils.set(field, kit, material);
+                    } else if (ReflectionUtils.isPotionType(field)) {
+                        PotionType potionType = PotionType.valueOf(value);
+                        replacement = potionType.name();
+                        ReflectionUtils.set(field, kit, potionType);
+                    } else if (ReflectionUtils.isEntityType(field)) {
+                        EntityType entityType = EntityType.valueOf(value);
+                        replacement = entityType.name();
+                        ReflectionUtils.set(field, kit, entityType);
+                    } else if (ReflectionUtils.isPotionEffect(field)) {
+                        PotionEffectType potionEffectType = PotionEffectType.getByName(value);
+                        replacement = potionEffectType.getName();
+                        ReflectionUtils.set(field, kit, potionEffectType);
+                    } else if (ReflectionUtils.isSound(field)) {
+                        Sound sound = Sound.valueOf(value);
+                        replacement = sound.name();
+                        ReflectionUtils.set(field, kit, sound);
                     }
                     sendMessage(player, kit, fieldName, replacement);
                 })
@@ -142,6 +162,31 @@ public class KitSettingsCommand {
                 list.add(currentValue);
                 Arrays.stream(Material.values()).map(Enum::name).forEach(list::add);
                 return list.toArray(new String[0]);
+            } else if (ReflectionUtils.isMaterial(field)) {
+                List<String> list = new ArrayList<>();
+                list.add(currentValue);
+                Arrays.stream(Material.values()).map(Enum::name).forEach(list::add);
+                return list.toArray(new String[0]);
+            } else if (ReflectionUtils.isPotionType(field)) {
+                List<String> list = new ArrayList<>();
+                list.add(currentValue);
+                Arrays.stream(PotionType.values()).map(Enum::name).forEach(list::add);
+                return list.toArray(new String[0]);
+            } else if (ReflectionUtils.isEntityType(field)) {
+                List<String> list = new ArrayList<>();
+                list.add(currentValue);
+                Arrays.stream(EntityType.values()).map(Enum::name).forEach(list::add);
+                return list.toArray(new String[0]);
+            } else if (ReflectionUtils.isPotionEffect(field)) {
+                List<String> list = new ArrayList<>();
+                list.add(currentValue);
+                Arrays.stream(PotionEffectType.values()).map(PotionEffectType::getName).forEach(list::add);
+                return list.toArray(new String[0]);
+            } else if (ReflectionUtils.isSound(field)) {
+                List<String> list = new ArrayList<>();
+                list.add(currentValue);
+                Arrays.stream(Sound.values()).map(Enum::name).forEach(list::add);
+                return list.toArray(new String[0]);
             }
             return new String[]{"error haha"};
         });
@@ -160,7 +205,8 @@ public class KitSettingsCommand {
     private List<String> getFieldNames(AbstractKit kit) {
         List<Class<? extends Annotation>> kitAnnotations = List.of(
                 DoubleArg.class, FloatArg.class, IntArg.class, BoolArg.class,
-                LongArg.class, MaterialArg.class, StringArg.class);
+                LongArg.class, MaterialArg.class, StringArg.class, PotionTypeArg.class,
+                EntityArg.class);
         List<String> names = new ArrayList<>();
         for (Field field : Utils.getAllFields(kit)) {
             for (Annotation annotation : field.getAnnotations()) {

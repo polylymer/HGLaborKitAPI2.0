@@ -10,7 +10,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class LumberjackKit extends AbstractKit {

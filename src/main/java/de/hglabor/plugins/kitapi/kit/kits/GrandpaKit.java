@@ -4,7 +4,6 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * @author Hotkeyyy

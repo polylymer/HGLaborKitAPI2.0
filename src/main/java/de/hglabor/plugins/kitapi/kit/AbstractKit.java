@@ -10,8 +10,6 @@ import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -154,10 +152,12 @@ public abstract class AbstractKit extends KitEvents {
      * use this for settings as likelyhood, radius or...
      * used later in kitsettings menu for configuring
      */
+    @Deprecated
     public <V> void addSetting(KitSettings settings, V value) {
         this.settings.put(settings, value);
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     public <T> T getSetting(KitSettings settings) {
         return (T) this.settings.getOrDefault(settings, null);

@@ -10,6 +10,7 @@ import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.DoubleArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.kit.settings.MaterialArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
@@ -33,11 +34,13 @@ import java.util.Random;
 public class GladiatorKit extends AbstractKit implements Listener {
     public final static GladiatorKit INSTANCE = new GladiatorKit();
     @IntArg(min = 3)
-    private final int radius;
-    @IntArg(min = 3)
-    private final int height;
+    private final int radius, height;
     @MaterialArg
     private final Material material;
+    @DoubleArg
+    private final double intruderDamage;
+    @IntArg
+    private final int witherEffectAtferXSeconds;
     private final String attributeKey;
 
     private GladiatorKit() {
@@ -45,6 +48,8 @@ public class GladiatorKit extends AbstractKit implements Listener {
         setMainKitItem(getDisplayMaterial());
         radius = 15;
         height = 10;
+        witherEffectAtferXSeconds = 120;
+        intruderDamage = 5D;
         material = Material.GLASS;
         attributeKey = this.getName() + "Fight";
     }
@@ -201,7 +206,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
                     region.contains(BukkitAdapter.asBlockVector(enemy.getLocation()))) {
                 timer++;
                 damageIntruders();
-                if (timer > 120) {
+                if (timer > witherEffectAtferXSeconds) {
                     gladiator.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, Integer.MAX_VALUE, 2));
                     enemy.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, Integer.MAX_VALUE, 2));
                 }
@@ -246,7 +251,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
                 if (!unknownPlayer.getGameMode().equals(GameMode.SURVIVAL)) continue;
                 if (unknownPlayer == gladiator || unknownPlayer == enemy) continue;
                 if (region.contains(BukkitAdapter.asBlockVector(unknownPlayer.getLocation())))
-                    unknownPlayer.damage(5);
+                    unknownPlayer.damage(intruderDamage);
             }
         }
     }

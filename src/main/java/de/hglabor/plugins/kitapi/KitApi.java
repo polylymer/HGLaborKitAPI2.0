@@ -75,7 +75,7 @@ public final class KitApi {
         int kitAmount = KitApiConfig.getInstance().getInteger("kit.amount");
         List<AbstractKit> emptyKitList = new ArrayList<>(kitAmount);
         for (int i = 0; i < kitAmount; i++) {
-            emptyKitList.add(NoneKit.getInstance());
+            emptyKitList.add(NoneKit.INSTANCE);
         }
         return emptyKitList;
     }
@@ -106,9 +106,9 @@ public final class KitApi {
         this.kitSelector = kitSelector;
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(kitSelector, plugin);
-        register(MagmaKit.getInstance());
-        register(NinjaKit.getInstance());
-        register(NoneKit.getInstance());
+        register(MagmaKit.INSTANCE);
+        register(NinjaKit.INSTANCE);
+        register(NoneKit.INSTANCE);
         register(BlinkKit.INSTANCE);
         register(SurpriseKit.INSTANCE);
         register(CopyCatKit.INSTANCE);

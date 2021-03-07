@@ -1,9 +1,9 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import com.google.common.collect.ImmutableList;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.ChatColor;
@@ -31,9 +31,9 @@ public class SwitcherKit extends AbstractKit implements Listener {
         super("Switcher", Material.SNOWBALL);
         cooldown = 5;
         setMainKitItem(getDisplayMaterial(), 16);
-        addEvents(ImmutableList.of(ProjectileHitEvent.class, ProjectileLaunchEvent.class));
     }
 
+    @KitEvent
     @Override
     public void onProjectileLaunch(ProjectileLaunchEvent e) {
         e.getEntity().setMetadata(KitMetaData.SWITCHER_BALL.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));

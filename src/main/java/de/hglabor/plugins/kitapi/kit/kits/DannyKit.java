@@ -2,7 +2,6 @@ package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
@@ -29,7 +28,7 @@ public class DannyKit extends AbstractKit {
     @IntArg
     private final int potionDuration, potionAmplifier;
 
-    protected DannyKit() {
+    private DannyKit() {
         super("Danny", Material.PLAYER_HEAD);
         this.potionEffects = new PotionEffectType[]{PotionEffectType.BLINDNESS, PotionEffectType.WITHER, PotionEffectType.POISON, PotionEffectType.WEAKNESS, PotionEffectType.HARM, PotionEffectType.CONFUSION};
         attributeKey = this.getName() + "Runnable";
