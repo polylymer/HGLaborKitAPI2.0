@@ -42,11 +42,13 @@ public class GrapplerKit extends AbstractKit implements Listener {
     private final int spamCooldown;
     @IntArg
     private final int maxUses;
+    private final String hasShotKey;
 
     private GrapplerKit() {
         super("Grappler", Material.CROSSBOW, 45);
         spamCooldown = 2;
         maxUses = 2;
+        hasShotKey = this.getName() + "hasShoot";
         this.grapplerArrow = new ItemBuilder(Material.ARROW).setName("Grappler Arrow").build();
         this.onCooldown = new HashMap<>();
         setMainKitItem(new ItemBuilder(Material.CROSSBOW).setUnbreakable(true).build());
@@ -84,8 +86,8 @@ public class GrapplerKit extends AbstractKit implements Listener {
             return;
         }
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
-        if (kitPlayer.getKitAttribute(this, Boolean.class)) {
-            kitPlayer.putKitAttribute(this, false, Boolean.class);
+        if (kitPlayer.getKitAttribute(hasShotKey)) {
+            kitPlayer.putKitAttribute(hasShotKey, false);
             Arrow projectile = (Arrow) event.getEntity();
             projectile.setCritical(false);
             projectile.setMetadata(KitMetaData.GRAPPLER_ARROW.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
@@ -112,7 +114,7 @@ public class GrapplerKit extends AbstractKit implements Listener {
             CrossbowMeta crossbowMeta = (CrossbowMeta) itemStack.getItemMeta();
             if (!crossbowMeta.hasChargedProjectiles()) {
                 crossbowMeta.addChargedProjectile(grapplerArrow);
-                kitPlayer.putKitAttribute(this, true, Boolean.class);
+                kitPlayer.putKitAttribute(hasShotKey, true);
                 itemStack.setItemMeta(crossbowMeta);
                 onCooldown.put(player.getUniqueId(), System.currentTimeMillis() + spamCooldown * 1000L);
             }

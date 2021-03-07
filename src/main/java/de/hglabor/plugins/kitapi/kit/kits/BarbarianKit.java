@@ -51,7 +51,7 @@ public class BarbarianKit extends AbstractKit {
         }
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         //TODO MIT Keys replacen sheeeesh
-        kitPlayer.putKitAttribute();
+        // kitPlayer.putKitAttribute();
         if (!playerBarbarianLevel.containsKey(killerUUID)) playerBarbarianLevel.put(killerUUID, 1);
         else playerBarbarianLevel.put(killerUUID, playerBarbarianLevel.get(killerUUID) + 1);
         //TODO KitAttribute and dynamic values

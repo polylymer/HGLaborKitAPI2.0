@@ -48,17 +48,11 @@ public interface KitPlayer {
 
     Cooldown getKitCooldown(AbstractKit kit);
 
-    default <T> T getKitAttribute(AbstractKit kit) {
-        return getKitAttribute(kit, kit.getClass());
-    }
+    <T> T getKitAttribute(String key);
 
-    <T> T getKitAttribute(AbstractKit kit, Class<?> clazz);
+    <T> T getKitAttributeOrDefault(String key, T defaultValue);
 
-    default <T> void putKitAttribute(AbstractKit kit, T value) {
-        putKitAttribute(kit, value, kit.getClass());
-    }
-
-    <T> void putKitAttribute(AbstractKit kit, T value, Class<?> clazz);
+    <T> void putKitAttribute(String key, T value);
 
     String printKits();
 }

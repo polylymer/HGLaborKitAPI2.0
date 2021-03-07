@@ -15,7 +15,7 @@ import java.util.*;
 public abstract class KitPlayerImpl implements KitPlayer {
     protected final UUID uuid;
     protected final List<AbstractKit> kits;
-    protected final Map<AbstractKit, Map<Class<?>, Object>> kitAttributes;
+    protected final Map<String, Object> kitAttributes;
     protected final Map<AbstractKit, Cooldown> kitCooldowns;
     protected final Map<KitMetaData, KitProperties> kitProperties;
     protected final LastHitInformation lastHitInformation;
@@ -33,7 +33,7 @@ public abstract class KitPlayerImpl implements KitPlayer {
 
     @Override
     public List<AbstractKit> getKits() {
-        AbstractKit copyCatKit = this.getKitAttribute(CopyCatKit.INSTANCE);
+        AbstractKit copyCatKit = this.getKitAttribute(CopyCatKit.INSTANCE.getKitAttributeKey());
         if (copyCatKit != null) {
             List<AbstractKit> kitList = new ArrayList<>(this.kits);
             kitList.add(copyCatKit);
@@ -51,7 +51,7 @@ public abstract class KitPlayerImpl implements KitPlayer {
 
     @Override
     public boolean hasKit(AbstractKit kit) {
-        AbstractKit copyCatKit = this.getKitAttribute(CopyCatKit.INSTANCE);
+        AbstractKit copyCatKit = this.getKitAttribute(CopyCatKit.INSTANCE.getKitAttributeKey());
         return copyCatKit != null && copyCatKit.equals(kit) || this.kits.contains(kit);
     }
 
@@ -124,16 +124,18 @@ public abstract class KitPlayerImpl implements KitPlayer {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T getKitAttribute(AbstractKit kit, Class<?> clazz) {
-        return (T) kitAttributes.getOrDefault(kit, new HashMap<>()).getOrDefault(clazz, null);
+    public <T> T getKitAttribute(String key) {
+        return (T) kitAttributes.get(key);
     }
 
     @Override
-    public <T> void putKitAttribute(AbstractKit kit, T t, Class<?> clazz) {
-        if (!kitAttributes.containsKey(kit)) {
-            kitAttributes.put(kit, new HashMap<>());
-        }
-        kitAttributes.get(kit).put(clazz, t);
+    public <T> T getKitAttributeOrDefault(String key, T defaultValue) {
+        return getKitAttribute(key) == null ? defaultValue : getKitAttribute(key);
+    }
+
+    @Override
+    public <T> void putKitAttribute(String key, T value) {
+        kitAttributes.put(key, value);
     }
 
     @Override

@@ -1,9 +1,10 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import com.google.common.collect.ImmutableList;
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -18,26 +19,29 @@ import java.util.UUID;
 
 public class ZickZackKit extends AbstractKit {
     public static final ZickZackKit INSTANCE = new ZickZackKit();
+    @IntArg
+    private final int likelihood;
+    private final String comboCounterKey;
 
     private ZickZackKit() {
         super("ZickZack", Material.DIAMOND_BLOCK);
-        addEvents(ImmutableList.of(EntityDamageByEntityEvent.class));
-        addSetting(KitSettings.LIKELIHOOD, 7);
+        comboCounterKey = this.getName() + "combos";
+        likelihood = 20;
     }
 
     @Override
     public void enable(KitPlayer kitPlayer) {
-        kitPlayer.putKitAttribute(this, new HashMap<UUID, Integer>());
+        kitPlayer.putKitAttribute(comboCounterKey, new HashMap<UUID, Integer>());
     }
 
+    @KitEvent
     @Override
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent e, KitPlayer attacker, LivingEntity entity) {
         if (!(e.getEntity() instanceof Player && e.getDamager() instanceof Player)) {
             return;
         }
         Player enemy = (Player) entity;
-        Map<UUID, Integer> combo = attacker.getKitAttribute(this);
-        int likelihood = getSetting(KitSettings.LIKELIHOOD);
+        Map<UUID, Integer> combo = attacker.getKitAttribute(comboCounterKey);
 
         if (!combo.containsKey(enemy.getUniqueId())) {
             combo.put(enemy.getUniqueId(), 0);
@@ -54,8 +58,7 @@ public class ZickZackKit extends AbstractKit {
             return;
         }
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
-        int likelihood = getSetting(KitSettings.LIKELIHOOD);
-        Map<UUID, Integer> combo = kitPlayer.getKitAttribute(this);
+        Map<UUID, Integer> combo = kitPlayer.getKitAttribute(comboCounterKey);
         if (combo.containsKey(attacker.getUniqueId())) {
             int chance = new Random().nextInt(likelihood) + 1;
             int comboAmount = combo.get(attacker.getUniqueId());

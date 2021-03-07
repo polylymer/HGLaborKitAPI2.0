@@ -22,13 +22,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class EndermageKit extends AbstractKit implements Listener {
     public final static EndermageKit INSTANCE = new EndermageKit();
     @IntArg
-    private final int maxUses;
+    private final int maxUses, invulnerabilityAfterMage, searchTime;
     @DoubleArg
     private final double searchRadius;
-    @IntArg
-    private final int invulnerabilityAfterMage;
-    @IntArg
-    private final int searchTime;
+    private final String attributeKey;
 
     private EndermageKit() {
         super("Endermage", Material.END_PORTAL_FRAME, 15);
@@ -36,12 +33,13 @@ public class EndermageKit extends AbstractKit implements Listener {
         searchRadius = 4D;
         invulnerabilityAfterMage = 5;
         searchTime = 5;
+        attributeKey = this.getName() + "Runnable";
         setMainKitItem(getDisplayMaterial());
     }
 
     @Override
     public void disable(KitPlayer kitPlayer) {
-        EndermageSearch endermageRunnable = kitPlayer.getKitAttribute(this, EndermageSearch.class);
+        EndermageSearch endermageRunnable = kitPlayer.getKitAttribute(attributeKey);
         if (endermageRunnable != null && endermageRunnable.isSearchingForPlayers) {
             endermageRunnable.endSearching();
         }
@@ -59,7 +57,7 @@ public class EndermageKit extends AbstractKit implements Listener {
                 return;
             }
 
-            EndermageSearch endermageRunnable = kitPlayer.getKitAttribute(this, EndermageSearch.class);
+            EndermageSearch endermageRunnable = kitPlayer.getKitAttribute(attributeKey);
             if (endermageRunnable != null && endermageRunnable.isSearchingForPlayers) {
                 player.sendMessage(Localization.INSTANCE.getMessage("endermage.alreadySearching", ChatUtils.getPlayerLocale(player)));
                 return;
@@ -68,7 +66,7 @@ public class EndermageKit extends AbstractKit implements Listener {
             BlockData oldBlockData = endermagePortal.getBlockData();
             endermagePortal.setType(Material.END_PORTAL_FRAME);
             EndermageSearch newEndermageRunnable = new EndermageSearch(player, endermagePortal, oldBlockData);
-            kitPlayer.putKitAttribute(this, newEndermageRunnable, EndermageSearch.class);
+            kitPlayer.putKitAttribute(attributeKey, newEndermageRunnable);
             newEndermageRunnable.runTaskTimer(KitApi.getInstance().getPlugin(), 0, 20);
         }
     }
@@ -109,6 +107,10 @@ public class EndermageKit extends AbstractKit implements Listener {
 
     public int getSearchTime() {
         return searchTime;
+    }
+
+    public String getAttributeKey() {
+        return attributeKey;
     }
 }
 

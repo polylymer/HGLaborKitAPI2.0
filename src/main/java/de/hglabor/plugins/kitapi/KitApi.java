@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import de.hglabor.plugins.kitapi.config.KitApiConfig;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
-import de.hglabor.plugins.kitapi.kit.config.KitUses;
 import de.hglabor.plugins.kitapi.kit.kits.*;
 import de.hglabor.plugins.kitapi.kit.kits.endermage.EndermageKit;
 import de.hglabor.plugins.kitapi.kit.kits.grappler.GrapplerKit;
@@ -25,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public final class KitApi {
@@ -47,20 +47,19 @@ public final class KitApi {
     }
 
     public void checkUsesForCooldown(KitPlayer kitPlayer, AbstractKit kit, int maxUses) {
-        if (kitPlayer.getKitAttribute(kit, KitUses.class) == null) {
-            kitPlayer.putKitAttribute(kit, new KitUses(), KitUses.class);
-        } else {
-            ((KitUses) kitPlayer.getKitAttribute(kit, KitUses.class)).increaseUse();
+        String key = kit.getName() + "kitUses";
+        if (kitPlayer.getKitAttribute(key) == null) {
+            kitPlayer.putKitAttribute(key, new AtomicInteger());
         }
-        KitUses kitUses = kitPlayer.getKitAttribute(kit, KitUses.class);
-        if (kitUses.getUse() > maxUses) {
+        AtomicInteger kitUses = kitPlayer.getKitAttribute(key);
+        if (kitUses.getAndIncrement() > maxUses) {
             kitPlayer.activateKitCooldown(kit, kit.getCooldown());
-            kitUses.resetUse();
+            kitUses.set(0);
         }
     }
 
     public void checkUsesForCooldown(Player player, AbstractKit kit, int maxUses) {
-        checkUsesForCooldown(getPlayer(player), kit,maxUses );
+        checkUsesForCooldown(getPlayer(player), kit, maxUses);
     }
 
     public List<Locale> getSupportedLanguages() {

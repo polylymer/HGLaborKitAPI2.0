@@ -42,6 +42,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
     private final int height;
     @MaterialArg
     private final Material material;
+    private final String attributeKey;
 
     private GladiatorKit() {
         super("Gladiator", Material.IRON_BARS);
@@ -49,11 +50,12 @@ public class GladiatorKit extends AbstractKit implements Listener {
         radius = 15;
         height = 10;
         material = Material.GLASS;
+        attributeKey = this.getName() + "Fight";
     }
 
     @Override
     public void disable(KitPlayer kitPlayer) {
-        GladiatorFight value = kitPlayer.getKitAttribute(this);
+        GladiatorFight value = kitPlayer.getKitAttribute(attributeKey);
         if (value != null) {
             value.endFight();
         }
@@ -89,7 +91,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
 
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         GladiatorFight gladiatorFight = new GladiatorFight(gladiatorRegion, kitPlayer, KitApi.getInstance().getPlayer(enemy), radius, height);
-        kitPlayer.putKitAttribute(this, gladiatorFight);
+        kitPlayer.putKitAttribute(attributeKey, gladiatorFight);
         gladiatorFight.runTaskTimer(KitApi.getInstance().getPlugin(), 0, 20);
     }
 
@@ -213,7 +215,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
         }
 
         private void endFight() {
-            gladiatorKitOwner.putKitAttribute(GladiatorKit.this, null);
+            gladiatorKitOwner.putKitAttribute(attributeKey, null);
 
             gladiator.removeMetadata(KitMetaData.INGLADIATOR.getKey(), KitApi.getInstance().getPlugin());
             enemy.removeMetadata(KitMetaData.INGLADIATOR.getKey(), KitApi.getInstance().getPlugin());
