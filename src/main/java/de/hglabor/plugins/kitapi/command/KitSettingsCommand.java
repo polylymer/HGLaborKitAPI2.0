@@ -155,7 +155,6 @@ public class KitSettingsCommand {
         List<String> names = new ArrayList<>();
         for (Field field : kit.getClass().getDeclaredFields()) {
             for (Annotation annotation : field.getDeclaredAnnotations()) {
-                System.out.println(annotation);
                 if (kitAnnotations.contains(annotation.annotationType())) {
                     names.add(field.getName());
                 }

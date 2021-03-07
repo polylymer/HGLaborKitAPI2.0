@@ -110,7 +110,7 @@ public abstract class KitPlayerImpl implements KitPlayer {
 
     @Override
     public void activateKitCooldown(AbstractKit kit) {
-        if (hasKit(kit) && !kitCooldowns.getOrDefault(kit, new Cooldown(false)).hasCooldown()) { 
+        if (hasKit(kit) && !kitCooldowns.getOrDefault(kit, new Cooldown(false)).hasCooldown()) {
             kitCooldowns.put(kit, new Cooldown(true, kit.getCooldown()));
         }
     }

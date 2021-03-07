@@ -83,7 +83,6 @@ public final class KitApiConfig {
         for (Field field : kit.getClass().getDeclaredFields()) {
             String name = field.getName();
             for (Annotation annotation : field.getDeclaredAnnotations()) {
-                System.out.println(kitConfiguration.get(key(kit, name)));
                 if (annotation.annotationType().equals(IntArg.class)) {
                     ReflectionUtils.set(field, kit, NumberConversions.toInt(kitConfiguration.get(key(kit, name))));
                 } else if (annotation.annotationType().equals(FloatArg.class)) {
