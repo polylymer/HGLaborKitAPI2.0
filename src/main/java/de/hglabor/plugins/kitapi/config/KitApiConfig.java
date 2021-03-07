@@ -3,6 +3,7 @@ package de.hglabor.plugins.kitapi.config;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.*;
+import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.utils.noriskutils.ReflectionUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -61,9 +62,10 @@ public final class KitApiConfig {
     }
 
     private void registerAnnotations(AbstractKit kit) {
-        for (Field field : kit.getClass().getDeclaredFields()) {
+        for (Field field : Utils.getAllFields(kit)) {
             String name = field.getName();
-            for (Annotation annotation : field.getDeclaredAnnotations()) {
+            for (Annotation annotation : field.getAnnotations()) {
+                System.out.println(name);
                 if (annotation.annotationType().equals(IntArg.class)) {
                     kitConfiguration.addDefault(key(kit, name), ReflectionUtils.getInt(field, kit));
                 } else if (annotation.annotationType().equals(FloatArg.class)) {
@@ -80,7 +82,7 @@ public final class KitApiConfig {
     }
 
     public void load(AbstractKit kit) {
-        for (Field field : kit.getClass().getDeclaredFields()) {
+        for (Field field : Utils.getAllFields(kit)) {
             String name = field.getName();
             for (Annotation annotation : field.getDeclaredAnnotations()) {
                 if (annotation.annotationType().equals(IntArg.class)) {

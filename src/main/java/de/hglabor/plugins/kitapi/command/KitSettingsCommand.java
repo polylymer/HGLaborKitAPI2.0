@@ -3,6 +3,7 @@ package de.hglabor.plugins.kitapi.command;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.settings.*;
+import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.utils.noriskutils.PermissionUtils;
 import de.hglabor.utils.noriskutils.ReflectionUtils;
 import dev.jorel.commandapi.CommandAPICommand;
@@ -62,6 +63,10 @@ public class KitSettingsCommand {
                         long max = Math.max(annotation.min(), Math.min(annotation.max(), NumberConversions.toLong(value)));
                         replacement = String.valueOf(max);
                         ReflectionUtils.set(field, kit, max);
+                    } else if (ReflectionUtils.isBool(field)) {
+                        boolean bool = Boolean.parseBoolean(value);
+                        replacement = value;
+                        kit.setEnabled(bool);
                     } else if (ReflectionUtils.isMaterial(field)) {
                         Material material = Material.valueOf(value);
                         replacement = material.name();
@@ -99,7 +104,7 @@ public class KitSettingsCommand {
     private Argument kitSettings() {
         return new CustomArgument<>("settings", (input) -> input).overrideSuggestions((commandSender, objects) -> {
             AbstractKit kit = (AbstractKit) objects[0];
-            String[] strings = getAnnotatedFieldNames(kit).toArray(String[]::new);
+            String[] strings = getFieldNames(kit).toArray(String[]::new);
             return strings.length == 0 ? new String[]{"NO_SETTINGS"} : strings;
         });
     }
@@ -119,15 +124,19 @@ public class KitSettingsCommand {
             } else if (ReflectionUtils.isDouble(field)) {
                 DoubleArg annotation = getAnnotation(field.getDeclaredAnnotations(), DoubleArg.class);
                 if (annotation != null)
-                    return new String[]{currentValue,"Double value from " + annotation.min() + " to " + annotation.max()};
+                    return new String[]{currentValue, "Double value from " + annotation.min() + " to " + annotation.max()};
             } else if (ReflectionUtils.isInt(field)) {
                 IntArg annotation = getAnnotation(field.getDeclaredAnnotations(), IntArg.class);
                 if (annotation != null)
-                    return new String[]{currentValue,"Double value from " + annotation.min() + " to " + annotation.max()};
+                    return new String[]{currentValue, "Double value from " + annotation.min() + " to " + annotation.max()};
             } else if (ReflectionUtils.isLong(field)) {
                 LongArg annotation = getAnnotation(field.getDeclaredAnnotations(), LongArg.class);
                 if (annotation != null)
-                    return new String[]{currentValue,"Long value from " + annotation.min() + " to " + annotation.max()};
+                    return new String[]{currentValue, "Long value from " + annotation.min() + " to " + annotation.max()};
+            } else if (ReflectionUtils.isBool(field)) {
+                BoolArg annotation = getAnnotation(field.getDeclaredAnnotations(), BoolArg.class);
+                if (annotation != null)
+                    return new String[]{currentValue, "Boolean: true or false"};
             } else if (ReflectionUtils.isMaterial(field)) {
                 List<String> list = new ArrayList<>();
                 list.add(currentValue);
@@ -148,13 +157,13 @@ public class KitSettingsCommand {
         return null;
     }
 
-    private List<String> getAnnotatedFieldNames(AbstractKit kit) {
+    private List<String> getFieldNames(AbstractKit kit) {
         List<Class<? extends Annotation>> kitAnnotations = List.of(
-                DoubleArg.class, FloatArg.class, IntArg.class,
+                DoubleArg.class, FloatArg.class, IntArg.class, BoolArg.class,
                 LongArg.class, MaterialArg.class, StringArg.class);
         List<String> names = new ArrayList<>();
-        for (Field field : kit.getClass().getDeclaredFields()) {
-            for (Annotation annotation : field.getDeclaredAnnotations()) {
+        for (Field field : Utils.getAllFields(kit)) {
+            for (Annotation annotation : field.getAnnotations()) {
                 if (kitAnnotations.contains(annotation.annotationType())) {
                     names.add(field.getName());
                 }

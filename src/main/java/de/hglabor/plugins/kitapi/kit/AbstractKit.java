@@ -3,12 +3,15 @@ package de.hglabor.plugins.kitapi.kit;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.kit.events.KitEvents;
+import de.hglabor.plugins.kitapi.kit.settings.BoolArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -39,6 +42,7 @@ public abstract class AbstractKit extends KitEvents {
     /**
      * use this to toggle gamemode specific kits
      */
+    @BoolArg
     private boolean isEnabled = true;
 
     /**
@@ -172,7 +176,8 @@ public abstract class AbstractKit extends KitEvents {
     }
 
     public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
+        this.isEnabled = enabled;
+        KitApi.getInstance().enableKit(this,enabled);
     }
 
     public List<ItemStack> getDisplayItems() {

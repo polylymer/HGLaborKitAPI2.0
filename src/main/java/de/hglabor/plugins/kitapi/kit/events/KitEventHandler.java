@@ -24,6 +24,10 @@ public abstract class KitEventHandler extends KitEvents {
             return false;
         }
 
+        if (!kit.isEnabled()) {
+            return false;
+        }
+
         if (!kit.isUsable()) {
             return false;
         }
@@ -36,7 +40,8 @@ public abstract class KitEventHandler extends KitEvents {
 
         if (!kit.getKitEvents().contains(event.getClass())) {
             //Complete Garbage I hope this doesnt break something
-            if (kit.getKitEvents().stream().noneMatch(kitEvent -> event.getClass().getSuperclass().equals(kitEvent))) return false;
+            if (kit.getKitEvents().stream().noneMatch(kitEvent -> event.getClass().getSuperclass().equals(kitEvent)))
+                return false;
         }
 
         //Player doesnt have kit

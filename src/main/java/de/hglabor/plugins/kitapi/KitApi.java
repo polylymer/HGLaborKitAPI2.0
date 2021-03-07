@@ -16,6 +16,7 @@ import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -73,6 +74,20 @@ public final class KitApi {
             emptyKitList.add(NoneKit.getInstance());
         }
         return emptyKitList;
+    }
+
+    public void enableKit(AbstractKit kit, boolean isEnabled) {
+        kit.setEnabled(isEnabled);
+        if (isEnabled) {
+            Bukkit.getPluginManager().registerEvents((Listener) kit,plugin);
+        } else {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                kit.disable(playerSupplier.getKitPlayer(player));
+            }
+            if (kit instanceof Listener) {
+                HandlerList.unregisterAll((Listener) kit);
+            }
+        }
     }
 
     public void register(KitPlayerSupplier kitPlayerSupplier, KitSelector kitSelector, JavaPlugin plugin) {
