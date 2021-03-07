@@ -47,6 +47,10 @@ public class KitSettingsCommand {
                     String value = (String) objects[2];
                     String replacement = "";
                     Field field = ReflectionUtils.getField(kit.getClass(), fieldName);
+                    if (field == null) {
+                        player.sendMessage(ChatColor.RED + "Incorrect field");
+                        return;
+                    }
                     if (ReflectionUtils.isFloat(field)) {
                         FloatArg annotation = getAnnotation(field.getDeclaredAnnotations(), FloatArg.class);
                         float max = Math.max(annotation.min(), Math.min(annotation.max(), NumberConversions.toFloat(value)));
@@ -85,8 +89,10 @@ public class KitSettingsCommand {
                         ReflectionUtils.set(field, kit, entityType);
                     } else if (ReflectionUtils.isPotionEffect(field)) {
                         PotionEffectType potionEffectType = PotionEffectType.getByName(value);
-                        replacement = potionEffectType.getName();
-                        ReflectionUtils.set(field, kit, potionEffectType);
+                        if (potionEffectType != null) {
+                            replacement = potionEffectType.getName();
+                            ReflectionUtils.set(field, kit, potionEffectType);
+                        }
                     } else if (ReflectionUtils.isSound(field)) {
                         Sound sound = Sound.valueOf(value);
                         replacement = sound.name();
