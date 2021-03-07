@@ -66,7 +66,7 @@ public class KitSettingsCommand {
                     } else if (ReflectionUtils.isBool(field)) {
                         boolean bool = Boolean.parseBoolean(value);
                         replacement = value;
-                        kit.setEnabled(bool);
+                        KitApi.getInstance().enableKit(kit,bool);
                     } else if (ReflectionUtils.isMaterial(field)) {
                         Material material = Material.valueOf(value);
                         replacement = material.name();

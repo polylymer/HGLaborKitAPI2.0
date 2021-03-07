@@ -51,7 +51,6 @@ public final class KitApiConfig {
 
     public void add(AbstractKit kit) {
         try {
-            kitConfiguration.addDefault("kit" + "." + kit.getName() + "." + "enabled", kit.isEnabled());
             kitConfiguration.addDefault("kit" + "." + kit.getName() + "." + "usable", kit.isUsable());
             registerAnnotations(kit);
             kitConfiguration.options().copyDefaults(true);
@@ -98,7 +97,6 @@ public final class KitApiConfig {
                 }
             }
         }
-        kit.setEnabled(getBoolean("kit" + "." + kit.getName() + "." + "enabled"));
         kit.setUsable(getBoolean("kit" + "." + kit.getName() + "." + "usable"));
         loadKitEvents(kit);
     }

@@ -79,7 +79,13 @@ public final class KitApi {
     public void enableKit(AbstractKit kit, boolean isEnabled) {
         kit.setEnabled(isEnabled);
         if (isEnabled) {
-            Bukkit.getPluginManager().registerEvents((Listener) kit,plugin);
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                KitPlayer kitPlayer = playerSupplier.getKitPlayer(player);
+                if (kitPlayer.hasKit(kit)) {
+                    kit.enable(kitPlayer);
+                }
+            }
+            Bukkit.getPluginManager().registerEvents((Listener) kit, plugin);
         } else {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 kit.disable(playerSupplier.getKitPlayer(player));
@@ -241,7 +247,7 @@ public final class KitApi {
                 }
                 if (kit.getMainKitItem() != null && hasKitItemInAnyHand(player, kit)) {
                     player.sendActionBar(Localization.INSTANCE.getMessage("kit.cooldown",
-                            ImmutableMap.of("numberInSeconds", String.valueOf(timeLeft  / 1000D)),
+                            ImmutableMap.of("numberInSeconds", String.valueOf(timeLeft / 1000D)),
                             ChatUtils.getPlayerLocale(player)));
                 } else if (kit.getMainKitItem() == null) {
                     player.sendActionBar(Localization.INSTANCE.getMessage("kit.cooldown",

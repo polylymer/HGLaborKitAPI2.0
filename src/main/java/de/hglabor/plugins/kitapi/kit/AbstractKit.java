@@ -177,7 +177,6 @@ public abstract class AbstractKit extends KitEvents {
 
     public void setEnabled(boolean enabled) {
         this.isEnabled = enabled;
-        KitApi.getInstance().enableKit(this,enabled);
     }
 
     public List<ItemStack> getDisplayItems() {
