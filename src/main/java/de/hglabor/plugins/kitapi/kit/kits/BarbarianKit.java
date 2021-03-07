@@ -14,8 +14,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.UUID;
-
 /**
  * @author Hotkeyyy
  * @since 2021/02/25
@@ -83,7 +81,7 @@ public class BarbarianKit extends AbstractKit {
                     barbarianSword.addEnchantment(Enchantment.DAMAGE_ALL, 3);
                     break;
             }
-            kitPlayer.putKitAttribute(levelKey, kitPlayer.getKitAttributeOrDefault(levelKey, 1));
+            kitPlayer.putKitAttribute(levelKey, kitPlayer.getKitAttributeOrDefault(levelKey, 1) + 1);
         }
     }
 
