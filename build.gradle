@@ -48,6 +48,10 @@ repositories {
     maven { url = uri('http://repo.md-5.net/content/groups/public/') }
     maven { url = uri('https://repo.maven.apache.org/maven2/') }
     maven { url = uri('https://jitpack.io/') }
+    // COMMAND API
+    maven { url = "https://raw.githubusercontent.com/JorelAli/CommandAPI/mvn-repo/" }
+    maven { url = "https://repo.codemc.org/repository/maven-public/" }
+    // COMMAND API
 }
 
 publishing {
@@ -75,6 +79,7 @@ dependencies {
     compileOnly 'de.hglabor:localization:0.0.3'
     compileOnly 'de.hglabor:hglabor-utils:0.0.4'
     compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.0-SNAPSHOT'
+    compileOnly 'dev.jorel:commandapi-shade:5.8'
 }
 
 
