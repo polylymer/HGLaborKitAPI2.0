@@ -16,7 +16,7 @@ public class ViperKit extends AbstractKit {
     @IntArg
     private final int likelihood, effectDuration, effectMultiplier;
 
-    protected ViperKit() {
+    private ViperKit() {
         super("Viper", Material.SPIDER_EYE);
         likelihood = 30;
         effectDuration = 4;
