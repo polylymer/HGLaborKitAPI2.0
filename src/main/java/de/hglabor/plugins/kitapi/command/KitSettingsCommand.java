@@ -209,10 +209,11 @@ public class KitSettingsCommand {
     }
 
     private List<String> getFieldNames(AbstractKit kit) {
+        //TODO get class recursively from package
         List<Class<? extends Annotation>> kitAnnotations = List.of(
                 DoubleArg.class, FloatArg.class, IntArg.class, BoolArg.class,
                 LongArg.class, MaterialArg.class, StringArg.class, PotionTypeArg.class,
-                EntityArg.class);
+                EntityArg.class, SoundArg.class);
         List<String> names = new ArrayList<>();
         for (Field field : Utils.getAllFields(kit)) {
             for (Annotation annotation : field.getAnnotations()) {
