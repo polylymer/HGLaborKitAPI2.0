@@ -110,7 +110,7 @@ public class KitSettingsCommand {
         for (Player otherPlayer : Bukkit.getOnlinePlayers()) {
             if (otherPlayer == player) continue;
             if (otherPlayer.hasPermission(PERMISSION)) {
-                otherPlayer.sendMessage(otherPlayer.getName() + " changed " + message);
+                otherPlayer.sendMessage(player.getName() + " changed " + message);
             }
         }
         player.sendMessage(message);
