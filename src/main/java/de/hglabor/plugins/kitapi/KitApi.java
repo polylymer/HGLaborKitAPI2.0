@@ -145,7 +145,7 @@ public final class KitApi {
         register(TurtleKit.INSTANCE);
         register(GrandpaKit.INSTANCE);
         register(BerserkerKit.INSTANCE);
-        //  register(BeamKit.INSTANCE);
+        //register(BeamKit.INSTANCE);
         kitSelector.load();
     }
 
@@ -180,15 +180,6 @@ public final class KitApi {
         List<AbstractKit> kits = new ArrayList<>(getEnabledKits());
         kits.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
         return kits.get(index);
-    }
-
-    public AbstractKit byName(String name) {
-        for (AbstractKit kit : kits) {
-            if (kit.getName().equalsIgnoreCase(name)) {
-                return kit;
-            }
-        }
-        return null;
     }
 
     public AbstractKit byItem(ItemStack itemStack) {
