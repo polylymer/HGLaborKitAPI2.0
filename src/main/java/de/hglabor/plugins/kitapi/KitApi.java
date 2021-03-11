@@ -83,7 +83,9 @@ public final class KitApi {
     public void enableKit(AbstractKit kit, boolean isEnabled) {
         kit.setEnabled(isEnabled);
         if (isEnabled) {
-            Bukkit.getPluginManager().registerEvents((Listener) kit, plugin);
+            if (kit instanceof Listener) {
+                Bukkit.getPluginManager().registerEvents((Listener) kit, plugin);
+            }
             for (Player player : Bukkit.getOnlinePlayers()) {
                 KitPlayer kitPlayer = playerSupplier.getKitPlayer(player);
                 if (kitPlayer.hasKit(kit)) {
