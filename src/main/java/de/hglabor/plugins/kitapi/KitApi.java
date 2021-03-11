@@ -72,7 +72,7 @@ public final class KitApi {
     }
 
     public List<AbstractKit> emptyKitList() {
-        int kitAmount = KitApiConfig.getInstance().getInteger("kit.amount");
+        int kitAmount = KitApiConfig.getInstance().getKitAmount();
         List<AbstractKit> emptyKitList = new ArrayList<>(kitAmount);
         for (int i = 0; i < kitAmount; i++) {
             emptyKitList.add(NoneKit.INSTANCE);

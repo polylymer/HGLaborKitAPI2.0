@@ -1,5 +1,6 @@
 package de.hglabor.plugins.kitapi.kit.config;
 
+@Deprecated
 public enum KitMetaData {
     INGLADIATOR,
     GLADIATOR_BLOCK,

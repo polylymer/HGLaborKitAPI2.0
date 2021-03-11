@@ -40,7 +40,7 @@ public abstract class KitSelector implements Listener {
 
     public void load() {
         kitSelectorItems.clear();
-        for (int i = 0; i < KitApiConfig.getInstance().getInteger("kit.amount"); i++) {
+        for (int i = 0; i < KitApiConfig.getInstance().getKitAmount(); i++) {
             kitSelectorItems.add(i, new ItemBuilder(Material.CHEST).setName("KitSelector " + (i + 1)).build());
         }
         kitPages.clear();

@@ -33,7 +33,7 @@ public final class KitApiConfig {
         return instance;
     }
 
-    private static String key(AbstractKit kit, String fieldName) {
+    private String key(AbstractKit kit, String fieldName) {
         return "kit" + "." + kit.getName() + "." + "settings" + "." + fieldName;
     }
 
