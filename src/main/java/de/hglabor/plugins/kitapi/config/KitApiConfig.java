@@ -86,6 +86,8 @@ public final class KitApiConfig {
                     kitConfiguration.addDefault(key(kit, name), ((PotionEffectType) ReflectionUtils.get(field, kit)).getName());
                 } else if (annotation.annotationType().equals(SoundArg.class)) {
                     kitConfiguration.addDefault(key(kit, name), ((Sound) ReflectionUtils.get(field, kit)).name());
+                } else if (annotation.annotationType().equals(BoolArg.class)) {
+                    kitConfiguration.addDefault(key(kit, name), ReflectionUtils.getBool(field, kit));
                 }
             }
         }
@@ -113,6 +115,8 @@ public final class KitApiConfig {
                     ReflectionUtils.set(field, kit, PotionEffectType.getByName(kitConfiguration.getString(key(kit, name))));
                 } else if (annotation.annotationType().equals(SoundArg.class)) {
                     ReflectionUtils.set(field, kit, Sound.valueOf(kitConfiguration.getString(key(kit, name))));
+                } else if (annotation.annotationType().equals(BoolArg.class)) {
+                    ReflectionUtils.set(field, kit, Boolean.valueOf(kitConfiguration.getString(key(kit, name))));
                 }
             }
         }
