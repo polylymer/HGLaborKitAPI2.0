@@ -46,6 +46,7 @@ public abstract class AbstractKit extends KitEvents {
     /**
      * enable this to activate a kit in a specific phase
      */
+    @BoolArg
     private boolean isUsable = true;
 
     /**
