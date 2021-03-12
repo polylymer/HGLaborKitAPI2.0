@@ -28,6 +28,7 @@ public class ShapeShifterKit extends AbstractKit {
 
     private ShapeShifterKit() {
         super("Shapeshifter", Material.REDSTONE_BLOCK);
+        setMainKitItem(getDisplayMaterial());
         DISABLED_BLOCKS = new ArrayList<>();
         DISABLED_BLOCKS.addAll(Arrays.asList(Material.AIR, Material.BARRIER, Material.BEDROCK,
                 Material.REDSTONE_WIRE, Material.REDSTONE_TORCH, Material.REDSTONE_WALL_TORCH, Material.TORCH, Material.WALL_TORCH,
