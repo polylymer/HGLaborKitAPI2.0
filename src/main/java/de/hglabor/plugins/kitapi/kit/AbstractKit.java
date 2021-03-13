@@ -96,7 +96,7 @@ public abstract class AbstractKit extends KitEvents {
     /**
      * kititem which will be shown in the kitselector
      */
-    private void setDisplayItem(ItemStack item) {
+    protected final void setDisplayItem(ItemStack item) {
         for (Locale supportedLanguage : KitApi.getInstance().getSupportedLanguages()) {
             String[] description = Localization.INSTANCE.getMessage(name.toLowerCase() + "." + "description", supportedLanguage).split("#");
             displayItems.put(supportedLanguage, new ItemBuilder(item.clone()).setName(ChatColor.RED + name).setDescription(description).build());
@@ -109,6 +109,10 @@ public abstract class AbstractKit extends KitEvents {
 
     public void setMainKitItem(Material material, int size) {
         mainKitItem = new ItemBuilder(material).setDescription(KIT_ITEM_DESC).setAmount(size).build();
+    }
+
+    public void setMainKitItem(ItemStack item, int size) {
+        mainKitItem = new ItemBuilder(item.clone()).setDescription(KIT_ITEM_DESC).setAmount(size).build();
     }
 
     public void setMainKitItem(Material material, String name) {
