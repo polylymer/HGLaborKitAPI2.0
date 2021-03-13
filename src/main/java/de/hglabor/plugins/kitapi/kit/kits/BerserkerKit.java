@@ -39,8 +39,8 @@ public class BerserkerKit extends AbstractKit {
     public void onPlayerKillsPlayer(KitPlayer killer, KitPlayer dead) {
         Player killerPlayer = Bukkit.getPlayer(killer.getUUID());
         if (killerPlayer != null) {
-            killerPlayer.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * playerStrengthDuration, playerStrengthAmplifier, true, true));
-            killerPlayer.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * playerSpeedDuration, playerSpeedAmplifier, true, true));
+            killerPlayer.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * playerStrengthDuration, playerStrengthAmplifier));
+            killerPlayer.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * playerSpeedDuration, playerSpeedAmplifier));
         }
     }
 
@@ -49,8 +49,8 @@ public class BerserkerKit extends AbstractKit {
     public void onPlayerKillsLivingEntity(EntityDeathEvent event) {
         Player killer = event.getEntity().getKiller();
         if (killer != null) {
-            killer.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * mobStrengthDuration, mobStrengthAmplifier, true, true));
-            killer.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * mobSpeedDuration, mobSpeedAmplifier, true, true));
+            killer.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * mobStrengthDuration, mobStrengthAmplifier));
+            killer.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * mobSpeedDuration, mobSpeedAmplifier));
         }
     }
 }
