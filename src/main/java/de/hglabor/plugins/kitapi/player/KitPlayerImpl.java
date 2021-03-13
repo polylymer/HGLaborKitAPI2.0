@@ -84,6 +84,11 @@ public abstract class KitPlayerImpl implements KitPlayer {
     @Override
     public void disableKits(boolean kitsDisabled) {
         this.kitsDisabled = kitsDisabled;
+        if (kitsDisabled) {
+            kits.forEach(kit -> kit.disable(this));
+        } else {
+            kits.forEach(kit -> kit.enable(this));
+        }
     }
 
     @Override
