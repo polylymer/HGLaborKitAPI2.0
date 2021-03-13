@@ -131,11 +131,8 @@ public abstract class AbstractKit extends KitEvents {
         mainKitItem = new ItemBuilder(item.clone()).setDescription(KIT_ITEM_DESC).build();
     }
 
-    /**
-     * used for checking in controller if kit has event
-     */
-    public void addEvents(List<Class<? extends Event>> events) {
-        kitEvents.addAll(events);
+    protected final void addAdditionalKitItems(ItemStack... itemStack) {
+        Collections.addAll(additionalKitItems, itemStack);
     }
 
     public List<ItemStack> getKitItems() {
