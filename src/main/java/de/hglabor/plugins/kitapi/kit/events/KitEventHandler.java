@@ -18,7 +18,7 @@ public abstract class KitEventHandler extends KitEvents {
         this.playerSupplier = playerSupplier;
     }
 
-    public boolean canUseKit(Event event, KitPlayer kitPlayer, AbstractKit kit) {
+    public static boolean canUseKit(Event event, KitPlayer kitPlayer, AbstractKit kit) {
         Player player = Bukkit.getPlayer(kitPlayer.getUUID());
         if (player == null) {
             return false;
@@ -61,7 +61,7 @@ public abstract class KitEventHandler extends KitEvents {
         return true;
     }
 
-    public boolean canUseKitItem(Event event, KitPlayer kitPlayer, AbstractKit kit) {
+    public static boolean canUseKitItem(Event event, KitPlayer kitPlayer, AbstractKit kit) {
         Player player = Bukkit.getPlayer(kitPlayer.getUUID());
 
         if (player == null) {
