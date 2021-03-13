@@ -148,6 +148,7 @@ public final class KitApi {
         register(GrandpaKit.INSTANCE);
         register(BerserkerKit.INSTANCE);
         register(ScoutKit.INSTANCE);
+        register(MonkKit.INSTANCE);
         //register(BeamKit.INSTANCE);
         kitSelector.load();
     }
