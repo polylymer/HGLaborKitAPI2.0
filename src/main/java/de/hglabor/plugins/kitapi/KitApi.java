@@ -150,6 +150,7 @@ public final class KitApi {
         register(ScoutKit.INSTANCE);
         register(MonkKit.INSTANCE);
         register(VampireKit.INSTANCE);
+        register(KayaKit.INSTANCE);
         //register(BeamKit.INSTANCE);
         kitSelector.load();
     }
