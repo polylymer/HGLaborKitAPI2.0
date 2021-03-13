@@ -6,6 +6,7 @@ import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -32,9 +33,7 @@ public class TankKit extends AbstractKit {
 
     @KitEvent
     @Override
-    public void onPlayerKillsLivingEntity(EntityDeathEvent event) {
-        LivingEntity entity = event.getEntity();
-        Player killer = entity.getKiller();
+    public void onPlayerKillsLivingEntity(EntityDeathEvent event, Player killer, Entity entity) {
         float explosionSize = entity instanceof Player ? explosionSizePlayer : explosionSizeEntity;
         entity.getWorld().createExplosion(entity.getLocation(), explosionSize, false, true, killer);
     }

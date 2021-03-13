@@ -6,6 +6,7 @@ import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.potion.PotionEffect;
@@ -46,11 +47,8 @@ public class BerserkerKit extends AbstractKit {
 
     @KitEvent
     @Override
-    public void onPlayerKillsLivingEntity(EntityDeathEvent event) {
-        Player killer = event.getEntity().getKiller();
-        if (killer != null) {
-            killer.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * mobStrengthDuration, mobStrengthAmplifier));
-            killer.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * mobSpeedDuration, mobSpeedAmplifier));
-        }
+    public void onPlayerKillsLivingEntity(EntityDeathEvent event, Player killer, Entity entity) {
+        killer.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * mobStrengthDuration, mobStrengthAmplifier));
+        killer.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * mobSpeedDuration, mobSpeedAmplifier));
     }
 }
