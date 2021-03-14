@@ -95,7 +95,7 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
     }
 
     @EventHandler
-    public void onPlayerKillsLivingEntity(EntityDeathEvent event, Player killer, Entity entity) {
+    public void onPlayerKillsLivingEntity(EntityDeathEvent event) {
         if (event.getEntity().getKiller() != null) {
             KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getEntity().getKiller());
             useKit(event, kitPlayer, kit -> kit.onPlayerKillsLivingEntity(event, event.getEntity().getKiller(), event.getEntity()));
