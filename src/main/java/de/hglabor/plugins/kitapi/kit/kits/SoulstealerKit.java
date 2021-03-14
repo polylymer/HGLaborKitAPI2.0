@@ -24,6 +24,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class SoulstealerKit extends AbstractKit implements Listener {
     public final static SoulstealerKit INSTANCE = new SoulstealerKit();
@@ -114,7 +115,7 @@ public class SoulstealerKit extends AbstractKit implements Listener {
         }
 
         void dropLoot() {
-            Arrays.stream(items).forEach(item -> lastLocation.getWorld().dropItem(lastLocation, item));
+            Arrays.stream(items).filter(Objects::nonNull).forEach(item -> lastLocation.getWorld().dropItem(lastLocation, item));
             cancel();
         }
 
