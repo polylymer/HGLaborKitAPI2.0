@@ -5,6 +5,8 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.events.KitEventHandler;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
+import de.hglabor.utils.localization.Localization;
+import de.hglabor.utils.noriskutils.ChatUtils;
 import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -74,9 +76,12 @@ public class KayaKit extends AbstractKit implements Listener {
         if (!kitPlayer.isValid())
             return;
         Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
-        if (block.getType().equals(kayaBlock.getType()))
-            if (block.hasMetadata(kayaBlockKey))
+        if (block.getType().equals(kayaBlock.getType())) {
+            if (block.hasMetadata(kayaBlockKey)) {
+                Localization.INSTANCE.getMessage("kaya.triggerBlock", ChatUtils.getPlayerLocale(player));
                 block.setType(Material.AIR);
+            }
+        }
     }
 
     private void registerRecipe() {

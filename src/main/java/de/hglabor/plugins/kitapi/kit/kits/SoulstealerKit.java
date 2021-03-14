@@ -9,7 +9,10 @@ import de.hglabor.plugins.kitapi.kit.settings.SoundArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -35,8 +38,8 @@ public class SoulstealerKit extends AbstractKit implements Listener {
     @SoundArg
     private final Sound deathSound;
 
-    //TODO you can drop sword, sword should be removed, make sword kititem, make player visible again
-    
+    //TODO you can drop sword, sword should be removed, make sword kititem, make player visible again, remove bossbar
+
     private SoulstealerKit() {
         super("Soulstealer", Material.BONE);
         this.respawnKey = this.getName() + "respawn";
@@ -60,6 +63,10 @@ public class SoulstealerKit extends AbstractKit implements Listener {
         Player player = event.getEntity();
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         if (!player.hasMetadata(respawnKey)) {
+            Player killer = event.getEntity().getKiller();
+            if (killer != null) {
+                killer.sendMessage(Localization.INSTANCE.getMessage("soulstealer.killedSoulStealer",ChatUtils.getPlayerLocale(killer)));
+            }
             DeathTimer deathTimer = new DeathTimer(kitPlayer, player.getInventory().getContents());
             kitPlayer.putKitAttribute(runnableKey, deathTimer);
             deathTimer.runTaskTimer(KitApi.getInstance().getPlugin(), 0, 20);
@@ -93,7 +100,7 @@ public class SoulstealerKit extends AbstractKit implements Listener {
             this.kitPlayer = kitPlayer;
             this.items = items;
             this.counter = effectDuration;
-            this.bossBar = Bukkit.createBossBar(ChatColor.RED + "KILL A PLAYER TO RESPAWN", BarColor.WHITE, BarStyle.SOLID);
+            this.bossBar = Bukkit.createBossBar(Localization.INSTANCE.getMessage("soulstealer.bossBar", ChatUtils.getPlayerLocale(kitPlayer.getUUID())), BarColor.WHITE, BarStyle.SOLID);
             this.setLastLocation();
             this.init();
         }

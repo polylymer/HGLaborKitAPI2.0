@@ -1,10 +1,14 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
+import com.google.common.collect.ImmutableMap;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.kit.settings.PotionEffectArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
+import de.hglabor.utils.localization.Localization;
+import de.hglabor.utils.noriskutils.ChatUtils;
+import de.hglabor.utils.noriskutils.TimeConverter;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -46,6 +50,7 @@ public class ScoutKit extends AbstractKit {
         PotionSupplierTask potionSupplierTask = new PotionSupplierTask(kitPlayer);
         kitPlayer.putKitAttribute(runnableKey, potionSupplierTask);
         int timeTilNextPotion = kitPlayer.getKitAttributeOrDefault(timeLeftKey, supplyInterval);
+        Localization.INSTANCE.getMessage("scout.nextSupplyIn", ImmutableMap.of("time", TimeConverter.stringify(timeTilNextPotion * 20)), ChatUtils.getPlayerLocale(kitPlayer.getUUID()));
         potionSupplierTask.runTaskLater(KitApi.getInstance().getPlugin(), timeTilNextPotion * 20L);
     }
 
@@ -80,6 +85,7 @@ public class ScoutKit extends AbstractKit {
         public void run() {
             if (isCancelled()) return;
             List<ItemStack> potions = IntStream.rangeClosed(0, potionAmount).mapToObj(i -> createScoutPotion()).collect(Collectors.toList());
+            Localization.INSTANCE.getMessage("scout.newPotions", ImmutableMap.of("amount", String.valueOf(potionAmount)), ChatUtils.getPlayerLocale(kitPlayer.getUUID()));
             KitApi.getInstance().giveKitItemsIfSlotEmpty(kitPlayer, ScoutKit.INSTANCE, potions);
             kitPlayer.putKitAttribute(timeLeftKey, supplyInterval);
             onEnable(kitPlayer);

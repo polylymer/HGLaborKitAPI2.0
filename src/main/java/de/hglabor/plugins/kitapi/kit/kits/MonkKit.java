@@ -1,11 +1,14 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
+import com.google.common.collect.ImmutableMap;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
+import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChanceUtils;
+import de.hglabor.utils.noriskutils.ChatUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
@@ -44,18 +47,21 @@ public class MonkKit extends AbstractKit {
     @KitEvent
     @Override
     public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event) {
+        Player player = event.getPlayer();
         Player rightClicked = (Player) event.getRightClicked();
         PlayerInventory inventory = rightClicked.getInventory();
-        ItemStack mainHand = inventory.getItemInMainHand();
+        player.sendMessage(Localization.INSTANCE.getMessage("monk.successful", ImmutableMap.of("enemy", rightClicked.getName()), ChatUtils.getPlayerLocale(player)));
         if (ChanceUtils.roll(likelihoodToSwitchArmor)) {
             for (EquipmentSlot armorSlot : armorSlots) {
                 if (inventory.getItem(armorSlot) == null) continue;
+                rightClicked.sendMessage(Localization.INSTANCE.getMessage("monk.itemWasSwitched", ChatUtils.getPlayerLocale(rightClicked)));
                 switchItem(inventory, 0, armorSlot);
                 return;
             }
         }
+        rightClicked.sendMessage(Localization.INSTANCE.getMessage("monk.itemWasSwitched", ChatUtils.getPlayerLocale(rightClicked)));
         switchItem(inventory, 0, inventorySlots.get(random.nextInt(inventorySlots.size())));
-        KitApi.getInstance().getPlayer(event.getPlayer()).activateKitCooldown(this);
+        KitApi.getInstance().getPlayer(player).activateKitCooldown(this);
     }
 
     private void switchItem(PlayerInventory inventory, int firstSlot, EquipmentSlot secondSlot) {
