@@ -24,7 +24,7 @@ public class ThorKit extends AbstractKit implements Listener {
     @FloatArg(min = 0.0F)
     private final float cooldown;
     @IntArg
-    private final int netherrackHeight,amountOfLightnings;
+    private final int netherrackHeight, amountOfLightnings;
     @FloatArg
     private final float netherrackPower;
     private final String thorBlockKey;
