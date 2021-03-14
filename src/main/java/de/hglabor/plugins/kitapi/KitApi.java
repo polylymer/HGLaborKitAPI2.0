@@ -108,61 +108,64 @@ public final class KitApi {
         this.kitSelector = kitSelector;
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(kitSelector, plugin);
-        register(MagmaKit.INSTANCE);
-        register(NinjaKit.INSTANCE);
-        register(NoneKit.INSTANCE);
-        register(BlinkKit.INSTANCE);
-        register(SurpriseKit.INSTANCE);
-        register(CopyCatKit.INSTANCE);
-        register(GladiatorKit.INSTANCE);
-        register(GamblerKit.INSTANCE);
-        register(SmogmogKit.INSTANCE);
-        register(RogueKit.INSTANCE);
-        register(SnailKit.INSTANCE);
-        register(DiggerKit.INSTANCE);
-        register(ReviveKit.INSTANCE);
-        register(TankKit.INSTANCE);
-        register(GravityKit.INSTANCE);
-        register(CannibalKit.INSTANCE);
-        register(ZickZackKit.INSTANCE);
-        register(ThorKit.INSTANCE);
-        register(StomperKit.INSTANCE);
-        register(DannyKit.INSTANCE);
-        register(JackhammerKit.INSTANCE);
-        register(SwitcherKit.INSTANCE);
-        register(SpitKit.INSTANCE);
-        register(SquidKit.INSTANCE);
-        register(ShapeShifterKit.INSTANCE);
-        register(SpidermanKit.INSTANCE);
-        register(ManipulationKit.INSTANCE);
-        register(EndermageKit.INSTANCE);
-        register(ViperKit.INSTANCE);
-        register(LumberjackKit.INSTANCE);
-        register(ReaperKit.INSTANCE);
-        register(GrapplerKit.INSTANCE);
-        register(ClawKit.INSTANCE);
-        register(AutomaticKit.INSTANCE);
-        register(AnchorKit.INSTANCE);
-        register(BarbarianKit.INSTANCE);
-        register(TurtleKit.INSTANCE);
-        register(GrandpaKit.INSTANCE);
-        register(BerserkerKit.INSTANCE);
-        register(ScoutKit.INSTANCE);
-        register(MonkKit.INSTANCE);
-        register(VampireKit.INSTANCE);
-        register(KayaKit.INSTANCE);
-        //register(BeamKit.INSTANCE);
+        kits.add(MagmaKit.INSTANCE);
+        kits.add(NinjaKit.INSTANCE);
+        kits.add(NoneKit.INSTANCE);
+        kits.add(BlinkKit.INSTANCE);
+        kits.add(SurpriseKit.INSTANCE);
+        kits.add(CopyCatKit.INSTANCE);
+        kits.add(GladiatorKit.INSTANCE);
+        kits.add(GamblerKit.INSTANCE);
+        kits.add(SmogmogKit.INSTANCE);
+        kits.add(RogueKit.INSTANCE);
+        kits.add(SnailKit.INSTANCE);
+        kits.add(DiggerKit.INSTANCE);
+        kits.add(ReviveKit.INSTANCE);
+        kits.add(TankKit.INSTANCE);
+        kits.add(GravityKit.INSTANCE);
+        kits.add(CannibalKit.INSTANCE);
+        kits.add(ZickZackKit.INSTANCE);
+        kits.add(ThorKit.INSTANCE);
+        kits.add(StomperKit.INSTANCE);
+        kits.add(DannyKit.INSTANCE);
+        kits.add(JackhammerKit.INSTANCE);
+        kits.add(SwitcherKit.INSTANCE);
+        kits.add(SpitKit.INSTANCE);
+        kits.add(SquidKit.INSTANCE);
+        kits.add(ShapeShifterKit.INSTANCE);
+        kits.add(SpidermanKit.INSTANCE);
+        kits.add(ManipulationKit.INSTANCE);
+        kits.add(EndermageKit.INSTANCE);
+        kits.add(ViperKit.INSTANCE);
+        kits.add(LumberjackKit.INSTANCE);
+        kits.add(ReaperKit.INSTANCE);
+        kits.add(GrapplerKit.INSTANCE);
+        kits.add(ClawKit.INSTANCE);
+        kits.add(AutomaticKit.INSTANCE);
+        kits.add(AnchorKit.INSTANCE);
+        kits.add(BarbarianKit.INSTANCE);
+        kits.add(TurtleKit.INSTANCE);
+        kits.add(GrandpaKit.INSTANCE);
+        kits.add(BerserkerKit.INSTANCE);
+        kits.add(ScoutKit.INSTANCE);
+        kits.add(MonkKit.INSTANCE);
+        kits.add(VampireKit.INSTANCE);
+        kits.add(KayaKit.INSTANCE);
+        kits.add(SoulstealerKit.INSTANCE);
+        //kits.add(BeamKit.INSTANCE);
+        //sort alphabetically
+        kits.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
+        registerKits();
         kitSelector.load();
     }
 
-    public void register(AbstractKit kit) {
-        System.out.println(kit.getName());
-        kits.add(kit);
+    private void registerKits() {
         KitApiConfig kitApiConfig = KitApiConfig.getInstance();
-        kitApiConfig.add(kit);
-        kitApiConfig.load(kit);
-        if (kit instanceof Listener) {
-            plugin.getServer().getPluginManager().registerEvents((Listener) kit, plugin);
+        for (AbstractKit kit : kits) {
+            System.out.println(kit.getName());
+            kitApiConfig.add(kit);
+            kitApiConfig.load(kit);
+            if (kit instanceof Listener) plugin.getServer().getPluginManager().registerEvents((Listener) kit, plugin);
         }
     }
 
