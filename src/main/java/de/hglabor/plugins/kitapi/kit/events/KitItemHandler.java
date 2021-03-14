@@ -5,11 +5,13 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.supplier.KitPlayerSupplier;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
@@ -54,12 +56,24 @@ public class KitItemHandler implements Listener {
 
     @EventHandler
     public void cancelKitItemDrop(PlayerDropItemEvent event) {
-        KitPlayer KitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
+        KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
         ItemStack droppedItem = event.getItemDrop().getItemStack();
-        for (AbstractKit kit : KitPlayer.getKits())
+        for (AbstractKit kit : kitPlayer.getKits())
             for (ItemStack kitItem : kit.getKitItems())
                 if (kitItem.isSimilar(droppedItem) || kit.isKitItem(droppedItem))
                     event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onCraftItem(CraftItemEvent event) {
+        KitPlayer kitPlayer = playerSupplier.getKitPlayer((Player) event.getWhoClicked());
+        for (ItemStack ingridient : event.getInventory().getMatrix()) {
+            if (ingridient == null) continue;
+            for (AbstractKit kit : kitPlayer.getKits())
+                for (ItemStack kitItem : kit.getKitItems())
+                    if (kitItem.isSimilar(ingridient) || kit.isKitItem(ingridient))
+                        event.setCancelled(true);
+        }
     }
 
     @EventHandler
