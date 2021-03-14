@@ -28,6 +28,14 @@ repositories {
     // COMMAND API
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
 uploadArchives {
     repositories {
         mavenDeployer {
