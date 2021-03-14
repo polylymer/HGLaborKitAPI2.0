@@ -28,8 +28,6 @@ public class ScoutKit extends AbstractKit {
     private final String runnableKey;
     private final String timeLeftKey;
 
-    //TODO you can drop sword, sword should be removed, make sword kititem, make player visible again
-
     private ScoutKit() {
         super("Scout", Material.POTION);
         this.potionEffectType = PotionEffectType.SPEED;

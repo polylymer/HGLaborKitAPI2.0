@@ -35,6 +35,8 @@ public class SoulstealerKit extends AbstractKit implements Listener {
     @SoundArg
     private final Sound deathSound;
 
+    //TODO you can drop sword, sword should be removed, make sword kititem, make player visible again
+    
     private SoulstealerKit() {
         super("Soulstealer", Material.BONE);
         this.respawnKey = this.getName() + "respawn";
