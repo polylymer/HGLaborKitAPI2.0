@@ -44,7 +44,7 @@ public class GamblerKit extends AbstractKit implements Listener {
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
+    public void onDeactivation(KitPlayer kitPlayer) {
         GambleWin gambleWin = kitPlayer.getKitAttribute(attributeKey);
         if (gambleWin != null) {
             gambleWin.end();

@@ -55,7 +55,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
+    public void onDeactivation(KitPlayer kitPlayer) {
         GladiatorFight value = kitPlayer.getKitAttribute(attributeKey);
         if (value != null) {
             value.endFight();

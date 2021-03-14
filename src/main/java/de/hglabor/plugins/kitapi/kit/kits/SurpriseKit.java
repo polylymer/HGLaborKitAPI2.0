@@ -15,7 +15,7 @@ public class SurpriseKit extends AbstractKit {
     }
 
     @Override
-    public void enable(KitPlayer kitplayer) {
+    public void onEnable(KitPlayer kitplayer) {
         AbstractKit randomKit = NoneKit.INSTANCE;
         int kitSlot = 0;
         //TODO copycat surprise
@@ -24,7 +24,7 @@ public class SurpriseKit extends AbstractKit {
                 randomKit = getRandomEnabledKit();
                 kitplayer.getKits().set(kitSlot, randomKit);
                 KitApi.getInstance().giveKitItemsIfSlotEmpty(kitplayer, randomKit);
-                randomKit.enable(kitplayer);
+                randomKit.onEnable(kitplayer);
             }
             kitSlot++;
         }

@@ -36,12 +36,12 @@ public class KayaKit extends AbstractKit implements Listener {
     }
 
     @Override
-    public void enable(KitPlayer kitPlayer) {
+    public void onEnable(KitPlayer kitPlayer) {
         kitPlayer.getBukkitPlayer().ifPresent(player -> player.discoverRecipe(namespacedKey));
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
+    public void onDeactivation(KitPlayer kitPlayer) {
         kitPlayer.getBukkitPlayer().ifPresent(player -> player.undiscoverRecipe(namespacedKey));
     }
 

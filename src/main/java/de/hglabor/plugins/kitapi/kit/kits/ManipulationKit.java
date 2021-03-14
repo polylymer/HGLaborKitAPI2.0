@@ -42,12 +42,12 @@ public class ManipulationKit extends AbstractKit implements Listener {
     }
 
     @Override
-    public void enable(KitPlayer kitPlayer) {
+    public void onEnable(KitPlayer kitPlayer) {
         kitPlayer.putKitAttribute(collectedMobsKey, new HashSet<UUID>());
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
+    public void onDeactivation(KitPlayer kitPlayer) {
         Set<UUID> controlledMobs = kitPlayer.getKitAttribute(collectedMobsKey);
         if (controlledMobs == null) {
             return;
