@@ -30,7 +30,7 @@ public class KayaKit extends AbstractKit implements Listener {
         super("Kaya", Material.GRASS_BLOCK);
         this.kayaBlockKey = "kayaBlock";
         this.namespacedKey = new NamespacedKey(KitApi.getInstance().getPlugin(), kayaBlockKey);
-        this.kayaBlock = new ItemBuilder(Material.GRASS_BLOCK).setTitle(ChatColor.GREEN + "Kaya Block").build();
+        this.kayaBlock = new ItemBuilder(Material.GRASS_BLOCK).setName(ChatColor.GREEN + "Kaya Block").build();
         this.addAdditionalKitItems(new ItemBuilder(kayaBlock).setAmount(16).build());
         this.registerRecipe();
     }

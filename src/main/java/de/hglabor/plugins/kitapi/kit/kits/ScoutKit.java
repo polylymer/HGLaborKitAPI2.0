@@ -27,7 +27,7 @@ public class ScoutKit extends AbstractKit {
     private final String timeLeftKey;
 
     private ScoutKit() {
-        super("Scout", Material.AIR);
+        super("Scout", Material.POTION);
         this.potionEffectType = PotionEffectType.SPEED;
         this.duration = 67;
         this.amplifier = 1;
