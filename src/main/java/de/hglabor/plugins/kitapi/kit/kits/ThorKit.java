@@ -17,12 +17,14 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.util.stream.IntStream;
+
 public class ThorKit extends AbstractKit implements Listener {
     public static final ThorKit INSTANCE = new ThorKit();
     @FloatArg(min = 0.0F)
     private final float cooldown;
     @IntArg
-    private final int netherrackHeight;
+    private final int netherrackHeight,amountOfLightnings;
     @FloatArg
     private final float netherrackPower;
     private final String thorBlockKey;
@@ -32,6 +34,7 @@ public class ThorKit extends AbstractKit implements Listener {
         cooldown = 10;
         netherrackHeight = 80;
         netherrackPower = 4F;
+        amountOfLightnings = 1;
         thorBlockKey = this.getName() + "thorBlock";
         setMainKitItem(getDisplayMaterial(), true);
     }
@@ -50,7 +53,7 @@ public class ThorKit extends AbstractKit implements Listener {
             world.strikeLightning(highestBlockLocation.add(0, 0, 1));
             world.strikeLightning(highestBlockLocation.add(1, 0, 1));
         } else {
-            world.strikeLightning(highestBlockLocation);
+            IntStream.range(0, amountOfLightnings).mapToObj(i -> highestBlockLocation).forEach(world::strikeLightning);
         }
         if (highestBlockLocation.getBlockY() > netherrackHeight) {
             if (highestBlock.getType() == Material.NETHERRACK && highestBlock.hasMetadata(thorBlockKey)) {
