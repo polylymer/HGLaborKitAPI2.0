@@ -5,7 +5,9 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.DoubleArg;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
+import de.hglabor.plugins.kitapi.kit.settings.LongArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
+import de.hglabor.plugins.kitapi.util.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,14 +19,16 @@ public class NinjaKit extends AbstractKit {
     public final static NinjaKit INSTANCE = new NinjaKit();
     @FloatArg(min = 0.0F)
     private final float cooldown;
-
     @DoubleArg
     private final double radius;
+    @LongArg
+    private final long lastHitExpiration;
 
     private NinjaKit() {
         super("Ninja", Material.INK_SAC);
         cooldown = 13F;
         radius = 30D;
+        lastHitExpiration = 15L;
     }
 
     @KitEvent
@@ -42,8 +46,8 @@ public class NinjaKit extends AbstractKit {
         if (toTeleport != null) {
             if (!toTeleport.isOnline()) return;
             if (!lastHittedPlayer.isValid()) return;
-            if (attacker.getLastHitInformation().getPlayerTimeStamp() + this.getCooldown() * 1000L > System.currentTimeMillis()) {
-                if (distanceBetweenPlayers(player, toTeleport) < Math.pow(radius, 2)) {
+            if (attacker.getLastHitInformation().getPlayerTimeStamp() + lastHitExpiration * 1000L > System.currentTimeMillis()) {
+                if (distanceBetweenPlayers(player, toTeleport) < radius * radius) {
                     player.teleport(calculateNinjaBehind(toTeleport));
                     attacker.activateKitCooldown(this);
                     attacker.getLastHitInformation().setPlayerTimeStamp(0);
