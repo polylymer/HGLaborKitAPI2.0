@@ -75,14 +75,20 @@ public abstract class AbstractKit extends KitEvents {
     /**
      * some kits don't require an eventlistener so you can activate them here
      */
-    public void enable(KitPlayer kitPlayer) {
+    public void onEnable(KitPlayer kitPlayer) {
+    }
+
+    /**
+     * this will be executed if a player looses their kit
+     */
+    public void onDisable(KitPlayer kitPlayer) {
     }
 
     /**
      * some kits don't require an eventlistener so you can activate disable them here
      * also used for kit rogue which disables all kits
      */
-    public void disable(KitPlayer kitPlayer) {
+    public void onDeactivation(KitPlayer kitPlayer) {
     }
 
     public Material getDisplayMaterial() {

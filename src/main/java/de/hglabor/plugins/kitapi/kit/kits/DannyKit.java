@@ -38,7 +38,7 @@ public class DannyKit extends AbstractKit {
     }
 
     @Override
-    public void enable(KitPlayer kitPlayer) {
+    public void onEnable(KitPlayer kitPlayer) {
         BukkitTask task;
         task = Bukkit.getScheduler().runTaskTimer(KitApi.getInstance().getPlugin(), () -> {
             if (kitPlayer.isValid()) {
@@ -90,7 +90,7 @@ public class DannyKit extends AbstractKit {
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
+    public void onDeactivation(KitPlayer kitPlayer) {
         BukkitTask task = kitPlayer.getKitAttribute(attributeKey);
         if (task != null) {
             task.cancel();

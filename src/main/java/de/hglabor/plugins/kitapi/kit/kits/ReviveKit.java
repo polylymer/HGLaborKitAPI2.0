@@ -26,7 +26,7 @@ public class ReviveKit extends AbstractKit {
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
+    public void onDeactivation(KitPlayer kitPlayer) {
         Player player = Bukkit.getPlayer(kitPlayer.getUUID());
         if (player != null) {
             if (player.getInventory().getItemInOffHand().isSimilar(this.getMainKitItem())) {
@@ -36,7 +36,7 @@ public class ReviveKit extends AbstractKit {
     }
 
     @Override
-    public void enable(KitPlayer kitPlayer) {
+    public void onEnable(KitPlayer kitPlayer) {
         Player player = Bukkit.getPlayer(kitPlayer.getUUID());
         giveTotem(kitPlayer, player);
     }

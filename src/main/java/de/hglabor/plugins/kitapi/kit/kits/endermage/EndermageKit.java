@@ -43,7 +43,7 @@ public class EndermageKit extends AbstractKit implements Listener {
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
+    public void onDeactivation(KitPlayer kitPlayer) {
         EndermageSearch endermageRunnable = kitPlayer.getKitAttribute(attributeKey);
         if (endermageRunnable != null && endermageRunnable.isSearchingForPlayers) {
             endermageRunnable.endSearching();

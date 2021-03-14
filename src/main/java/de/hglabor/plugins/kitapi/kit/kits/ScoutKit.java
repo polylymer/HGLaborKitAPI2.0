@@ -40,7 +40,7 @@ public class ScoutKit extends AbstractKit {
     }
 
     @Override
-    public void enable(KitPlayer kitPlayer) {
+    public void onEnable(KitPlayer kitPlayer) {
         PotionSupplierTask potionSupplierTask = new PotionSupplierTask(kitPlayer);
         kitPlayer.putKitAttribute(runnableKey, potionSupplierTask);
         int timeTilNextPotion = kitPlayer.getKitAttributeOrDefault(timeLeftKey, supplyInterval);
@@ -48,7 +48,7 @@ public class ScoutKit extends AbstractKit {
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
+    public void onDeactivation(KitPlayer kitPlayer) {
         PotionSupplierTask potionSupplierTask = kitPlayer.getKitAttribute(runnableKey);
         potionSupplierTask.cancel();
         long timeLeft = (System.currentTimeMillis() / 1000L) - (potionSupplierTask.startTime / 1000L);
@@ -78,7 +78,7 @@ public class ScoutKit extends AbstractKit {
             List<ItemStack> potions = IntStream.range(0, potionAmount).mapToObj(i -> createScoutPotion()).collect(Collectors.toList());
             KitApi.getInstance().giveKitItemsIfSlotEmpty(kitPlayer, ScoutKit.INSTANCE, potions);
             kitPlayer.putKitAttribute(timeLeftKey, supplyInterval);
-            enable(kitPlayer);
+            onEnable(kitPlayer);
         }
     }
 }

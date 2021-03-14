@@ -20,23 +20,23 @@ public class CopyCatKit extends AbstractKit {
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
+    public void onDeactivation(KitPlayer kitPlayer) {
         AbstractKit copiedKit = kitPlayer.getKitAttribute(copiedKitKey);
         if (copiedKit != null && copiedKit != this) {
-            copiedKit.disable(kitPlayer);
+            copiedKit.onDeactivation(kitPlayer);
         }
     }
 
     @Override
-    public void enable(KitPlayer kitPlayer) {
+    public void onEnable(KitPlayer kitPlayer) {
         AbstractKit copiedKit = kitPlayer.getKitAttribute(copiedKitKey);
         if (copiedKit != null) {
             if (copiedKit.equals(this)) {
                 AbstractKit randomKit = SurpriseKit.INSTANCE.getRandomEnabledKit();
                 kitPlayer.putKitAttribute(copiedKitKey, randomKit);
-                randomKit.enable(kitPlayer);
+                randomKit.onEnable(kitPlayer);
             } else {
-                copiedKit.enable(kitPlayer);
+                copiedKit.onEnable(kitPlayer);
             }
         }
     }
@@ -49,7 +49,7 @@ public class CopyCatKit extends AbstractKit {
         //DISABLE OLD KIT
 
         if (oldCopiedKit != null) {
-            oldCopiedKit.disable(killer);
+            oldCopiedKit.onDeactivation(killer);
             Optional.ofNullable(Bukkit.getPlayer(killer.getUUID())).ifPresent(player -> KitApi.getInstance().removeKitItems(oldCopiedKit, player));
         }
 
@@ -58,7 +58,7 @@ public class CopyCatKit extends AbstractKit {
 
         //ENABLE NEW KIT
         KitApi.getInstance().giveKitItemsIfSlotEmpty(killer, newKit);
-        newKit.enable(killer);
+        newKit.onEnable(killer);
     }
 
     public String getKitAttributeKey() {

@@ -29,7 +29,7 @@ public class ZickZackKit extends AbstractKit {
     }
 
     @Override
-    public void enable(KitPlayer kitPlayer) {
+    public void onEnable(KitPlayer kitPlayer) {
         kitPlayer.putKitAttribute(comboCounterKey, new HashMap<UUID, Integer>());
     }
 

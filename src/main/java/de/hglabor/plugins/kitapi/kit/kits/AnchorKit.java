@@ -29,12 +29,12 @@ public class AnchorKit extends AbstractKit {
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
+    public void onDeactivation(KitPlayer kitPlayer) {
         kitPlayer.getBukkitPlayer().ifPresent(this::resetKnockbackAttribute);
     }
 
     @Override
-    public void enable(KitPlayer kitPlayer) {
+    public void onEnable(KitPlayer kitPlayer) {
         kitPlayer.getBukkitPlayer().ifPresent(this::setKnockbackAttribute);
     }
 

@@ -25,12 +25,12 @@ public class VampireKit extends AbstractKit {
     }
 
     @Override
-    public void enable(KitPlayer kitPlayer) {
+    public void onEnable(KitPlayer kitPlayer) {
         kitPlayer.getBukkitPlayer().ifPresent(player -> player.setMaxHealth(kitPlayer.getKitAttributeOrDefault(maxHealthKey, defaultHealth)));
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
+    public void onDeactivation(KitPlayer kitPlayer) {
         kitPlayer.getBukkitPlayer().ifPresent(player -> player.setMaxHealth(defaultHealth));
     }
 

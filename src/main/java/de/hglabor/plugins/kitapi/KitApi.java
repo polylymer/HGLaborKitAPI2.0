@@ -89,12 +89,12 @@ public final class KitApi {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 KitPlayer kitPlayer = playerSupplier.getKitPlayer(player);
                 if (kitPlayer.hasKit(kit)) {
-                    kit.enable(kitPlayer);
+                    kit.onEnable(kitPlayer);
                 }
             }
         } else {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                kit.disable(playerSupplier.getKitPlayer(player));
+                kit.onDeactivation(playerSupplier.getKitPlayer(player));
             }
             if (kit instanceof Listener) {
                 HandlerList.unregisterAll((Listener) kit);

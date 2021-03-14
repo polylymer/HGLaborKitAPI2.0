@@ -36,7 +36,7 @@ public class GravityKit extends AbstractKit {
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
+    public void onDeactivation(KitPlayer kitPlayer) {
         Player player = Bukkit.getPlayer(kitPlayer.getUUID());
         if (player != null) {
             if (player.hasPotionEffect(PotionEffectType.LEVITATION)) {
