@@ -28,6 +28,8 @@ public class ScoutKit extends AbstractKit {
     private final String runnableKey;
     private final String timeLeftKey;
 
+    //TODO you can drop sword, sword should be removed, make sword kititem, make player visible again
+
     private ScoutKit() {
         super("Scout", Material.POTION);
         this.potionEffectType = PotionEffectType.SPEED;
@@ -60,9 +62,9 @@ public class ScoutKit extends AbstractKit {
     private ItemStack createScoutPotion() {
         ItemStack potion = new ItemStack(Material.SPLASH_POTION);
         PotionMeta meta = (PotionMeta) potion.getItemMeta();
-        meta.setColor(Color.AQUA);
-        meta.setDisplayName(ChatColor.AQUA + "Scout Potion");
         meta.addCustomEffect(new PotionEffect(potionEffectType, duration * 20, amplifier), true);
+        meta.setDisplayName(ChatColor.AQUA + "Scout Potion");
+        meta.setColor(Color.AQUA);
         potion.setItemMeta(meta);
         return potion;
     }
