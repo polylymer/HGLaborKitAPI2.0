@@ -59,7 +59,7 @@ public class ScoutKit extends AbstractKit {
         PotionSupplierTask potionSupplierTask = kitPlayer.getKitAttribute(runnableKey);
         potionSupplierTask.cancel();
         long timeLeft = (System.currentTimeMillis() / 1000L) - (potionSupplierTask.startTime / 1000L);
-        kitPlayer.putKitAttribute(timeLeftKey, (int) ((int) kitPlayer.getKitAttribute(timeLeftKey) - timeLeft));
+        kitPlayer.putKitAttribute(timeLeftKey, (int) (kitPlayer.getKitAttributeOrDefault(timeLeftKey, supplyInterval) - timeLeft));
     }
 
     private ItemStack createScoutPotion() {
