@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,7 +32,8 @@ public class KayaKit extends AbstractKit implements Listener {
         this.kayaBlockKey = "kayaBlock";
         this.namespacedKey = new NamespacedKey(KitApi.getInstance().getPlugin(), kayaBlockKey);
         this.kayaBlock = new ItemBuilder(Material.GRASS_BLOCK).setName(ChatColor.GREEN + "Kaya Block").build();
-        this.addAdditionalKitItems(new ItemBuilder(kayaBlock).setAmount(16).build());
+        this.addAdditionalKitItems(new ItemBuilder(kayaBlock.clone()).setAmount(16).build());
+        this.setKitItemPlaceable(true);
         this.registerRecipe();
     }
 
@@ -61,11 +63,17 @@ public class KayaKit extends AbstractKit implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        if (!player.isOnGround())
+            return;
         if (event.getTo().distanceSquared(event.getFrom()) == 0)
             return;
-        if (KitApi.getInstance().getPlayer(event.getPlayer()).hasKit(this))
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
+        if (kitPlayer.hasKit(this))
             return;
-        Block block = event.getTo().getBlock();
+        if (!kitPlayer.isValid())
+            return;
+        Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
         if (block.getType().equals(kayaBlock.getType()))
             if (block.hasMetadata(kayaBlockKey))
                 block.setType(Material.AIR);
