@@ -83,7 +83,7 @@ public class SoulstealerKit extends AbstractKit implements Listener {
                 player.setInvisible(false);
                 player.removePotionEffect(effectOnDeath);
                 DeathTimer deathTimer = killer.getKitAttribute(runnableKey);
-                deathTimer.cancel();
+                deathTimer.stop();
                 killer.putKitAttribute(runnableKey, null);
             }
         });
@@ -125,13 +125,17 @@ public class SoulstealerKit extends AbstractKit implements Listener {
         void dropLoot() {
             kitPlayer.getBukkitPlayer().ifPresent(player -> player.removeMetadata(respawnKey, KitApi.getInstance().getPlugin()));
             Arrays.stream(items).filter(Objects::nonNull).forEach(item -> lastLocation.getWorld().dropItem(lastLocation, item));
+            stop();
+        }
+
+        void stop() {
+            bossBar.removeAll();
             cancel();
         }
 
         @Override
         public void run() {
             if (isCancelled()) {
-                bossBar.removeAll();
                 return;
             }
             setLastLocation();
