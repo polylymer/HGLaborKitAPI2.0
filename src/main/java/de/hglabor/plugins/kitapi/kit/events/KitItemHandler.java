@@ -25,34 +25,30 @@ public class KitItemHandler implements Listener {
     @EventHandler
     public void disableHandSwapForOffHandKits(PlayerSwapHandItemsEvent event) {
         KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
-        for (AbstractKit kit : kitPlayer.getKits()) {
-            if (kit.isUsingOffHand()) {
+        for (AbstractKit kit : kitPlayer.getKits())
+            if (kit.isUsingOffHand())
                 event.setCancelled(true);
-            }
-        }
     }
 
     @EventHandler
     public void disableOffHandInventoryClick(InventoryClickEvent event) {
         KitPlayer kitPlayer = playerSupplier.getKitPlayer((Player) event.getWhoClicked());
-        if (event.getRawSlot() == 45) {
-            for (AbstractKit kit : kitPlayer.getKits()) {
-                if (kit.isUsingOffHand()) {
-                    event.setCancelled(true);
-                }
-            }
-        }
+        if (event.getRawSlot() != 45)
+            return;
+        for (AbstractKit kit : kitPlayer.getKits())
+            if (kit.isUsingOffHand())
+                event.setCancelled(true);
     }
 
     @EventHandler
     public void cancelKitItemPlace(BlockPlaceEvent event) {
         KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
         for (AbstractKit kit : kitPlayer.getKits()) {
-            for (ItemStack kitItem : kit.getKitItems()) {
-                if (event.getItemInHand().isSimilar(kitItem) || kit.isKitItem(event.getItemInHand())) {
+            if (kit.isKitItemPlaceable())
+                continue;
+            for (ItemStack kitItem : kit.getKitItems())
+                if (event.getItemInHand().isSimilar(kitItem) || kit.isKitItem(event.getItemInHand()))
                     event.setCancelled(true);
-                }
-            }
         }
     }
 
@@ -60,13 +56,10 @@ public class KitItemHandler implements Listener {
     public void cancelKitItemDrop(PlayerDropItemEvent event) {
         KitPlayer KitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
         ItemStack droppedItem = event.getItemDrop().getItemStack();
-        for (AbstractKit kit : KitPlayer.getKits()) {
-            for (ItemStack kitItem : kit.getKitItems()) {
-                if (kitItem.isSimilar(droppedItem) || kit.isKitItem(droppedItem)) {
+        for (AbstractKit kit : KitPlayer.getKits())
+            for (ItemStack kitItem : kit.getKitItems())
+                if (kitItem.isSimilar(droppedItem) || kit.isKitItem(droppedItem))
                     event.setCancelled(true);
-                }
-            }
-        }
     }
 
     @EventHandler

@@ -53,6 +53,7 @@ public abstract class AbstractKit extends KitEvents {
      * Edgecase since Revive is using Offhand -> conflict with giving kititems
      */
     private boolean usesOffHand;
+    private boolean isKitItemPlaceable;
 
     protected AbstractKit(String name, Material material) {
         this(name, new ItemStack(material));
@@ -210,5 +211,13 @@ public abstract class AbstractKit extends KitEvents {
 
     public boolean isKitItem(ItemStack itemStack) {
         return false;
+    }
+
+    public boolean isKitItemPlaceable() {
+        return isKitItemPlaceable;
+    }
+
+    public void setKitItemPlaceable(boolean kitItemPlaceable) {
+        isKitItemPlaceable = kitItemPlaceable;
     }
 }
