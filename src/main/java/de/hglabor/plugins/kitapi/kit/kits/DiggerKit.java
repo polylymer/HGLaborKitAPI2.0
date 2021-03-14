@@ -6,6 +6,7 @@ import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
+import de.hglabor.plugins.kitapi.kit.settings.SoundArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -22,11 +23,17 @@ public class DiggerKit extends AbstractKit {
     private final float cooldown;
     @IntArg
     private final int radius;
+    @FloatArg(min = 0.0F, max = 15F)
+    private final float volume;
+    @SoundArg
+    private final Sound sound;
 
     private DiggerKit() {
         super("Digger", Material.DRAGON_EGG);
         cooldown = 12F;
         radius = 6;
+        volume = 1.8F;
+        sound = Sound.BLOCK_STONE_BREAK;
         setMainKitItem(getDisplayMaterial(), 16);
     }
 
@@ -67,7 +74,7 @@ public class DiggerKit extends AbstractKit {
                             }
                         }
                     }
-                    player.getWorld().playSound(player.getLocation(), Sound.BLOCK_STONE_BREAK, 1.8f, 1);
+                    player.getWorld().playSound(player.getLocation(), sound, volume, 1);
                 }
 
             }.runTaskLater(KitApi.getInstance().getPlugin(), 15);
