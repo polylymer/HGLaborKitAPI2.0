@@ -5,6 +5,8 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.kit.settings.PotionEffectArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -12,7 +14,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -59,6 +60,8 @@ public class ScoutKit extends AbstractKit {
     private ItemStack createScoutPotion() {
         ItemStack potion = new ItemStack(Material.SPLASH_POTION);
         PotionMeta meta = (PotionMeta) potion.getItemMeta();
+        meta.setColor(Color.AQUA);
+        meta.setDisplayName(ChatColor.AQUA + "Scout Potion");
         meta.addCustomEffect(new PotionEffect(potionEffectType, duration * 20, amplifier), true);
         potion.setItemMeta(meta);
         return potion;
