@@ -12,6 +12,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -75,7 +76,7 @@ public class ScoutKit extends AbstractKit {
         @Override
         public void run() {
             if (isCancelled()) return;
-            List<ItemStack> potions = IntStream.range(0, potionAmount).mapToObj(i -> createScoutPotion()).collect(Collectors.toList());
+            List<ItemStack> potions = IntStream.rangeClosed(0, potionAmount).mapToObj(i -> createScoutPotion()).collect(Collectors.toList());
             KitApi.getInstance().giveKitItemsIfSlotEmpty(kitPlayer, ScoutKit.INSTANCE, potions);
             kitPlayer.putKitAttribute(timeLeftKey, supplyInterval);
             onEnable(kitPlayer);
