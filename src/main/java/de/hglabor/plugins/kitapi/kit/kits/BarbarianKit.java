@@ -61,24 +61,26 @@ public class BarbarianKit extends AbstractKit {
                     break;
                 case 4:
                     barbarianSword.setType(Material.STONE_SWORD);
-                    barbarianSword.addEnchantment(Enchantment.DAMAGE_ALL, 2);
+                    barbarianSword.addEnchantment(Enchantment.DAMAGE_ALL, 1);
                     break;
                 case 5:
-                    barbarianSword.addEnchantment(Enchantment.FIRE_ASPECT, 1);
-                    break;
-                case 6:
-                    barbarianSword.removeEnchantment(Enchantment.FIRE_ASPECT);
-                    barbarianSword.removeEnchantment(Enchantment.DAMAGE_ALL);
                     barbarianSword.setType(Material.DIAMOND_SWORD);
                     break;
+                case 6:
+                    barbarianSword.setType(Material.IRON_SWORD);
+                    barbarianSword.addEnchantment(Enchantment.DAMAGE_ALL, 1);
+                    break;
                 case 7:
+                    barbarianSword.setType(Material.DIAMOND_SWORD);
                     barbarianSword.addEnchantment(Enchantment.DAMAGE_ALL, 1);
                     break;
                 case 8:
+                    barbarianSword.setType(Material.DIAMOND_SWORD);
                     barbarianSword.addEnchantment(Enchantment.DAMAGE_ALL, 2);
                     break;
                 case 9:
-                    barbarianSword.addEnchantment(Enchantment.DAMAGE_ALL, 3);
+                    barbarianSword.setType(Material.DIAMOND_SWORD);
+                    barbarianSword.addEnchantment(Enchantment.FIRE_ASPECT, 1);
                     break;
             }
             kitPlayer.putKitAttribute(levelKey, kitPlayer.getKitAttributeOrDefault(levelKey, 1) + 1);
