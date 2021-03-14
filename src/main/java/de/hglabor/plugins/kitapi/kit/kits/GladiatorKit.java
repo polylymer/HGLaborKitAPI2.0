@@ -40,7 +40,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
     @DoubleArg
     private final double intruderDamage;
     @IntArg
-    private final int witherEffectAtferXSeconds;
+    private final int witherEffectAfterXSeconds;
     private final String attributeKey;
 
     private GladiatorKit() {
@@ -48,7 +48,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
         setMainKitItem(getDisplayMaterial());
         radius = 15;
         height = 10;
-        witherEffectAtferXSeconds = 120;
+        witherEffectAfterXSeconds = 120;
         intruderDamage = 5D;
         material = Material.GLASS;
         attributeKey = this.getName() + "Fight";
@@ -76,8 +76,8 @@ public class GladiatorKit extends AbstractKit implements Listener {
         enemy.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
         player.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
 
-        //Adding +1 so player cant build up and escape
-        Region gladiatorRegion = getGladiatorLocation(player.getLocation().clone().set(player.getLocation().getX(), 90, player.getLocation().getZ()), radius, height + 1);
+        //Adding +2 so player cant build up and escape because 1 is somehow not enough
+        Region gladiatorRegion = getGladiatorLocation(player.getLocation().clone().set(player.getLocation().getX(), 90, player.getLocation().getZ()), radius, height + 2);
         Location center = BukkitAdapter.adapt(world, gladiatorRegion.getCenter());
 
         WorldEditUtils.createCylinder(player.getWorld(), center, radius - 1, true, 1, material);
@@ -206,7 +206,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
                     region.contains(BukkitAdapter.asBlockVector(enemy.getLocation()))) {
                 timer++;
                 damageIntruders();
-                if (timer > witherEffectAtferXSeconds) {
+                if (timer > witherEffectAfterXSeconds) {
                     gladiator.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, Integer.MAX_VALUE, 2));
                     enemy.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, Integer.MAX_VALUE, 2));
                 }
