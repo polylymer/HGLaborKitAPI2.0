@@ -49,6 +49,9 @@ public abstract class KitEvents {
     public void onPlayerKillsLivingEntity(EntityDeathEvent event, Player killer, Entity entity) {
     }
 
+    public void onKitPlayerDeath(PlayerDeathEvent event) {
+    }
+
     public void onEntityDamage(EntityDamageEvent event) {
     }
 

@@ -103,13 +103,15 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
     }
 
     @EventHandler
+    public void onKitPlayerDeath(PlayerDeathEvent event) {
+        KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getEntity());
+        useKit(event, kitPlayer, kit -> kit.onKitPlayerDeath(event));
+    }
+
+    @EventHandler
     public void onBlockBreakWithKitItem(BlockBreakEvent event) {
         KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
-        for (AbstractKit playerKit : kitPlayer.getKits()) {
-            if (event.getPlayer().getInventory().getItemInMainHand().isSimilar(playerKit.getMainKitItem())) {
-                useKitItem(event, kitPlayer, kit -> kit.onBlockBreakWithKitItem(event));
-            }
-        }
+        useKitItem(event, kitPlayer, kit -> kit.onBlockBreakWithKitItem(event));
     }
 
     @EventHandler
