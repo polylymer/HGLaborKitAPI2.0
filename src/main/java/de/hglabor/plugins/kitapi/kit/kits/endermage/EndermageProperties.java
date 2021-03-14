@@ -1,10 +1,9 @@
 package de.hglabor.plugins.kitapi.kit.kits.endermage;
 
-import de.hglabor.plugins.kitapi.kit.config.KitProperties;
-
-public class EndermageProperties extends KitProperties {
+public class EndermageProperties {
     private final long magedTimeStamp;
 
+    //TODO maybe there will be more information in future
     public EndermageProperties(long magedTimeStamp) {
         this.magedTimeStamp = magedTimeStamp;
     }

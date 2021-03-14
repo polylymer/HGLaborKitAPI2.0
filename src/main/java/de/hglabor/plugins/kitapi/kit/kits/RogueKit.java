@@ -1,8 +1,11 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
-import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.DoubleArg;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
+import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -10,21 +13,26 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class RogueKit extends AbstractKit {
     public static final RogueKit INSTANCE = new RogueKit();
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
+    @IntArg
+    private final int effectDuration;
+    @DoubleArg
+    private final double radius;
 
     private RogueKit() {
         super("Rogue", Material.GRAY_DYE);
-        setCooldown(40);
+        cooldown = 40F;
+        radius = 10D;
+        effectDuration = 15;
         setMainKitItem(getDisplayMaterial());
-        addSetting(KitSettings.RADIUS, 10);
-        addSetting(KitSettings.EFFECT_DURATION, 15);
-        addEvents(Collections.singletonList(PlayerInteractEvent.class));
     }
 
+    @KitEvent
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -36,22 +44,27 @@ public class RogueKit extends AbstractKit {
                 counter++;
                 if (!nearbyPlayerKitOwner.areKitsDisabled() && nearbyPlayerKitOwner.isValid()) {
                     nearbyPlayerKitOwner.disableKits(true);
-                    Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> nearbyPlayerKitOwner.disableKits(false), (Integer) getSetting(KitSettings.EFFECT_DURATION) * 20);
+                    Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> nearbyPlayerKitOwner.disableKits(false), effectDuration * 20L);
                 }
             }
         }
         player.sendMessage("You disabled the kits of " + counter + " players");
-        kitPlayer.activateKitCooldown(this, this.getCooldown());
+        kitPlayer.activateKitCooldown(this);
     }
 
     private List<KitPlayer> getKitPlayerInRadius(Player player) {
         List<KitPlayer> enemies = new ArrayList<>();
-        for (Player nearbyPlayer : player.getWorld().getNearbyEntitiesByType(Player.class, player.getLocation(), ((Integer) getSetting(KitSettings.RADIUS)).doubleValue())) {
+        for (Player nearbyPlayer : player.getWorld().getNearbyEntitiesByType(Player.class, player.getLocation(), radius)) {
             KitPlayer nearbyKitPlayer = KitApi.getInstance().getPlayer(nearbyPlayer);
             if (nearbyKitPlayer.isValid()) {
                 enemies.add(nearbyKitPlayer);
             }
         }
         return enemies;
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }

@@ -1,59 +1,67 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import java.util.Collections;
+import java.util.Optional;
 
 public class CopyCatKit extends AbstractKit {
     public final static CopyCatKit INSTANCE = new CopyCatKit();
+    private final String copiedKitKey;
 
     private CopyCatKit() {
         super("CopyCat", Material.CAT_SPAWN_EGG);
-        addEvents(Collections.singletonList(PlayerDeathEvent.class));
+        copiedKitKey = this.getName() + "copiedKit";
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
-        AbstractKit copiedKit = kitPlayer.getKitAttribute(this);
+    public void onDeactivation(KitPlayer kitPlayer) {
+        AbstractKit copiedKit = kitPlayer.getKitAttribute(copiedKitKey);
         if (copiedKit != null && copiedKit != this) {
-            copiedKit.disable(kitPlayer);
+            copiedKit.onDeactivation(kitPlayer);
         }
     }
 
     @Override
-    public void enable(KitPlayer kitPlayer) {
-        AbstractKit copiedKit = kitPlayer.getKitAttribute(this);
+    public void onEnable(KitPlayer kitPlayer) {
+        AbstractKit copiedKit = kitPlayer.getKitAttribute(copiedKitKey);
         if (copiedKit != null) {
             if (copiedKit.equals(this)) {
-                kitPlayer.putKitAttribute(this, SurpriseKit.INSTANCE.getRandomEnabledKit());
-                ((AbstractKit) kitPlayer.getKitAttribute(this)).enable(kitPlayer);
+                AbstractKit randomKit = SurpriseKit.INSTANCE.getRandomEnabledKit();
+                kitPlayer.putKitAttribute(copiedKitKey, randomKit);
+                randomKit.onEnable(kitPlayer);
             } else {
-                copiedKit.enable(kitPlayer);
+                copiedKit.onEnable(kitPlayer);
             }
         }
     }
 
+    @KitEvent(clazz = PlayerDeathEvent.class)
     @Override
     public void onPlayerKillsPlayer(KitPlayer killer, KitPlayer dead) {
-        AbstractKit oldCopiedKit = killer.getKitAttribute(this);
+        AbstractKit oldCopiedKit = killer.getKitAttribute(copiedKitKey);
         AbstractKit newKit = dead.getKits().get(0);
         //DISABLE OLD KIT
 
         if (oldCopiedKit != null) {
-            oldCopiedKit.disable(killer);
-            KitApi.getInstance().removeKitItems(oldCopiedKit, Bukkit.getPlayer(killer.getUUID()));
+            oldCopiedKit.onDeactivation(killer);
+            Optional.ofNullable(Bukkit.getPlayer(killer.getUUID())).ifPresent(player -> KitApi.getInstance().removeKitItems(oldCopiedKit, player));
         }
 
         //CopyCat(NewKit)
-        killer.putKitAttribute(this, newKit);
+        killer.putKitAttribute(copiedKitKey, newKit);
 
         //ENABLE NEW KIT
         KitApi.getInstance().giveKitItemsIfSlotEmpty(killer, newKit);
-        newKit.enable(killer);
+        newKit.onEnable(killer);
+    }
+
+    public String getKitAttributeKey() {
+        return copiedKitKey;
     }
 }

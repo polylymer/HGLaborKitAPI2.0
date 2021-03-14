@@ -1,7 +1,9 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -9,20 +11,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collections;
-
 public class ReviveKit extends AbstractKit {
     public static final ReviveKit INSTANCE = new ReviveKit();
+    private final String deathCounterKey;
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
     private ReviveKit() {
-        super("Revive", Material.TOTEM_OF_UNDYING, 60);
+        super("Revive", Material.TOTEM_OF_UNDYING);
+        cooldown = 60;
+        deathCounterKey = this.getName() + "counter";
         setMainKitItem(getDisplayMaterial());
         setUsesOffHand(true);
-        addEvents(Collections.singletonList(EntityResurrectEvent.class));
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
+    public void onDeactivation(KitPlayer kitPlayer) {
         Player player = Bukkit.getPlayer(kitPlayer.getUUID());
         if (player != null) {
             if (player.getInventory().getItemInOffHand().isSimilar(this.getMainKitItem())) {
@@ -32,24 +36,30 @@ public class ReviveKit extends AbstractKit {
     }
 
     @Override
-    public void enable(KitPlayer kitPlayer) {
+    public void onEnable(KitPlayer kitPlayer) {
         Player player = Bukkit.getPlayer(kitPlayer.getUUID());
         giveTotem(kitPlayer, player);
     }
 
+    @KitEvent
     @Override
     public void onEntityResurrect(EntityResurrectEvent event) {
         Player player = (Player) event.getEntity();
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
-        kitPlayer.putKitAttribute(this, kitPlayer.getKitAttribute(this) != null ? (Integer) kitPlayer.getKitAttribute(this) + 1 : 1);
+        kitPlayer.putKitAttribute(deathCounterKey, kitPlayer.getKitAttributeOrDefault(deathCounterKey, 1) + 1);
         Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> {
             giveTotem(kitPlayer, player);
-        }, (long) getCooldown() * 20 * (Integer) kitPlayer.getKitAttribute(this));
+        }, (long) getCooldown() * 20 * (Integer) kitPlayer.getKitAttribute(deathCounterKey));
     }
 
     private void giveTotem(KitPlayer kitPlayer, Player player) {
         if (kitPlayer.isValid() && kitPlayer.hasKit(this)) {
             player.getInventory().setItemInOffHand(this.getMainKitItem());
         }
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }

@@ -3,7 +3,6 @@ package de.hglabor.plugins.kitapi.kit.kits.endermage;
 import com.google.common.collect.ImmutableMap;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
-import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.utils.localization.Localization;
@@ -39,8 +38,8 @@ public class EndermageSearch extends BukkitRunnable {
         this.plugin = KitApi.getInstance().getPlugin();
         this.isSearchingForPlayers = true;
         this.kitPlayer = KitApi.getInstance().getPlayer(mage);
-        this.searchDuration = EndermageKit.INSTANCE.getSetting(KitSettings.NUMBER);
-        this.radius = ((Integer) EndermageKit.INSTANCE.getSetting(KitSettings.RADIUS)).doubleValue();
+        this.searchDuration = EndermageKit.INSTANCE.getSearchTime();
+        this.radius = EndermageKit.INSTANCE.getSearchRadius();
         this.endermagePortal = endermagePortal;
         this.oldBlockData = oldBlockData;
     }
@@ -48,12 +47,12 @@ public class EndermageSearch extends BukkitRunnable {
     private void removeEndermageMetaDataLater(Player player, int delay) {
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            EndermageProperties endermageProperties = kitPlayer.getKitProperty(KitMetaData.HAS_BEEN_MAGED);
+            EndermageProperties endermageProperties = kitPlayer.getKitAttribute(EndermageKit.INSTANCE.getHasBeenMagedKey());
             if (endermageProperties == null) {
-                player.removeMetadata(KitMetaData.HAS_BEEN_MAGED.getKey(), plugin);
+                player.removeMetadata(EndermageKit.INSTANCE.getHasBeenMagedKey(), plugin);
                 player.sendMessage(Localization.INSTANCE.getMessage("endermage.invincibilityExpired", ChatUtils.getPlayerLocale(player)));
             } else if (endermageProperties.getMagedTimeStamp() + (delay * 1000L) <= System.currentTimeMillis()) {
-                player.removeMetadata(KitMetaData.HAS_BEEN_MAGED.getKey(), plugin);
+                player.removeMetadata(EndermageKit.INSTANCE.getHasBeenMagedKey(), plugin);
                 player.sendMessage(Localization.INSTANCE.getMessage("endermage.invincibilityExpired", ChatUtils.getPlayerLocale(player)));
             }
         }, delay * 21L);
@@ -93,11 +92,11 @@ public class EndermageSearch extends BukkitRunnable {
     }
 
     protected void mageTeleportPlayer(Player player, boolean isMage) {
-        int delay = EndermageKit.INSTANCE.getSetting(KitSettings.NUMBER);
+        int delay = EndermageKit.INSTANCE.getInvulnerabilityAfterMage();
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         player.teleport(endermagePortal.getLocation().clone().add(0, 1, 0));
-        player.setMetadata(KitMetaData.HAS_BEEN_MAGED.getKey(), new FixedMetadataValue(plugin, ""));
-        kitPlayer.putKitPropety(KitMetaData.HAS_BEEN_MAGED, new EndermageProperties(System.currentTimeMillis()));
+        player.setMetadata(EndermageKit.INSTANCE.getHasBeenMagedKey(), new FixedMetadataValue(plugin, ""));
+        kitPlayer.putKitAttribute(EndermageKit.INSTANCE.getHasBeenMagedKey(), new EndermageProperties(System.currentTimeMillis()));
         if (isMage) {
             player.sendMessage(Localization.INSTANCE.getMessage("endermage.successfulTeleport",
                     ImmutableMap.of("amount", String.valueOf(magedPeople),
@@ -115,7 +114,7 @@ public class EndermageSearch extends BukkitRunnable {
         cancel();
         isSearchingForPlayers = false;
         endermagePortal.setBlockData(oldBlockData);
-        KitApi.getInstance().checkUsesForCooldown(player, EndermageKit.INSTANCE);
+        KitApi.getInstance().checkUsesForCooldown(player, EndermageKit.INSTANCE, EndermageKit.INSTANCE.getMaxUses());
         if (!Utils.isUnbreakableLaborBlock(endermagePortal) && endermagePortal.getType() != Material.BEDROCK && !(endermagePortal.getState() instanceof InventoryHolder)) {
             endermagePortal.setType(Material.END_STONE);
         }

@@ -1,8 +1,9 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
-import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.ChanceUtils;
 import org.bukkit.Bukkit;
@@ -16,24 +17,28 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.Collections;
 import java.util.Random;
 
 public class DannyKit extends AbstractKit {
     public static final DannyKit INSTANCE = new DannyKit();
     private final PotionEffectType[] potionEffects;
+    private final String attributeKey;
+    @IntArg(min = 0, max = 100)
+    private final int dannyHeadLikelihood;
+    @IntArg
+    private final int potionDuration, potionAmplifier;
 
-    protected DannyKit() {
+    private DannyKit() {
         super("Danny", Material.PLAYER_HEAD);
         this.potionEffects = new PotionEffectType[]{PotionEffectType.BLINDNESS, PotionEffectType.WITHER, PotionEffectType.POISON, PotionEffectType.WEAKNESS, PotionEffectType.HARM, PotionEffectType.CONFUSION};
-        addSetting(KitSettings.EFFECT_MULTIPLIER, 1);
-        addSetting(KitSettings.EFFECT_DURATION, 3);
-        addSetting(KitSettings.LIKELIHOOD, 22);
-        addEvents(Collections.singletonList(CraftItemEvent.class));
+        attributeKey = this.getName() + "Runnable";
+        dannyHeadLikelihood = 22;
+        potionDuration = 3;
+        potionAmplifier = 1;
     }
 
     @Override
-    public void enable(KitPlayer kitPlayer) {
+    public void onEnable(KitPlayer kitPlayer) {
         BukkitTask task;
         task = Bukkit.getScheduler().runTaskTimer(KitApi.getInstance().getPlugin(), () -> {
             if (kitPlayer.isValid()) {
@@ -47,7 +52,8 @@ public class DannyKit extends AbstractKit {
                         break;
                     case NEGATIVE_EFFECT:
                         player.playSound(player.getLocation(), Sound.ENTITY_DONKEY_HURT, 10, 1);
-                        player.addPotionEffect(new PotionEffect(potionEffects[new Random().nextInt(potionEffects.length)], (int) getSetting(KitSettings.EFFECT_DURATION) * 20, getSetting(KitSettings.EFFECT_MULTIPLIER)));
+                        PotionEffect effect = new PotionEffect(potionEffects[new Random().nextInt(potionEffects.length)], potionDuration * 20, potionAmplifier);
+                        player.addPotionEffect(effect);
                         break;
                     case SKULL_ESCALATION:
                         player.playSound(player.getLocation(), Sound.ENTITY_DONKEY_AMBIENT, 10, 1);
@@ -68,12 +74,13 @@ public class DannyKit extends AbstractKit {
                 }
             }
         }, 0, 10 * 20L);
-        kitPlayer.putKitAttribute(this, task);
+        kitPlayer.putKitAttribute(attributeKey, task);
     }
 
+    @KitEvent
     @Override
     public void onCraftItem(CraftItemEvent event) {
-        if (ChanceUtils.roll(getSetting(KitSettings.LIKELIHOOD))) {
+        if (ChanceUtils.roll(dannyHeadLikelihood)) {
             ItemStack stack = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta meta = (SkullMeta) stack.getItemMeta();
             meta.setOwningPlayer(Bukkit.getOfflinePlayer("Daannyy"));
@@ -83,8 +90,8 @@ public class DannyKit extends AbstractKit {
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
-        BukkitTask task = kitPlayer.getKitAttribute(this);
+    public void onDeactivation(KitPlayer kitPlayer) {
+        BukkitTask task = kitPlayer.getKitAttribute(attributeKey);
         if (task != null) {
             task.cancel();
         }

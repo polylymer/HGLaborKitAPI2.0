@@ -1,9 +1,9 @@
 package de.hglabor.plugins.kitapi.kit.config;
 
+@Deprecated
 public enum KitMetaData {
     INGLADIATOR,
     GLADIATOR_BLOCK,
-    HAS_BEEN_MAGED,
     SWITCHER_BALL,
     GRAPPLER_ARROW,
     KITPLAYER_IS_IN_COMBAT,
@@ -12,10 +12,7 @@ public enum KitMetaData {
     SPIT_SOUP,
     SPIT_PROJECTILE,
     SPIDERMAN_SNOWBALL,
-    MANIPULATED_MOB,
-    THOR_BLOCK,
-    ;
-
+    MANIPULATED_MOB;
 
     public String getKey() {
         return name();

@@ -3,8 +3,6 @@ package de.hglabor.plugins.kitapi.player;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
-import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
-import de.hglabor.plugins.kitapi.kit.config.KitProperties;
 import de.hglabor.plugins.kitapi.kit.config.LastHitInformation;
 import de.hglabor.plugins.kitapi.kit.kits.CopyCatKit;
 import org.bukkit.Bukkit;
@@ -15,9 +13,7 @@ import java.util.*;
 public abstract class KitPlayerImpl implements KitPlayer {
     protected final UUID uuid;
     protected final List<AbstractKit> kits;
-    protected final Map<AbstractKit, Map<Class<?>, Object>> kitAttributes;
-    protected final Map<AbstractKit, Cooldown> kitCooldowns;
-    protected final Map<KitMetaData, KitProperties> kitProperties;
+    protected final Map<String, Object> kitAttributes;
     protected final LastHitInformation lastHitInformation;
     protected boolean kitsDisabled;
     protected boolean inInventory;
@@ -25,15 +21,13 @@ public abstract class KitPlayerImpl implements KitPlayer {
     public KitPlayerImpl(UUID uuid) {
         this.uuid = uuid;
         this.kitAttributes = new HashMap<>();
-        this.kitCooldowns = new HashMap<>();
-        this.kitProperties = new HashMap<>();
         this.lastHitInformation = new LastHitInformation();
         this.kits = KitApi.getInstance().emptyKitList();
     }
 
     @Override
     public List<AbstractKit> getKits() {
-        AbstractKit copyCatKit = this.getKitAttribute(CopyCatKit.INSTANCE);
+        AbstractKit copyCatKit = this.getKitAttribute(CopyCatKit.INSTANCE.getKitAttributeKey());
         if (copyCatKit != null) {
             List<AbstractKit> kitList = new ArrayList<>(this.kits);
             kitList.add(copyCatKit);
@@ -51,7 +45,7 @@ public abstract class KitPlayerImpl implements KitPlayer {
 
     @Override
     public boolean hasKit(AbstractKit kit) {
-        AbstractKit copyCatKit = this.getKitAttribute(CopyCatKit.INSTANCE);
+        AbstractKit copyCatKit = this.getKitAttribute(CopyCatKit.INSTANCE.getKitAttributeKey());
         return copyCatKit != null && copyCatKit.equals(kit) || this.kits.contains(kit);
     }
 
@@ -66,24 +60,8 @@ public abstract class KitPlayerImpl implements KitPlayer {
     }
 
     @Override
-    public boolean hasKitCooldown(AbstractKit kit) {
-        return kitCooldowns.getOrDefault(kit, new Cooldown(false)).hasCooldown();
-    }
-
-    @Override
     public LastHitInformation getLastHitInformation() {
         return lastHitInformation;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T extends KitProperties> T getKitProperty(KitMetaData kitMetaData) {
-        return (T) kitProperties.getOrDefault(kitMetaData, null);
-    }
-
-    @Override
-    public <T extends KitProperties> void putKitPropety(KitMetaData kitMetaData, T t) {
-        kitProperties.put(kitMetaData, t);
     }
 
     @Override
@@ -106,34 +84,44 @@ public abstract class KitPlayerImpl implements KitPlayer {
     @Override
     public void disableKits(boolean kitsDisabled) {
         this.kitsDisabled = kitsDisabled;
-    }
-
-    @Override
-    public void activateKitCooldown(AbstractKit kit, int seconds) {
-        if (hasKit(kit) && !kitCooldowns.getOrDefault(kit, new Cooldown(false)).hasCooldown()) {
-            kitCooldowns.put(kit, new Cooldown(true, System.currentTimeMillis()));
-            Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> kitCooldowns.put(kit, new Cooldown(false)),// (seconds + additionalKitCooldowns.getOrDefault(kit, 0)) * 20);
-                    (seconds) * 20L);
+        if (kitsDisabled) {
+            kits.forEach(kit -> kit.onDeactivation(this));
+        } else {
+            kits.forEach(kit -> kit.onEnable(this));
         }
     }
 
     @Override
-    public Cooldown getKitCooldown(AbstractKit abstractKit) {
-        return kitCooldowns.getOrDefault(abstractKit, new Cooldown(false));
+    public void activateKitCooldown(AbstractKit kit) {
+        if (hasKit(kit) && !getKitCooldown(kit).hasCooldown()) {
+            kitAttributes.put(KitApi.getInstance().cooldownKey(kit), new Cooldown(true, kit.getCooldown()));
+        }
+    }
+
+    @Override
+    public void clearCooldown(AbstractKit kit) {
+        kitAttributes.remove(KitApi.getInstance().cooldownKey(kit));
+    }
+
+    @Override
+    public Cooldown getKitCooldown(AbstractKit kit) {
+        return (Cooldown) kitAttributes.getOrDefault(KitApi.getInstance().cooldownKey(kit), new Cooldown(false));
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T getKitAttribute(AbstractKit kit, Class<?> clazz) {
-        return (T) kitAttributes.getOrDefault(kit, new HashMap<>()).getOrDefault(clazz, null);
+    public <T> T getKitAttribute(String key) {
+        return (T) kitAttributes.get(key);
     }
 
     @Override
-    public <T> void putKitAttribute(AbstractKit kit, T t, Class<?> clazz) {
-        if (!kitAttributes.containsKey(kit)) {
-            kitAttributes.put(kit, new HashMap<>());
-        }
-        kitAttributes.get(kit).put(clazz, t);
+    public <T> T getKitAttributeOrDefault(String key, T defaultValue) {
+        return getKitAttribute(key) == null ? defaultValue : getKitAttribute(key);
+    }
+
+    @Override
+    public <T> void putKitAttribute(String key, T value) {
+        kitAttributes.put(key, value);
     }
 
     @Override
@@ -146,16 +134,13 @@ public abstract class KitPlayerImpl implements KitPlayer {
         this.inInventory = value;
     }
 
+    @Override
+    public Optional<Player> getBukkitPlayer() {
+        return Optional.ofNullable(Bukkit.getPlayer(uuid));
+    }
+
     public void resetKitAttributes() {
         this.kitAttributes.clear();
-    }
-
-    public void resetKitCooldowns() {
-        this.kitCooldowns.clear();
-    }
-
-    public void resetKitProperties() {
-        this.kitProperties.clear();
     }
 
     public String printKits() {

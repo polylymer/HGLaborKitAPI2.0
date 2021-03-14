@@ -112,6 +112,7 @@ buildNumber.properties
 .gradle
 build/
 local.properties
+gradle.properties
 
 # Ignore Gradle GUI config
 gradle-app.setting

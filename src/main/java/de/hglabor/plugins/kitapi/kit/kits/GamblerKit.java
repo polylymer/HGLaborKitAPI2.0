@@ -1,7 +1,9 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.RandomCollection;
 import org.bukkit.Bukkit;
@@ -24,23 +26,26 @@ import java.util.function.Consumer;
 
 public class GamblerKit extends AbstractKit implements Listener {
     public static final GamblerKit INSTANCE = new GamblerKit();
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
-    public RandomCollection<RandomCollection<Consumer<Player>>> badLuckCollection;
-    public RandomCollection<RandomCollection<Consumer<Player>>> goodLuckCollection;
+    private final RandomCollection<RandomCollection<Consumer<Player>>> badLuckCollection;
+    private final RandomCollection<RandomCollection<Consumer<Player>>> goodLuckCollection;
+    private final String attributeKey;
 
     private GamblerKit() {
         super("Gambler", Material.OAK_BUTTON);
         setMainKitItem(getDisplayMaterial());
-        setCooldown(30);
+        cooldown = 30F;
+        attributeKey = this.getName() + "Win";
         badLuckCollection = new RandomCollection<>();
         goodLuckCollection = new RandomCollection<>();
         initRandomEffects();
-        addEvents(Collections.singletonList(PlayerInteractEvent.class));
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
-        GambleWin gambleWin = kitPlayer.getKitAttribute(this);
+    public void onDeactivation(KitPlayer kitPlayer) {
+        GambleWin gambleWin = kitPlayer.getKitAttribute(attributeKey);
         if (gambleWin != null) {
             gambleWin.end();
         }
@@ -59,14 +64,15 @@ public class GamblerKit extends AbstractKit implements Listener {
         }
     }
 
+    @KitEvent
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         int tick = 2;
-        kitPlayer.activateKitCooldown(this, this.getCooldown());
+        kitPlayer.activateKitCooldown(this);
         GambleWin gambleWin = new GambleWin(kitPlayer, player, 3, tick);
-        kitPlayer.putKitAttribute(this, gambleWin);
+        kitPlayer.putKitAttribute(attributeKey, gambleWin);
         gambleWin.runTaskTimer(KitApi.getInstance().getPlugin(), 0, tick);
     }
 
@@ -121,7 +127,7 @@ public class GamblerKit extends AbstractKit implements Listener {
         goodLuckCollection.add(1, cantBeClassified);
     }
 
-    private static class GambleWin extends BukkitRunnable {
+    private class GambleWin extends BukkitRunnable {
         private final long END;
         private final Player player;
         private final KitPlayer kitPlayer;
@@ -159,9 +165,14 @@ public class GamblerKit extends AbstractKit implements Listener {
         }
 
         public void end() {
-            kitPlayer.putKitAttribute(GamblerKit.INSTANCE, null);
+            kitPlayer.putKitAttribute(attributeKey, null);
             forceEnd = true;
             cancel();
         }
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }

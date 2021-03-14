@@ -1,6 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.events;
 
 import de.hglabor.plugins.kitapi.player.KitPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -45,7 +46,10 @@ public abstract class KitEvents {
     public void onEntityDeath(EntityDeathEvent event) {
     }
 
-    public void onPlayerKillsLivingEntity(EntityDeathEvent event) {
+    public void onPlayerKillsLivingEntity(EntityDeathEvent event, Player killer, Entity entity) {
+    }
+
+    public void onKitPlayerDeath(PlayerDeathEvent event) {
     }
 
     public void onEntityDamage(EntityDamageEvent event) {

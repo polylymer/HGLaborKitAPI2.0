@@ -1,9 +1,11 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import com.google.common.collect.ImmutableList;
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
-import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.DoubleArg;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
+import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -20,15 +22,22 @@ import java.util.List;
 
 public class SquidKit extends AbstractKit {
     public final static SquidKit INSTANCE = new SquidKit();
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
+    @DoubleArg
+    private final double radius;
+    @IntArg
+    private final int blindnessDuration, blindnessAmplifier;
 
     private SquidKit() {
-        super("Squid", Material.SQUID_SPAWN_EGG, 13);
-        addEvents(ImmutableList.of(PlayerToggleSneakEvent.class));
-        addSetting(KitSettings.RADIUS, 5);
-        addSetting(KitSettings.EFFECT_DURATION, 3);
-        addSetting(KitSettings.EFFECT_MULTIPLIER, 3);
+        super("Squid", Material.SQUID_SPAWN_EGG);
+        cooldown = 13;
+        radius = 5D;
+        blindnessDuration = 3;
+        blindnessAmplifier = 3;
     }
 
+    @KitEvent
     @Override
     public void onPlayerToggleSneakEvent(PlayerToggleSneakEvent event) {
         if (!event.isSneaking()) {
@@ -42,26 +51,31 @@ public class SquidKit extends AbstractKit {
             if (nearbyPlayer != player && nearbyPlayer != null) {
                 if (enemyKitPlayer.isValid()) {
                     counter++;
-                    nearbyPlayer.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * (Integer) getSetting(KitSettings.EFFECT_DURATION), (Integer) getSetting(KitSettings.EFFECT_MULTIPLIER)));
+                    nearbyPlayer.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * blindnessDuration, blindnessAmplifier));
                     Squid squid = (Squid) nearbyPlayer.getWorld().spawnEntity(nearbyPlayer.getEyeLocation(), EntityType.SQUID);
                     Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), squid::remove, 2 * 20);
                 }
             }
         }
         if (counter > 0) {
-            kitPlayer.activateKitCooldown(this, this.getCooldown());
+            kitPlayer.activateKitCooldown(this);
         }
     }
 
     private List<KitPlayer> getKitPlayerInRadius(Player player) {
         List<KitPlayer> enemies = new ArrayList<>();
-        for (Player nearbyPlayer : player.getWorld().getNearbyEntitiesByType(Player.class, player.getLocation(), ((Integer) getSetting(KitSettings.RADIUS)).doubleValue())) {
+        for (Player nearbyPlayer : player.getWorld().getNearbyEntitiesByType(Player.class, player.getLocation(), radius)) {
             KitPlayer nearbyKitPlayer = KitApi.getInstance().getPlayer(nearbyPlayer);
             if (nearbyKitPlayer.isValid()) {
                 enemies.add(nearbyKitPlayer);
             }
         }
         return enemies;
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }
 

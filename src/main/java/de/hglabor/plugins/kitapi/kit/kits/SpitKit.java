@@ -1,8 +1,10 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.Material;
@@ -17,19 +19,21 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import java.util.Collections;
 import java.util.Random;
 
 
 public class SpitKit extends AbstractKit implements Listener {
     public static final SpitKit INSTANCE = new SpitKit();
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
     private SpitKit() {
-        super("Spit",Material.GHAST_TEAR,10);
+        super("Spit",Material.GHAST_TEAR);
+        cooldown = 10;
         setMainKitItem(getDisplayMaterial());
-        addEvents(Collections.singletonList(PlayerInteractEvent.class));
     }
 
+    @KitEvent
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -37,7 +41,7 @@ public class SpitKit extends AbstractKit implements Listener {
         Entity entity = player.launchProjectile(LlamaSpit.class);
         entity.setMetadata(KitMetaData.SPIT_PROJECTILE.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
         player.playSound(player.getLocation(), Sound.ENTITY_LLAMA_SPIT, 100, 100);
-        kitPlayer.activateKitCooldown(this, this.getCooldown());
+        kitPlayer.activateKitCooldown(this);
     }
 
     @EventHandler
@@ -66,6 +70,11 @@ public class SpitKit extends AbstractKit implements Listener {
                 spitInSoup(player);
             }
         }
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }
 

@@ -1,12 +1,12 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
-import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.pathfinder.*;
 import de.hglabor.utils.localization.Localization;
@@ -17,8 +17,8 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
-import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
@@ -30,32 +30,37 @@ import java.util.UUID;
 
 public class ManipulationKit extends AbstractKit implements Listener {
     public final static ManipulationKit INSTANCE = new ManipulationKit();
+    @IntArg
+    private final int maxManipulatedMobs;
+    private final String collectedMobsKey;
 
     public ManipulationKit() {
         super("Manipulation", Material.IRON_NUGGET);
         setMainKitItem(getDisplayMaterial());
-        addEvents(ImmutableList.of(PlayerInteractAtEntityEvent.class));
-        addSetting(KitSettings.USES, 4);
+        collectedMobsKey = this.getName() + "collectedMobs";
+        maxManipulatedMobs = 4;
     }
 
     @Override
-    public void enable(KitPlayer kitPlayer) {
-        kitPlayer.putKitAttribute(this, new HashSet<UUID>());
+    public void onEnable(KitPlayer kitPlayer) {
+        kitPlayer.putKitAttribute(collectedMobsKey, new HashSet<UUID>());
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
-        Set<UUID> controlledMobs = kitPlayer.getKitAttribute(this);
-        if (controlledMobs != null) {
-            for (UUID controlledMob : controlledMobs) {
-                Entity entity = Bukkit.getEntity(controlledMob);
-                if (entity != null) {
-                    entity.remove();
-                }
+    public void onDeactivation(KitPlayer kitPlayer) {
+        Set<UUID> controlledMobs = kitPlayer.getKitAttribute(collectedMobsKey);
+        if (controlledMobs == null) {
+            return;
+        }
+        for (UUID controlledMob : controlledMobs) {
+            Entity entity = Bukkit.getEntity(controlledMob);
+            if (entity != null) {
+                entity.remove();
             }
         }
     }
 
+    @KitEvent
     @Override
     public void onPlayerRightClickLivingEntityWithKitItem(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
@@ -75,7 +80,7 @@ public class ManipulationKit extends AbstractKit implements Listener {
                 return;
             }
 
-            if (getManipulatedMobAmount(player) > (Integer) getSetting(KitSettings.USES)) {
+            if (getManipulatedMobAmount(player) >= maxManipulatedMobs) {
                 player.sendMessage(Localization.INSTANCE.getMessage("manipulator.maxAmount", ChatUtils.getPlayerLocale(player)));
                 return;
             }
@@ -146,7 +151,7 @@ public class ManipulationKit extends AbstractKit implements Listener {
 
     private void addMob(Player player, Entity mob) {
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
-        Set<UUID> controlledMobs = kitPlayer.getKitAttribute(this);
+        Set<UUID> controlledMobs = kitPlayer.getKitAttribute(collectedMobsKey);
         controlledMobs.add(mob.getUniqueId());
     }
 
@@ -154,14 +159,14 @@ public class ManipulationKit extends AbstractKit implements Listener {
         Player player = getManipulator(mob);
         if (player != null) {
             KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
-            Set<UUID> controlledMobs = kitPlayer.getKitAttribute(this);
+            Set<UUID> controlledMobs = kitPlayer.getKitAttribute(collectedMobsKey);
             controlledMobs.remove(mob.getUniqueId());
         }
     }
 
     private int getManipulatedMobAmount(Player player) {
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
-        Set<UUID> controlledMobs = kitPlayer.getKitAttribute(this);
+        Set<UUID> controlledMobs = kitPlayer.getKitAttribute(collectedMobsKey);
         return controlledMobs.size();
     }
 

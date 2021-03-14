@@ -3,7 +3,9 @@ package de.hglabor.plugins.kitapi.kit.kits.grappler;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
-import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
+import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
@@ -28,22 +30,32 @@ import org.bukkit.inventory.meta.CrossbowMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class GrapplerKit extends AbstractKit implements Listener {
     public final static GrapplerKit INSTANCE = new GrapplerKit();
     private final ItemStack grapplerArrow;
     private final Map<UUID, Long> onCooldown;
+    @IntArg
     private final int spamCooldown;
+    @IntArg
+    private final int maxUses;
+    private final String hasShotKey;
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
     private GrapplerKit() {
-        super("Grappler", Material.CROSSBOW, 45);
+        super("Grappler", Material.CROSSBOW);
+        cooldown = 45;
+        spamCooldown = 2;
+        maxUses = 2;
+        hasShotKey = this.getName() + "hasShoot";
         this.grapplerArrow = new ItemBuilder(Material.ARROW).setName("Grappler Arrow").build();
         this.onCooldown = new HashMap<>();
-        this.spamCooldown = 2;
         setMainKitItem(new ItemBuilder(Material.CROSSBOW).setUnbreakable(true).build());
-        addSetting(KitSettings.USES, 2);
-        addEvents(List.of(ProjectileLaunchEvent.class, PlayerInteractEvent.class));
     }
 
     @EventHandler
@@ -70,6 +82,7 @@ public class GrapplerKit extends AbstractKit implements Listener {
         }
     }
 
+    @KitEvent
     @Override
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
         Player player = (Player) event.getEntity().getShooter();
@@ -77,8 +90,8 @@ public class GrapplerKit extends AbstractKit implements Listener {
             return;
         }
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
-        if (kitPlayer.getKitAttribute(this, Boolean.class)) {
-            kitPlayer.putKitAttribute(this, false, Boolean.class);
+        if (kitPlayer.getKitAttribute(hasShotKey)) {
+            kitPlayer.putKitAttribute(hasShotKey, false);
             Arrow projectile = (Arrow) event.getEntity();
             projectile.setCritical(false);
             projectile.setMetadata(KitMetaData.GRAPPLER_ARROW.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
@@ -87,11 +100,12 @@ public class GrapplerKit extends AbstractKit implements Listener {
             projectile.addPassenger(grapplerHookEntity.getBukkitEntity());
             if (kitPlayer.isInCombat()) {
                 projectile.setMetadata(KitMetaData.KITPLAYER_IS_IN_COMBAT.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
-                KitApi.getInstance().checkUsesForCooldown(player, this);
+                KitApi.getInstance().checkUsesForCooldown(player, this, maxUses);
             }
         }
     }
 
+    @KitEvent
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -104,7 +118,7 @@ public class GrapplerKit extends AbstractKit implements Listener {
             CrossbowMeta crossbowMeta = (CrossbowMeta) itemStack.getItemMeta();
             if (!crossbowMeta.hasChargedProjectiles()) {
                 crossbowMeta.addChargedProjectile(grapplerArrow);
-                kitPlayer.putKitAttribute(this, true, Boolean.class);
+                kitPlayer.putKitAttribute(hasShotKey, true);
                 itemStack.setItemMeta(crossbowMeta);
                 onCooldown.put(player.getUniqueId(), System.currentTimeMillis() + spamCooldown * 1000L);
             }
@@ -148,5 +162,10 @@ public class GrapplerKit extends AbstractKit implements Listener {
             return Optional.of(player.getInventory().getItemInOffHand());
         }
         return Optional.empty();
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }

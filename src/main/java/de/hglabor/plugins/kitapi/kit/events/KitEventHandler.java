@@ -18,9 +18,13 @@ public abstract class KitEventHandler extends KitEvents {
         this.playerSupplier = playerSupplier;
     }
 
-    public boolean canUseKit(Event event, KitPlayer kitPlayer, AbstractKit kit) {
+    public static boolean canUseKit(Event event, KitPlayer kitPlayer, AbstractKit kit) {
         Player player = Bukkit.getPlayer(kitPlayer.getUUID());
         if (player == null) {
+            return false;
+        }
+
+        if (!kit.isEnabled()) {
             return false;
         }
 
@@ -36,7 +40,8 @@ public abstract class KitEventHandler extends KitEvents {
 
         if (!kit.getKitEvents().contains(event.getClass())) {
             //Complete Garbage I hope this doesnt break something
-            if (kit.getKitEvents().stream().noneMatch(kitEvent -> event.getClass().getSuperclass().equals(kitEvent))) return false;
+            if (kit.getKitEvents().stream().noneMatch(kitEvent -> event.getClass().getSuperclass().equals(kitEvent)))
+                return false;
         }
 
         //Player doesnt have kit
@@ -56,7 +61,7 @@ public abstract class KitEventHandler extends KitEvents {
         return true;
     }
 
-    public boolean canUseKitItem(Event event, KitPlayer kitPlayer, AbstractKit kit) {
+    public static boolean canUseKitItem(Event event, KitPlayer kitPlayer, AbstractKit kit) {
         Player player = Bukkit.getPlayer(kitPlayer.getUUID());
 
         if (player == null) {

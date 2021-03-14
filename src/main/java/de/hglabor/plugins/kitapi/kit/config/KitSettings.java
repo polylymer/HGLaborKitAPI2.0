@@ -4,6 +4,7 @@ import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+@Deprecated
 public enum KitSettings {
 
     COOLDOWN(new ItemBuilder(Material.CLOCK).setName("§eCooldown")

@@ -1,10 +1,12 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import com.google.common.collect.ImmutableList;
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
-import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
-import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.DoubleArg;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
+import de.hglabor.plugins.kitapi.kit.settings.IntArg;
+import de.hglabor.plugins.kitapi.kit.settings.MaterialArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
@@ -31,41 +33,52 @@ import org.bukkit.util.Vector;
 import java.util.HashSet;
 import java.util.Set;
 
-import static de.hglabor.plugins.kitapi.kit.config.KitSettings.SHOOTINGVELOCITY;
-
 
 public class SpidermanKit extends AbstractKit implements Listener {
     public static final SpidermanKit INSTANCE = new SpidermanKit();
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
+    @IntArg
+    private final int spidernetRadius, spidernetHeight;
+    @MaterialArg
+    private final Material spidernetBlock;
+    @DoubleArg
+    private final double climbVelocity, shootingVelocity;
+    private final String spidermanSnowballKey;
 
     private SpidermanKit() {
-        super("Spiderman", Material.COBWEB, 45);
+        super("Spiderman", Material.COBWEB);
+        cooldown = 45;
+        spidernetRadius = 5;
+        spidernetHeight = 5;
+        spidernetBlock = Material.COBWEB;
+        climbVelocity = 0.3D;
+        shootingVelocity = 1.5D;
+        spidermanSnowballKey = this.getName() + "spidermanSnowball";
         setMainKitItem(getDisplayMaterial());
-        addEvents(ImmutableList.of(PlayerInteractEvent.class));
-        addSetting(KitSettings.RADIUS, 5);
-        addSetting(KitSettings.CLIMBVELOCITY, 0.3);
-        addSetting(KitSettings.SHOOTINGVELOCITY, 1.5);
     }
 
+    @KitEvent
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
 
-        kitPlayer.activateKitCooldown(this, this.getCooldown());
+        kitPlayer.activateKitCooldown(this);
 
         final Vector direction = player.getEyeLocation().getDirection();
 
-        Snowball snowball = player.getWorld().spawn(player.getEyeLocation().add(direction.multiply((Double) getSetting(SHOOTINGVELOCITY))), Snowball.class);
+        Snowball snowball = player.getWorld().spawn(player.getEyeLocation().add(direction.multiply(shootingVelocity)), Snowball.class);
         snowball.setVelocity(direction);
         snowball.setShooter(player);
-        snowball.setMetadata(KitMetaData.SPIDERMAN_SNOWBALL.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
+        snowball.setMetadata(spidermanSnowballKey, new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
 
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
             PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(snowball.getEntityId());
             ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
         }
 
-        FallingBlock cobWeb = player.getWorld().spawnFallingBlock(player.getEyeLocation().add(direction), Material.COBWEB.createBlockData());
+        FallingBlock cobWeb = player.getWorld().spawnFallingBlock(player.getEyeLocation().add(direction), spidernetBlock.createBlockData());
         cobWeb.setHurtEntities(true);
         cobWeb.setVelocity(direction);
         cobWeb.setDropItem(false);
@@ -77,7 +90,7 @@ public class SpidermanKit extends AbstractKit implements Listener {
         if (!(event.getEntity() instanceof Snowball)) {
             return;
         }
-        if (!event.getEntity().hasMetadata(KitMetaData.SPIDERMAN_SNOWBALL.getKey())) {
+        if (!event.getEntity().hasMetadata(spidermanSnowballKey)) {
             return;
         }
 
@@ -86,18 +99,18 @@ public class SpidermanKit extends AbstractKit implements Listener {
 
         if (event.getHitEntity() != null) {
             Entity hittedEntity = event.getHitEntity();
-            spiderNet = createSpiderNet(hittedEntity.getLocation(), getSetting(KitSettings.RADIUS), getSetting(KitSettings.RADIUS));
+            spiderNet = createSpiderNet(hittedEntity.getLocation(), spidernetRadius, spidernetHeight);
         }
 
         if (event.getHitBlock() != null) {
             Block hittedBlock = event.getHitBlock();
-            spiderNet = createSpiderNet(hittedBlock.getLocation(), getSetting(KitSettings.RADIUS), getSetting(KitSettings.RADIUS));
+            spiderNet = createSpiderNet(hittedBlock.getLocation(), spidernetRadius, spidernetHeight);
         }
 
         Set<Block> finalSpiderNet = spiderNet;
         Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> {
             for (Block block : finalSpiderNet) {
-                if (block.getType().equals(Material.COBWEB)) {
+                if (block.getType().equals(spidernetBlock)) {
                     block.setType(Material.AIR);
                 }
             }
@@ -114,11 +127,11 @@ public class SpidermanKit extends AbstractKit implements Listener {
             return;
         }
         if (nearWall(0.5, event.getPlayer())) {
-            if (kitPlayer.hasKitCooldown(this)) {
+            if (kitPlayer.getKitCooldown(this).hasCooldown()) {
                 player.sendActionBar(Localization.INSTANCE.getMessage("spiderman.noClimbWithCooldown", ChatUtils.getPlayerLocale(player)));
                 return;
             }
-            player.setVelocity(new Vector(0, (Double) getSetting(KitSettings.CLIMBVELOCITY), 0));
+            player.setVelocity(new Vector(0, climbVelocity, 0));
         }
     }
 
@@ -141,8 +154,13 @@ public class SpidermanKit extends AbstractKit implements Listener {
                 continue;
             }
             result.add(location.getBlock());
-            location.getBlock().setType(Material.COBWEB);
+            location.getBlock().setType(spidernetBlock);
         }
         return result;
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }

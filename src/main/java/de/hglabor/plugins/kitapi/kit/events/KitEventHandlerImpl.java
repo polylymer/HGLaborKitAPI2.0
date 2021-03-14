@@ -1,9 +1,9 @@
 package de.hglabor.plugins.kitapi.kit.events;
 
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
-import de.hglabor.plugins.kitapi.supplier.KitPlayerSupplier;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -96,21 +96,22 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
 
     @EventHandler
     public void onPlayerKillsLivingEntity(EntityDeathEvent event) {
-        Player killer = event.getEntity().getKiller();
-        if (killer != null) {
-            KitPlayer kitPlayer = playerSupplier.getKitPlayer(killer);
-            useKit(event, kitPlayer, kit -> kit.onPlayerKillsLivingEntity(event));
+        if (event.getEntity().getKiller() != null) {
+            KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getEntity().getKiller());
+            useKit(event, kitPlayer, kit -> kit.onPlayerKillsLivingEntity(event, event.getEntity().getKiller(), event.getEntity()));
         }
+    }
+
+    @EventHandler
+    public void onKitPlayerDeath(PlayerDeathEvent event) {
+        KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getEntity());
+        useKit(event, kitPlayer, kit -> kit.onKitPlayerDeath(event));
     }
 
     @EventHandler
     public void onBlockBreakWithKitItem(BlockBreakEvent event) {
         KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
-        for (AbstractKit playerKit : kitPlayer.getKits()) {
-            if (event.getPlayer().getInventory().getItemInMainHand().isSimilar(playerKit.getMainKitItem())) {
-                useKitItem(event, kitPlayer, kit -> kit.onBlockBreakWithKitItem(event));
-            }
-        }
+        useKitItem(event, kitPlayer, kit -> kit.onBlockBreakWithKitItem(event));
     }
 
     @EventHandler

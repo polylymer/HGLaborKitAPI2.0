@@ -1,8 +1,9 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
-import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.ChanceUtils;
 import org.bukkit.Material;
@@ -12,19 +13,20 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Collections;
-
 public class CannibalKit extends AbstractKit {
     public final static CannibalKit INSTANCE = new CannibalKit();
 
+    @IntArg
+    private final int likelihood, effectDuration, effectMultiplier;
+
     private CannibalKit() {
         super("Cannibal", Material.TROPICAL_FISH);
-        addSetting(KitSettings.EFFECT_DURATION,1);
-        addSetting(KitSettings.EFFECT_MULTIPLIER, 1);
-        addSetting(KitSettings.LIKELIHOOD,33);
-        addEvents(Collections.singletonList(EntityDamageByEntityEvent.class));
+        effectDuration = 1;
+        effectMultiplier = 1;
+        likelihood = 33;
     }
 
+    @KitEvent
     @Override
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
         if (!(event.getEntity() instanceof Player)) {
@@ -48,8 +50,8 @@ public class CannibalKit extends AbstractKit {
             attack.setFoodLevel(foodLevelOfPlayer + difference);
         }
 
-        if (ChanceUtils.roll(getSetting(KitSettings.LIKELIHOOD))) {
-            enemy.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, (Integer) getSetting(KitSettings.EFFECT_DURATION) * 20, getSetting(KitSettings.EFFECT_MULTIPLIER)));
+        if (ChanceUtils.roll(likelihood)) {
+            enemy.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, effectDuration * 20, effectMultiplier));
         }
     }
 }

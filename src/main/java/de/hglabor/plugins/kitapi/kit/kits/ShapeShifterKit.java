@@ -1,9 +1,8 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import com.google.common.collect.ImmutableList;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
-import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
 import me.libraryaddict.disguise.DisguiseAPI;
@@ -29,7 +28,6 @@ public class ShapeShifterKit extends AbstractKit {
 
     private ShapeShifterKit() {
         super("Shapeshifter", Material.REDSTONE_BLOCK);
-        addEvents(ImmutableList.of(PlayerInteractEvent.class, EntityDamageByEntityEvent.class));
         setMainKitItem(getDisplayMaterial());
         DISABLED_BLOCKS = new ArrayList<>();
         DISABLED_BLOCKS.addAll(Arrays.asList(Material.AIR, Material.BARRIER, Material.BEDROCK,
@@ -41,19 +39,20 @@ public class ShapeShifterKit extends AbstractKit {
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
+    public void onDeactivation(KitPlayer kitPlayer) {
         Player player = Bukkit.getPlayer(kitPlayer.getUUID());
         if (player != null) {
             DisguiseAPI.undisguiseToAll(player);
         }
     }
 
+    @KitEvent
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Block block = event.getClickedBlock();
         Player player = event.getPlayer();
         if (block != null) {
-            if (DISABLED_BLOCKS.contains(block.getType()) || block.getType().name().contains("SIGN")) {
+            if (DISABLED_BLOCKS.contains(block.getType())) {
                 player.sendMessage(Localization.INSTANCE.getMessage("shapeshifter.denyTransformation", ChatUtils.getPlayerLocale(player)));
                 return;
             }
@@ -62,11 +61,13 @@ public class ShapeShifterKit extends AbstractKit {
         }
     }
 
+    @KitEvent
     @Override
     public void onPlayerLeftClickKitItem(PlayerInteractEvent event) {
         DisguiseAPI.undisguiseToAll(event.getPlayer());
     }
 
+    @KitEvent
     @Override
     public void onPlayerGetsAttackedByLivingEntity(EntityDamageByEntityEvent event, Player player, LivingEntity attacker) {
         if (attacker instanceof Player) {

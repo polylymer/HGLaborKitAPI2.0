@@ -1,10 +1,12 @@
 package de.hglabor.plugins.kitapi.kit.kits.endermage;
 
-import com.google.common.collect.ImmutableList;
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
-import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.DoubleArg;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
+import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
@@ -20,24 +22,35 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class EndermageKit extends AbstractKit implements Listener {
     public final static EndermageKit INSTANCE = new EndermageKit();
+    @IntArg
+    private final int maxUses, invulnerabilityAfterMage, searchTime;
+    @DoubleArg
+    private final double searchRadius;
+    private final String attributeKey, hasBeenMagedKey;
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
     private EndermageKit() {
-        super("Endermage", Material.END_PORTAL_FRAME,15);
+        super("Endermage", Material.END_PORTAL_FRAME);
+        cooldown = 15F;
+        maxUses = 5;
+        searchRadius = 4D;
+        invulnerabilityAfterMage = 5;
+        searchTime = 5;
+        hasBeenMagedKey = this.getName() + "hasBeenMaged";
+        attributeKey = this.getName() + "Runnable";
         setMainKitItem(getDisplayMaterial());
-        addEvents(ImmutableList.of(PlayerInteractEvent.class));
-        addSetting(KitSettings.RADIUS, 4);
-        addSetting(KitSettings.NUMBER, 5);
-        addSetting(KitSettings.USES, 5);
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
-        EndermageSearch endermageRunnable = kitPlayer.getKitAttribute(this,EndermageSearch.class);
+    public void onDeactivation(KitPlayer kitPlayer) {
+        EndermageSearch endermageRunnable = kitPlayer.getKitAttribute(attributeKey);
         if (endermageRunnable != null && endermageRunnable.isSearchingForPlayers) {
             endermageRunnable.endSearching();
         }
     }
 
+    @KitEvent
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Block endermagePortal = event.getClickedBlock();
@@ -49,7 +62,7 @@ public class EndermageKit extends AbstractKit implements Listener {
                 return;
             }
 
-            EndermageSearch endermageRunnable = kitPlayer.getKitAttribute(this,EndermageSearch.class);
+            EndermageSearch endermageRunnable = kitPlayer.getKitAttribute(attributeKey);
             if (endermageRunnable != null && endermageRunnable.isSearchingForPlayers) {
                 player.sendMessage(Localization.INSTANCE.getMessage("endermage.alreadySearching", ChatUtils.getPlayerLocale(player)));
                 return;
@@ -58,7 +71,7 @@ public class EndermageKit extends AbstractKit implements Listener {
             BlockData oldBlockData = endermagePortal.getBlockData();
             endermagePortal.setType(Material.END_PORTAL_FRAME);
             EndermageSearch newEndermageRunnable = new EndermageSearch(player, endermagePortal, oldBlockData);
-            kitPlayer.putKitAttribute(this, newEndermageRunnable,EndermageSearch.class);
+            kitPlayer.putKitAttribute(attributeKey, newEndermageRunnable);
             newEndermageRunnable.runTaskTimer(KitApi.getInstance().getPlugin(), 0, 20);
         }
     }
@@ -69,7 +82,7 @@ public class EndermageKit extends AbstractKit implements Listener {
             return;
         }
         Player player = (Player) event.getEntity();
-        if (player.hasMetadata(KitMetaData.HAS_BEEN_MAGED.getKey())) {
+        if (player.hasMetadata(hasBeenMagedKey)) {
             event.setCancelled(true);
         }
     }
@@ -80,9 +93,38 @@ public class EndermageKit extends AbstractKit implements Listener {
             return;
         }
         Player damager = (Player) event.getDamager();
-        if (damager.hasMetadata(KitMetaData.HAS_BEEN_MAGED.getKey())) {
+        if (damager.hasMetadata(hasBeenMagedKey)) {
             event.setCancelled(true);
         }
+    }
+
+    public int getMaxUses() {
+        return maxUses;
+    }
+
+    public double getSearchRadius() {
+        return searchRadius;
+    }
+
+    public int getInvulnerabilityAfterMage() {
+        return invulnerabilityAfterMage;
+    }
+
+    public int getSearchTime() {
+        return searchTime;
+    }
+
+    public String getAttributeKey() {
+        return attributeKey;
+    }
+
+    public String getHasBeenMagedKey() {
+        return hasBeenMagedKey;
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }
 

@@ -9,7 +9,10 @@ import com.sk89q.worldedit.regions.Region;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
-import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.DoubleArg;
+import de.hglabor.plugins.kitapi.kit.settings.IntArg;
+import de.hglabor.plugins.kitapi.kit.settings.MaterialArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.WorldEditUtils;
 import org.bukkit.*;
@@ -26,39 +29,45 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Collections;
 import java.util.Random;
-
-import static de.hglabor.plugins.kitapi.kit.config.KitSettings.MATERIAL;
 
 public class GladiatorKit extends AbstractKit implements Listener {
     public final static GladiatorKit INSTANCE = new GladiatorKit();
+    @IntArg(min = 3)
+    private final int radius, height;
+    @MaterialArg
+    private final Material material;
+    @DoubleArg
+    private final double intruderDamage;
+    @IntArg
+    private final int witherEffectAtferXSeconds;
+    private final String attributeKey;
 
     private GladiatorKit() {
         super("Gladiator", Material.IRON_BARS);
         setMainKitItem(getDisplayMaterial());
-        addSetting(MATERIAL, Material.GLASS);
-        addSetting(KitSettings.RADIUS, 15);
-        addSetting(KitSettings.HEIGHT, 10);
-        addEvents(Collections.singletonList(PlayerInteractAtEntityEvent.class));
+        radius = 15;
+        height = 10;
+        witherEffectAtferXSeconds = 120;
+        intruderDamage = 5D;
+        material = Material.GLASS;
+        attributeKey = this.getName() + "Fight";
     }
 
     @Override
-    public void disable(KitPlayer kitPlayer) {
-        GladiatorFight value = kitPlayer.getKitAttribute(this);
+    public void onDeactivation(KitPlayer kitPlayer) {
+        GladiatorFight value = kitPlayer.getKitAttribute(attributeKey);
         if (value != null) {
             value.endFight();
         }
     }
 
+    @KitEvent
     @Override
     public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
         Player enemy = (Player) event.getRightClicked();
         World world = player.getWorld();
-        int radius = getSetting(KitSettings.RADIUS);
-        int height = getSetting(KitSettings.HEIGHT);
-        Material material = getSetting(KitSettings.MATERIAL);
 
         if (player.hasMetadata(KitMetaData.INGLADIATOR.getKey()) || enemy.hasMetadata(KitMetaData.INGLADIATOR.getKey())) {
             return;
@@ -83,7 +92,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
 
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         GladiatorFight gladiatorFight = new GladiatorFight(gladiatorRegion, kitPlayer, KitApi.getInstance().getPlayer(enemy), radius, height);
-        kitPlayer.putKitAttribute(this, gladiatorFight);
+        kitPlayer.putKitAttribute(attributeKey, gladiatorFight);
         gladiatorFight.runTaskTimer(KitApi.getInstance().getPlugin(), 0, 20);
     }
 
@@ -128,7 +137,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
 
     private void changeGladiatorBlock(Cancellable event, Block block) {
         event.setCancelled(true);
-        if (block.getType().equals(getSetting(MATERIAL))) {
+        if (block.getType().equals(material)) {
             block.setType(Material.GREEN_STAINED_GLASS);
         } else if (block.getType().equals(Material.GREEN_STAINED_GLASS)) {
             block.setType(Material.YELLOW_STAINED_GLASS);
@@ -197,7 +206,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
                     region.contains(BukkitAdapter.asBlockVector(enemy.getLocation()))) {
                 timer++;
                 damageIntruders();
-                if (timer > 120) {
+                if (timer > witherEffectAtferXSeconds) {
                     gladiator.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, Integer.MAX_VALUE, 2));
                     enemy.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, Integer.MAX_VALUE, 2));
                 }
@@ -207,7 +216,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
         }
 
         private void endFight() {
-            gladiatorKitOwner.putKitAttribute(GladiatorKit.this, null);
+            gladiatorKitOwner.putKitAttribute(attributeKey, null);
 
             gladiator.removeMetadata(KitMetaData.INGLADIATOR.getKey(), KitApi.getInstance().getPlugin());
             enemy.removeMetadata(KitMetaData.INGLADIATOR.getKey(), KitApi.getInstance().getPlugin());
@@ -231,7 +240,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
                 block.removeMetadata(KitMetaData.GLADIATOR_BLOCK.getKey(), KitApi.getInstance().getPlugin());
             }
 
-            gladiatorKitOwner.activateKitCooldown(GladiatorKit.this, GladiatorKit.this.getCooldown());
+            gladiatorKitOwner.activateKitCooldown(GladiatorKit.this);
 
             WorldEditUtils.createCylinder(world, center, radius, true, height, Material.AIR);
             cancel();
@@ -242,7 +251,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
                 if (!unknownPlayer.getGameMode().equals(GameMode.SURVIVAL)) continue;
                 if (unknownPlayer == gladiator || unknownPlayer == enemy) continue;
                 if (region.contains(BukkitAdapter.asBlockVector(unknownPlayer.getLocation())))
-                    unknownPlayer.damage(5);
+                    unknownPlayer.damage(intruderDamage);
             }
         }
     }

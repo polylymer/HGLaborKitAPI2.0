@@ -2,7 +2,8 @@ package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.DoubleArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -10,17 +11,17 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import java.util.Collections;
-
 public class StomperKit extends AbstractKit {
     public static final StomperKit INSTANCE = new StomperKit();
+    @DoubleArg
+    private final double radius;
 
     protected StomperKit() {
         super("Stomper", Material.DIAMOND_BOOTS);
-        addEvents(Collections.singletonList(EntityDamageEvent.class));
-        addSetting(KitSettings.RADIUS, 3);
+        radius = 3D;
     }
 
+    @KitEvent
     @Override
     public void onEntityDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player) {
@@ -31,7 +32,7 @@ public class StomperKit extends AbstractKit {
             if (STOMPER_DAMAGE > 4) {
                 event.setDamage(4);
             }
-            for (LivingEntity livingEntity : stomper.getWorld().getNearbyEntitiesByType(LivingEntity.class, stomper.getLocation(), ((Integer) getSetting(KitSettings.RADIUS)).doubleValue())) {
+            for (LivingEntity livingEntity : stomper.getWorld().getNearbyEntitiesByType(LivingEntity.class, stomper.getLocation(), radius)) {
                 if (livingEntity == stomper) {
                     continue;
                 }

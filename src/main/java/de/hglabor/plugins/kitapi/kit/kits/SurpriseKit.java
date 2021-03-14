@@ -1,7 +1,7 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.KitApi;
+import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Material;
 
@@ -15,8 +15,8 @@ public class SurpriseKit extends AbstractKit {
     }
 
     @Override
-    public void enable(KitPlayer kitplayer) {
-        AbstractKit randomKit = NoneKit.getInstance();
+    public void onEnable(KitPlayer kitplayer) {
+        AbstractKit randomKit = NoneKit.INSTANCE;
         int kitSlot = 0;
         //TODO copycat surprise
         for (AbstractKit kit : kitplayer.getKits()) {
@@ -24,7 +24,7 @@ public class SurpriseKit extends AbstractKit {
                 randomKit = getRandomEnabledKit();
                 kitplayer.getKits().set(kitSlot, randomKit);
                 KitApi.getInstance().giveKitItemsIfSlotEmpty(kitplayer, randomKit);
-                randomKit.enable(kitplayer);
+                randomKit.onEnable(kitplayer);
             }
             kitSlot++;
         }
@@ -39,6 +39,6 @@ public class SurpriseKit extends AbstractKit {
             }
             i++;
         }
-        return NoneKit.getInstance();
+        return NoneKit.INSTANCE;
     }
 }

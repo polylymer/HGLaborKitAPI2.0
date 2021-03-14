@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import de.hglabor.plugins.kitapi.config.KitApiConfig;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
-import de.hglabor.plugins.kitapi.kit.config.KitUses;
 import de.hglabor.plugins.kitapi.kit.kits.*;
 import de.hglabor.plugins.kitapi.kit.kits.endermage.EndermageKit;
 import de.hglabor.plugins.kitapi.kit.kits.grappler.GrapplerKit;
@@ -17,6 +16,7 @@ import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -25,9 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-
-import static de.hglabor.plugins.kitapi.kit.config.KitSettings.USES;
 
 public final class KitApi {
     private final static KitApi INSTANCE = new KitApi();
@@ -48,21 +47,24 @@ public final class KitApi {
         return INSTANCE;
     }
 
-    public void checkUsesForCooldown(KitPlayer kitPlayer, AbstractKit kit) {
-        if (kitPlayer.getKitAttribute(kit, KitUses.class) == null) {
-            kitPlayer.putKitAttribute(kit, new KitUses(), KitUses.class);
-        } else {
-            ((KitUses) kitPlayer.getKitAttribute(kit, KitUses.class)).increaseUse();
+    public void checkUsesForCooldown(KitPlayer kitPlayer, AbstractKit kit, int maxUses) {
+        String key = kit.getName() + "kitUses";
+        if (kitPlayer.getKitAttribute(key) == null) {
+            kitPlayer.putKitAttribute(key, new AtomicInteger());
         }
-        KitUses kitUses = kitPlayer.getKitAttribute(kit, KitUses.class);
-        if (kitUses.getUse() >= (Integer) kit.getSetting(USES)) {
-            kitPlayer.activateKitCooldown(kit, kit.getCooldown());
-            kitUses.resetUse();
+        AtomicInteger kitUses = kitPlayer.getKitAttribute(key);
+        if (kitUses.getAndIncrement() > maxUses) {
+            kitPlayer.activateKitCooldown(kit);
+            kitUses.set(0);
         }
     }
 
-    public void checkUsesForCooldown(Player player, AbstractKit kit) {
-        checkUsesForCooldown(getPlayer(player), kit);
+    public String cooldownKey(AbstractKit kit) {
+        return kit.getName() + "cooldown";
+    }
+
+    public void checkUsesForCooldown(Player player, AbstractKit kit, int maxUses) {
+        checkUsesForCooldown(getPlayer(player), kit, maxUses);
     }
 
     public List<Locale> getSupportedLanguages() {
@@ -70,12 +72,34 @@ public final class KitApi {
     }
 
     public List<AbstractKit> emptyKitList() {
-        int kitAmount = KitApiConfig.getInstance().getInteger("kit.amount");
+        int kitAmount = KitApiConfig.getInstance().getKitAmount();
         List<AbstractKit> emptyKitList = new ArrayList<>(kitAmount);
         for (int i = 0; i < kitAmount; i++) {
-            emptyKitList.add(NoneKit.getInstance());
+            emptyKitList.add(NoneKit.INSTANCE);
         }
         return emptyKitList;
+    }
+
+    public void enableKit(AbstractKit kit, boolean isEnabled) {
+        kit.setEnabled(isEnabled);
+        if (isEnabled) {
+            if (kit instanceof Listener) {
+                Bukkit.getPluginManager().registerEvents((Listener) kit, plugin);
+            }
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                KitPlayer kitPlayer = playerSupplier.getKitPlayer(player);
+                if (kitPlayer.hasKit(kit)) {
+                    kit.onEnable(kitPlayer);
+                }
+            }
+        } else {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                kit.onDeactivation(playerSupplier.getKitPlayer(player));
+            }
+            if (kit instanceof Listener) {
+                HandlerList.unregisterAll((Listener) kit);
+            }
+        }
     }
 
     public void register(KitPlayerSupplier kitPlayerSupplier, KitSelector kitSelector, JavaPlugin plugin) {
@@ -83,63 +107,74 @@ public final class KitApi {
         this.playerSupplier = kitPlayerSupplier;
         this.kitSelector = kitSelector;
         this.plugin = plugin;
-        plugin.getServer().getPluginManager().registerEvents(kitSelector,plugin);
-        register(MagmaKit.getInstance());
-        register(NinjaKit.getInstance());
-        register(NoneKit.getInstance());
-        register(BlinkKit.INSTANCE);
-        register(SurpriseKit.INSTANCE);
-        register(CopyCatKit.INSTANCE);
-        register(GladiatorKit.INSTANCE);
-        register(GamblerKit.INSTANCE);
-        register(SmogmogKit.INSTANCE);
-        register(RogueKit.INSTANCE);
-        register(SnailKit.INSTANCE);
-        register(DiggerKit.INSTANCE);
-        register(ReviveKit.INSTANCE);
-        register(TankKit.INSTANCE);
-        register(GravityKit.INSTANCE);
-        register(CannibalKit.INSTANCE);
-        register(ZickZackKit.INSTANCE);
-        register(ThorKit.INSTANCE);
-        register(StomperKit.INSTANCE);
-        register(DannyKit.INSTANCE);
-        register(JackhammerKit.INSTANCE);
-        register(SwitcherKit.INSTANCE);
-        register(SpitKit.INSTANCE);
-        register(SquidKit.INSTANCE);
-        register(ShapeShifterKit.INSTANCE);
-        register(SpidermanKit.INSTANCE);
-        register(ManipulationKit.INSTANCE);
-        register(EndermageKit.INSTANCE);
-        register(ViperKit.INSTANCE);
-        register(LumberjackKit.INSTANCE);
-        register(ReaperKit.INSTANCE);
-        register(GrapplerKit.INSTANCE);
-        register(ClawKit.INSTANCE);
-        register(AutomaticKit.INSTANCE);
+        plugin.getServer().getPluginManager().registerEvents(kitSelector, plugin);
+        kits.add(MagmaKit.INSTANCE);
+        kits.add(NinjaKit.INSTANCE);
+        kits.add(NoneKit.INSTANCE);
+        kits.add(BlinkKit.INSTANCE);
+        kits.add(SurpriseKit.INSTANCE);
+        kits.add(CopyCatKit.INSTANCE);
+        kits.add(GladiatorKit.INSTANCE);
+        kits.add(GamblerKit.INSTANCE);
+        kits.add(SmogmogKit.INSTANCE);
+        kits.add(RogueKit.INSTANCE);
+        kits.add(SnailKit.INSTANCE);
+        kits.add(DiggerKit.INSTANCE);
+        kits.add(ReviveKit.INSTANCE);
+        kits.add(TankKit.INSTANCE);
+        kits.add(GravityKit.INSTANCE);
+        kits.add(CannibalKit.INSTANCE);
+        kits.add(ZickZackKit.INSTANCE);
+        kits.add(ThorKit.INSTANCE);
+        kits.add(StomperKit.INSTANCE);
+        kits.add(DannyKit.INSTANCE);
+        kits.add(JackhammerKit.INSTANCE);
+        kits.add(SwitcherKit.INSTANCE);
+        kits.add(SpitKit.INSTANCE);
+        kits.add(SquidKit.INSTANCE);
+        kits.add(ShapeShifterKit.INSTANCE);
+        kits.add(SpidermanKit.INSTANCE);
+        kits.add(ManipulationKit.INSTANCE);
+        kits.add(EndermageKit.INSTANCE);
+        kits.add(ViperKit.INSTANCE);
+        kits.add(LumberjackKit.INSTANCE);
+        kits.add(ReaperKit.INSTANCE);
+        kits.add(GrapplerKit.INSTANCE);
+        kits.add(ClawKit.INSTANCE);
+        kits.add(AutomaticKit.INSTANCE);
+        kits.add(AnchorKit.INSTANCE);
+        kits.add(BarbarianKit.INSTANCE);
+        kits.add(TurtleKit.INSTANCE);
+        kits.add(GrandpaKit.INSTANCE);
+        kits.add(BerserkerKit.INSTANCE);
+        kits.add(ScoutKit.INSTANCE);
+        kits.add(MonkKit.INSTANCE);
+        kits.add(VampireKit.INSTANCE);
+        kits.add(KayaKit.INSTANCE);
+        kits.add(SoulstealerKit.INSTANCE);
+        //kits.add(BeamKit.INSTANCE);
+        //sort alphabetically
+        kits.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
+        registerKits();
         kitSelector.load();
     }
 
-    public void setItemSupplier(KitItemSupplier itemSupplier) {
-        this.itemSupplier = itemSupplier;
-    }
-
-    public void register(AbstractKit kit) {
-        System.out.println(kit.getName());
-        kits.add(kit);
+    private void registerKits() {
         KitApiConfig kitApiConfig = KitApiConfig.getInstance();
-        kitApiConfig.loadKit(kit);
-        kit.setEnabled(kitApiConfig.getBoolean("kit" + "." + kit.getName() + "." + "enabled"));
-        kit.setCooldown(kitApiConfig.getInteger("kit" + "." + kit.getName() + "." + "cooldown"));
-        kit.setUsable(kitApiConfig.getBoolean("kit" + "." + kit.getName() + "." + "usable"));
-        if (kit instanceof Listener) {
-            plugin.getServer().getPluginManager().registerEvents((Listener) kit,plugin);
+        for (AbstractKit kit : kits) {
+            System.out.println(kit.getName());
+            kitApiConfig.add(kit);
+            kitApiConfig.load(kit);
+            if (kit instanceof Listener) plugin.getServer().getPluginManager().registerEvents((Listener) kit, plugin);
         }
     }
 
     public KitItemSupplier getItemSupplier() {
         return itemSupplier;
+    }
+
+    public void setItemSupplier(KitItemSupplier itemSupplier) {
+        this.itemSupplier = itemSupplier;
     }
 
     public List<AbstractKit> getEnabledKits() {
@@ -154,15 +189,6 @@ public final class KitApi {
         List<AbstractKit> kits = new ArrayList<>(getEnabledKits());
         kits.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
         return kits.get(index);
-    }
-
-    public AbstractKit byName(String name) {
-        for (AbstractKit kit : kits) {
-            if (kit.getName().equalsIgnoreCase(name)) {
-                return kit;
-            }
-        }
-        return null;
     }
 
     public AbstractKit byItem(ItemStack itemStack) {
@@ -214,16 +240,22 @@ public final class KitApi {
         if (kit.getCooldown() > 0) {
             Cooldown kitCooldown = kitPlayer.getKitCooldown(kit);
             Player player = Bukkit.getPlayer(kitPlayer.getUUID());
-            if (player == null) return false;
+            if (player == null) {
+                return false;
+            }
             if (kitCooldown.hasCooldown()) {
-                long cooldown = (kitCooldown.getStartTime() + (kit.getCooldown() * 1000L + kitCooldown.getAdditionalTime() * 1000L)) - System.currentTimeMillis();
+                long timeLeft = (kitCooldown.getEndTime()) - System.currentTimeMillis();
+                if (timeLeft <= 0) {
+                    kitPlayer.clearCooldown(kit);
+                    return false;
+                }
                 if (kit.getMainKitItem() != null && hasKitItemInAnyHand(player, kit)) {
                     player.sendActionBar(Localization.INSTANCE.getMessage("kit.cooldown",
-                            ImmutableMap.of("numberInSeconds", String.valueOf((cooldown) / 1000D)),
+                            ImmutableMap.of("numberInSeconds", String.valueOf(timeLeft / 1000D)),
                             ChatUtils.getPlayerLocale(player)));
                 } else if (kit.getMainKitItem() == null) {
                     player.sendActionBar(Localization.INSTANCE.getMessage("kit.cooldown",
-                            ImmutableMap.of("numberInSeconds", String.valueOf((cooldown) / 1000D)),
+                            ImmutableMap.of("numberInSeconds", String.valueOf(timeLeft / 1000D)),
                             ChatUtils.getPlayerLocale(player)));
                 }
                 return true;
