@@ -82,6 +82,7 @@ public abstract class AbstractKit extends KitEvents {
      * this will be executed if a player looses their kit
      */
     public void onDisable(KitPlayer kitPlayer) {
+        onDeactivation(kitPlayer);
     }
 
     /**
