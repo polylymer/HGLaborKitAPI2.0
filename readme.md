@@ -1,8 +1,12 @@
-Perform this command after each change so you have the latest maven dependency
+Perform this commands after each change so you have the latest maven dependency
 
-**mvn clean install**
+`./gradlew generatePomFileForMavenPublication`
 
-**PLEASE SUBMIT ONLY PULLREQUESTS**
+`./gradlew publishMavenPublicationToMavenLocal`
+
+`./gradlew publishToMavenLocal`
+
+**PLEASE SUBMIT ONLY PULL REQUESTS**
 
 
 
