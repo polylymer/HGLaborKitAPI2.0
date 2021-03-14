@@ -9,10 +9,8 @@ import de.hglabor.plugins.kitapi.kit.settings.SoundArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import de.hglabor.utils.noriskutils.ItemBuilder;
+import org.bukkit.*;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -37,6 +35,7 @@ public class SoulstealerKit extends AbstractKit implements Listener {
     private final int effectAmplifier, effectDuration;
     @SoundArg
     private final Sound deathSound;
+    private final ItemStack firstSword;
 
     //TODO you can drop sword, sword should be removed, make sword kititem, make player visible again, remove bossbar
 
@@ -48,6 +47,7 @@ public class SoulstealerKit extends AbstractKit implements Listener {
         this.effectAmplifier = 2;
         this.effectDuration = 10;
         this.deathSound = Sound.ENTITY_WOLF_HOWL;
+        this.firstSword = new ItemBuilder(Material.IRON_SWORD).setName(ChatColor.BLACK.toString() + ChatColor.BOLD + "SOULSTEALER").build();
     }
 
     @Override
@@ -93,6 +93,7 @@ public class SoulstealerKit extends AbstractKit implements Listener {
         private final KitPlayer kitPlayer;
         private final BossBar bossBar;
         private final ItemStack[] items;
+        private final ItemStack sword;
         private Location lastLocation;
         private int counter;
 
@@ -100,6 +101,7 @@ public class SoulstealerKit extends AbstractKit implements Listener {
             this.kitPlayer = kitPlayer;
             this.items = items;
             this.counter = effectDuration;
+            this.sword = firstSword.clone();
             this.bossBar = Bukkit.createBossBar(Localization.INSTANCE.getMessage("soulstealer.bossBar", ChatUtils.getPlayerLocale(kitPlayer.getUUID())), BarColor.WHITE, BarStyle.SOLID);
             this.setLastLocation();
             this.init();
@@ -112,7 +114,7 @@ public class SoulstealerKit extends AbstractKit implements Listener {
                 player.setInvisible(true);
                 player.getWorld().getNearbyPlayers(player.getLocation(), 5).forEach(p -> p.playSound(player.getLocation(), deathSound, 1, 1));
                 player.addPotionEffect(new PotionEffect(effectOnDeath, effectDuration * 20, effectAmplifier));
-                player.getInventory().addItem(new ItemStack(Material.IRON_SWORD));
+                player.getInventory().addItem(sword);
             });
             bossBar.setProgress(1D);
             kitPlayer.getBukkitPlayer().ifPresent(bossBar::addPlayer);
@@ -129,6 +131,8 @@ public class SoulstealerKit extends AbstractKit implements Listener {
         }
 
         void stop() {
+            sword.setType(Material.AIR);
+            sword.setAmount(0);
             bossBar.removeAll();
             cancel();
         }
