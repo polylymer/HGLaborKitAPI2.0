@@ -65,7 +65,7 @@ public class SoulstealerKit extends AbstractKit implements Listener {
         if (!player.hasMetadata(respawnKey)) {
             Player killer = event.getEntity().getKiller();
             if (killer != null) {
-                killer.sendMessage(Localization.INSTANCE.getMessage("soulstealer.killedSoulStealer",ChatUtils.getPlayerLocale(killer)));
+                killer.sendMessage(Localization.INSTANCE.getMessage("soulstealer.killedSoulStealer", ChatUtils.getPlayerLocale(killer)));
             }
             DeathTimer deathTimer = new DeathTimer(kitPlayer, player.getInventory().getContents());
             kitPlayer.putKitAttribute(runnableKey, deathTimer);
@@ -123,6 +123,7 @@ public class SoulstealerKit extends AbstractKit implements Listener {
         }
 
         void dropLoot() {
+            kitPlayer.getBukkitPlayer().ifPresent(player -> player.removeMetadata(respawnKey, KitApi.getInstance().getPlugin()));
             Arrays.stream(items).filter(Objects::nonNull).forEach(item -> lastLocation.getWorld().dropItem(lastLocation, item));
             cancel();
         }
