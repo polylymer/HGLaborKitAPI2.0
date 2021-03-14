@@ -13,7 +13,6 @@ import org.bukkit.*;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -122,6 +121,7 @@ public class SoulstealerKit extends AbstractKit implements Listener {
         @Override
         public void run() {
             if (isCancelled()) {
+                bossBar.removeAll();
                 return;
             }
             setLastLocation();
