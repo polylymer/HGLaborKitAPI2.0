@@ -2,6 +2,7 @@ package de.hglabor.plugins.kitapi.util;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 import java.lang.reflect.Field;
@@ -14,7 +15,7 @@ public final class Utils {
     }
 
     public static boolean isUnbreakableLaborBlock(Block b) {
-        return b.hasMetadata(KitMetaData.GLADIATOR_BLOCK.getKey()) || b.hasMetadata(KitMetaData.FEAST_BLOCK.getKey()) || b.hasMetadata(KitMetaData.UNBREAKABLE_BLOCK.getKey());
+        return b.hasMetadata(KitMetaData.GLADIATOR_BLOCK.getKey()) || b.hasMetadata(KitMetaData.FEAST_BLOCK.getKey()) || b.hasMetadata(KitMetaData.UNBREAKABLE_BLOCK.getKey()) || b.getType() == Material.BEDROCK;
     }
 
     public static List<Field> getAllFields(AbstractKit kit) {
