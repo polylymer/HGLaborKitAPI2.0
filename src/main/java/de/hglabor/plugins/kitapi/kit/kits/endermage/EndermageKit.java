@@ -54,7 +54,7 @@ public class EndermageKit extends AbstractKit implements Listener {
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Block endermagePortal = event.getClickedBlock();
-        if (endermagePortal != null) {
+        if (endermagePortal != null && endermagePortal.getType() != Material.BEDROCK) {
             Player player = event.getPlayer();
             KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
 
