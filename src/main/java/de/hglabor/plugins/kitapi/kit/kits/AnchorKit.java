@@ -5,6 +5,7 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.SoundArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
+import de.hglabor.plugins.kitapi.util.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -44,7 +45,7 @@ public class AnchorKit extends AbstractKit {
         if (entity instanceof Player) {
             ((Player) entity).playSound(entity.getLocation(), hitSound, 1, 1);
         }
-        attacker.getBukkitPlayer().ifPresent(player -> player.playSound(entity.getLocation(), hitSound, 1, 1));
+        attacker.getBukkitPlayer().ifPresent(player -> player.playSound(player.getLocation(), hitSound, 1, 1));
         setKnockbackAttribute(entity);
         Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> resetKnockbackAttribute(entity), 1);
     }
