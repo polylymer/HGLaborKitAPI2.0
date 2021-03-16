@@ -68,10 +68,13 @@ public class ClawKit extends AbstractKit implements Listener {
         Entity damager = event.getDamager();
         if (event.getEntity() instanceof Player && damager.getType().equals(entityType)) {
             Player player = (Player) event.getEntity();
-            if (damager.hasMetadata(player.getUniqueId().toString())) {
-                event.setCancelled(true);
-            } else {
-                player.addPotionEffect(new PotionEffect(potionType, 20 * potionDuration, potionMultiplier));
+            KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
+            if(kitPlayer.isValid()) {
+                if (damager.hasMetadata(player.getUniqueId().toString())) {
+                    event.setCancelled(true);
+                } else {
+                    player.addPotionEffect(new PotionEffect(potionType, 20 * potionDuration, potionMultiplier));
+                }
             }
         }
     }
