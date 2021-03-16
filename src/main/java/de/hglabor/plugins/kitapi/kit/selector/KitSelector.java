@@ -41,7 +41,7 @@ public abstract class KitSelector implements Listener {
     public void load() {
         kitSelectorItems.clear();
         for (int i = 0; i < KitApiConfig.getInstance().getKitAmount(); i++) {
-            kitSelectorItems.add(i, new ItemBuilder(Material.CHEST).setName(KIT_SELECTOR_TITLE + (i + 1)).build());
+            kitSelectorItems.add(i, new ItemBuilder(Material.CHEST).setName(KIT_SELECTOR_TITLE + " " + (i + 1)).build());
         }
         kitPages.clear();
         KitApi.getInstance().getSupportedLanguages().forEach(supportedLanguage -> kitPages.put(supportedLanguage, new ArrayList<>()));
