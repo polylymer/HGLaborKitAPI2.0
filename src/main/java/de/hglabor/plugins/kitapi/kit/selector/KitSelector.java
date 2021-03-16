@@ -25,9 +25,9 @@ public abstract class KitSelector implements Listener {
     protected List<ItemStack> kitSelectorItems;
     protected Map<Locale, List<Inventory>> kitPages;
 
-    public KitSelector() {
+    public KitSelector(String kitSelectorTitle) {
+        this.KIT_SELECTOR_TITLE = kitSelectorTitle;
         this.MAX_AMOUNT_OF_KITS = 35;
-        this.KIT_SELECTOR_TITLE = KitApiConfig.getInstance().getString("kitSelectorName");
         this.LAST_PAGE_ITEM = new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setName(ChatColor.RED + "<-").build();
         this.NEXT_PAGE_ITEM = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).setName(ChatColor.GREEN + "->").build();
         this.kitPages = new HashMap<>();
@@ -41,7 +41,7 @@ public abstract class KitSelector implements Listener {
     public void load() {
         kitSelectorItems.clear();
         for (int i = 0; i < KitApiConfig.getInstance().getKitAmount(); i++) {
-            kitSelectorItems.add(i, new ItemBuilder(Material.CHEST).setName("KitSelector " + (i + 1)).build());
+            kitSelectorItems.add(i, new ItemBuilder(Material.CHEST).setName(KIT_SELECTOR_TITLE + (i + 1)).build());
         }
         kitPages.clear();
         KitApi.getInstance().getSupportedLanguages().forEach(supportedLanguage -> kitPages.put(supportedLanguage, new ArrayList<>()));

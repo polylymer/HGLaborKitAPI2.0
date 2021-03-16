@@ -46,7 +46,6 @@ public final class KitApiConfig {
             kitConfiguration = YamlConfiguration.loadConfiguration(kitFile);
             kitConfiguration.addDefault("kit.amount", 1);
             kitConfiguration.addDefault("debug", false);
-            kitConfiguration.addDefault("kitSelectorName", "Kit Selector");
             kitConfiguration.options().copyDefaults(true);
             kitConfiguration.save(kitFile);
         } catch (IOException e) {
