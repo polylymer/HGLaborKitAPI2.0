@@ -61,6 +61,18 @@ public class GrapplerKit extends AbstractKit implements Listener {
         setMainKitItem(new ItemBuilder(Material.CROSSBOW).setUnbreakable(true).build());
     }
 
+    @Override
+    public void onDeactivation(KitPlayer kitPlayer) {
+        if(!kitPlayer.isValid()) {
+            return;
+        }
+        if(kitPlayer.getKitAttribute(projectileKey) != null) {
+            Projectile projectile = kitPlayer.getKitAttribute(projectileKey);
+            removeGrapplerHook(projectile);
+            projectile.remove();
+        }
+    }
+
     @EventHandler
     public void onGrapplerArrowHitEvent(ProjectileHitEvent event) {
         Projectile projectile = event.getEntity();
@@ -72,7 +84,7 @@ public class GrapplerKit extends AbstractKit implements Listener {
                 Vector vector = getVectorForPoints(shooter.getLocation(), event.getEntity().getLocation(), inCombat);
                 Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> {
                     KitPlayer player = KitApi.getInstance().getPlayer(shooter);
-                    if (!player.isValid() && !player.hasKit(this))
+                    if (!player.isValid() && !player.hasKit(this) && player.areKitsDisabled())
                         return;
                     shooter.setGravity(true);
                     shooter.setVelocity(vector);
@@ -128,22 +140,6 @@ public class GrapplerKit extends AbstractKit implements Listener {
             }
         });
     }
-
-    @KitEvent
-    @Override
-    public void onKitPlayerDeath(PlayerDeathEvent event) {
-        Player player = event.getEntity();
-        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
-        if(kitPlayer == null || !kitPlayer.isValid()) {
-            return;
-        }
-        if(kitPlayer.getKitAttribute(projectileKey) != null) {
-            Projectile projectile = kitPlayer.getKitAttribute(projectileKey);
-            removeGrapplerHook(projectile);
-            projectile.remove();
-        }
-    }
-
 
     private boolean hasInternalCooldown(Player player) {
         if (onCooldown.containsKey(player.getUniqueId())) {
