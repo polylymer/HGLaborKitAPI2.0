@@ -27,7 +27,7 @@ public abstract class KitSelector implements Listener {
 
     public KitSelector() {
         this.MAX_AMOUNT_OF_KITS = 35;
-        this.KIT_SELECTOR_TITLE = "KitSelector";
+        this.KIT_SELECTOR_TITLE = KitApiConfig.getInstance().getString("kitSelectorName");
         this.LAST_PAGE_ITEM = new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setName(ChatColor.RED + "<-").build();
         this.NEXT_PAGE_ITEM = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).setName(ChatColor.GREEN + "->").build();
         this.kitPages = new HashMap<>();
