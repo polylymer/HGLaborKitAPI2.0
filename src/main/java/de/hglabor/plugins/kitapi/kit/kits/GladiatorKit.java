@@ -64,16 +64,15 @@ public class GladiatorKit extends AbstractKit implements Listener {
 
     @KitEvent
     @Override
-    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event) {
+    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, Player rightClicked) {
         Player player = event.getPlayer();
-        Player enemy = (Player) event.getRightClicked();
         World world = player.getWorld();
 
-        if (player.hasMetadata(KitMetaData.INGLADIATOR.getKey()) || enemy.hasMetadata(KitMetaData.INGLADIATOR.getKey())) {
+        if (player.hasMetadata(KitMetaData.INGLADIATOR.getKey()) || rightClicked.hasMetadata(KitMetaData.INGLADIATOR.getKey())) {
             return;
         }
 
-        enemy.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
+        rightClicked.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
         player.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
 
         //Adding +2 so player cant build up and escape because 1 is somehow not enough
@@ -91,7 +90,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
         }
 
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
-        GladiatorFight gladiatorFight = new GladiatorFight(gladiatorRegion, kitPlayer, KitApi.getInstance().getPlayer(enemy), radius, height);
+        GladiatorFight gladiatorFight = new GladiatorFight(gladiatorRegion, kitPlayer, KitApi.getInstance().getPlayer(rightClicked), radius, height);
         kitPlayer.putKitAttribute(attributeKey, gladiatorFight);
         gladiatorFight.runTaskTimer(KitApi.getInstance().getPlugin(), 0, 20);
     }

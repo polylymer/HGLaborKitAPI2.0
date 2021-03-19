@@ -74,7 +74,7 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
     public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event) {
         if (event.getRightClicked() instanceof Player) {
             KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
-            useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickPlayerWithKitItem(event));
+            useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickPlayerWithKitItem(event, (Player) event.getRightClicked()));
         } else if (event.getRightClicked() instanceof LivingEntity) {
             KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
             useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickLivingEntityWithKitItem(event));

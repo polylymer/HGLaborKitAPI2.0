@@ -46,9 +46,8 @@ public class MonkKit extends AbstractKit {
 
     @KitEvent
     @Override
-    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event) {
+    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, Player rightClicked) {
         Player player = event.getPlayer();
-        Player rightClicked = (Player) event.getRightClicked();
         PlayerInventory inventory = rightClicked.getInventory();
         player.sendMessage(Localization.INSTANCE.getMessage("monk.successful", ImmutableMap.of("enemy", rightClicked.getName()), ChatUtils.getPlayerLocale(player)));
         if (ChanceUtils.roll(likelihoodToSwitchArmor)) {

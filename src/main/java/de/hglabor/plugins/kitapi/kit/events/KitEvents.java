@@ -34,7 +34,7 @@ public abstract class KitEvents {
     public void onPlayerLeftClickKitItem(PlayerInteractEvent event) {
     }
 
-    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event) {
+    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, Player rightClicked) {
     }
 
     public void onPlayerRightClickLivingEntityWithKitItem(PlayerInteractAtEntityEvent event) {
