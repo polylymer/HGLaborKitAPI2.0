@@ -62,7 +62,7 @@ public class GrapplerKit extends AbstractKit implements Listener {
     }
 
     @Override
-    public void onDeactivation(KitPlayer kitPlayer) {
+    public void onDisable(KitPlayer kitPlayer) {
         if(!kitPlayer.isValid()) {
             return;
         }
