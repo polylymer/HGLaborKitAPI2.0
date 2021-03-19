@@ -84,7 +84,7 @@ public class GrapplerKit extends AbstractKit implements Listener {
                 Vector vector = getVectorForPoints(shooter.getLocation(), event.getEntity().getLocation(), inCombat);
                 Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> {
                     KitPlayer player = KitApi.getInstance().getPlayer(shooter);
-                    if (!player.isValid() && !player.hasKit(this) && player.areKitsDisabled())
+                    if (!player.isValid() && !player.hasKit(this))
                         return;
                     shooter.setGravity(true);
                     shooter.setVelocity(vector);
