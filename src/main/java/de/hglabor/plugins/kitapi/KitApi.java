@@ -5,6 +5,7 @@ import de.hglabor.plugins.kitapi.config.KitApiConfig;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
 import de.hglabor.plugins.kitapi.kit.kits.*;
+import de.hglabor.plugins.kitapi.kit.kits.analyst.AnalystKit;
 import de.hglabor.plugins.kitapi.kit.kits.endermage.EndermageKit;
 import de.hglabor.plugins.kitapi.kit.kits.grappler.GrapplerKit;
 import de.hglabor.plugins.kitapi.kit.selector.KitSelector;
@@ -152,6 +153,7 @@ public final class KitApi {
         kits.add(VampireKit.INSTANCE);
         kits.add(KayaKit.INSTANCE);
         kits.add(SoulstealerKit.INSTANCE);
+        kits.add(AnalystKit.INSTANCE);
         //kits.add(BeamKit.INSTANCE);
         //sort alphabetically
         kits.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));

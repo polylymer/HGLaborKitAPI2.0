@@ -1,8 +1,8 @@
 package de.hglabor.plugins.kitapi.listener;
 
 import de.hglabor.plugins.kitapi.KitApi;
-import de.hglabor.plugins.kitapi.kit.config.LastHitInformation;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
+import de.hglabor.plugins.kitapi.pvp.LastHitInformation;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

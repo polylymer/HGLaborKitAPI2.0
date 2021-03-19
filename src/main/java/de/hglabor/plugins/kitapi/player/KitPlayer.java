@@ -2,7 +2,7 @@ package de.hglabor.plugins.kitapi.player;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
-import de.hglabor.plugins.kitapi.kit.config.LastHitInformation;
+import de.hglabor.plugins.kitapi.pvp.LastHitInformation;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -49,4 +49,8 @@ public interface KitPlayer {
     <T> void putKitAttribute(String key, T value);
 
     String printKits();
+
+    int getLeftCps();
+
+    void addLeftClick(long value);
 }

@@ -3,8 +3,8 @@ package de.hglabor.plugins.kitapi.player;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.Cooldown;
-import de.hglabor.plugins.kitapi.kit.config.LastHitInformation;
 import de.hglabor.plugins.kitapi.kit.kits.CopyCatKit;
+import de.hglabor.plugins.kitapi.pvp.LastHitInformation;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -15,11 +15,13 @@ public abstract class KitPlayerImpl implements KitPlayer {
     protected final List<AbstractKit> kits;
     protected final Map<String, Object> kitAttributes;
     protected final LastHitInformation lastHitInformation;
+    private final List<Long> leftClicks;
     protected boolean kitsDisabled;
     protected boolean inInventory;
 
     public KitPlayerImpl(UUID uuid) {
         this.uuid = uuid;
+        this.leftClicks = new ArrayList<>();
         this.kitAttributes = new HashMap<>();
         this.lastHitInformation = new LastHitInformation();
         this.kits = KitApi.getInstance().emptyKitList();
@@ -148,5 +150,16 @@ public abstract class KitPlayerImpl implements KitPlayer {
         this.kits.forEach((kit) -> stringBuilder.append(kit.getName()).append(","));
         stringBuilder.delete(stringBuilder.lastIndexOf(","), stringBuilder.length());
         return stringBuilder.toString();
+    }
+
+    @Override
+    public int getLeftCps() {
+        final long time = System.currentTimeMillis();
+        leftClicks.removeIf(value -> value + 1000 < time);
+        return leftClicks.size();
+    }
+
+    public void addLeftClick(long value) {
+        leftClicks.add(value);
     }
 }
