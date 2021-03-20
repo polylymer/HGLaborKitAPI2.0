@@ -7,7 +7,6 @@ import net.minecraft.server.v1_16_R3.ChatComponentText;
 import net.minecraft.server.v1_16_R3.EntityArmorStand;
 import net.minecraft.server.v1_16_R3.EntityTypes;
 import net.minecraft.server.v1_16_R3.World;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -23,7 +22,6 @@ public class AnalystHologram extends EntityArmorStand {
         this.owner = owner;
         this.type = type;
         this.boost = boost;
-        Bukkit.broadcastMessage(target.getName());
         this.setPosition(target.getLocation().getX(), target.getLocation().getY(), target.getLocation().getZ());
         this.target = target;
         this.setCustomNameVisible(true);

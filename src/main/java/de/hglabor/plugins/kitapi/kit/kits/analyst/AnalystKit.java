@@ -5,7 +5,9 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
+import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.NMSUtils;
+import net.minecraft.server.v1_16_R3.Entity;
 import net.minecraft.server.v1_16_R3.PacketPlayOutEntityDestroy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -27,6 +29,7 @@ public class AnalystKit extends AbstractKit implements Listener {
     @IntArg
     private final int hologramKeepAlive;
     private final Set<Integer> hologramIds;
+    private final String hologramKey;
 
     private AnalystKit() {
         super("Analyst", Material.GLASS_PANE);
@@ -34,6 +37,16 @@ public class AnalystKit extends AbstractKit implements Listener {
         hologramIds = new HashSet<>();
         hologramKeepAlive = 10;
         cooldown = 60F;
+        hologramKey = this.getName() + "key";
+    }
+
+    @Override
+    public void onDeactivation(KitPlayer kitPlayer) {
+        List<AnalystHologram> holograms = kitPlayer.getKitAttributeOrDefault(hologramKey, new ArrayList<>());
+        for (AnalystHologram hologram : holograms) {
+            hologramIds.removeIf(integer -> integer == hologram.getId());
+            hologram.die();
+        }
     }
 
     @EventHandler
@@ -46,6 +59,7 @@ public class AnalystKit extends AbstractKit implements Listener {
     @Override
     public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, Player rightClicked) {
         Player player = event.getPlayer();
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         double boost = 0.25D;
         List<AnalystHologram> analystHolograms = new ArrayList<>();
         for (AnalystHologram.HologramType type : AnalystHologram.HologramType.values()) {
@@ -55,8 +69,9 @@ public class AnalystKit extends AbstractKit implements Listener {
             hologramIds.add(analystHologram.getId());
             NMSUtils.getWorld(player).addEntity(analystHologram);
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                if (onlinePlayer == player)
+                if (onlinePlayer == player) {
                     continue;
+                }
                 NMSUtils.sendPacket(onlinePlayer, new PacketPlayOutEntityDestroy(analystHologram.getId()));
             }
         }
@@ -66,7 +81,8 @@ public class AnalystKit extends AbstractKit implements Listener {
                 analystHologram.die();
             }
         }, hologramKeepAlive * 20L);
-        KitApi.getInstance().getPlayer(player).activateKitCooldown(this);
+        kitPlayer.putKitAttribute(hologramKey, analystHolograms);
+        kitPlayer.activateKitCooldown(this);
     }
 
     @Override
