@@ -3,10 +3,8 @@ package de.hglabor.plugins.kitapi.kit.kits.analyst;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.pvp.recraft.Recraft;
-import net.minecraft.server.v1_16_R3.ChatComponentText;
-import net.minecraft.server.v1_16_R3.EntityArmorStand;
-import net.minecraft.server.v1_16_R3.EntityTypes;
-import net.minecraft.server.v1_16_R3.World;
+import de.hglabor.utils.noriskutils.NMSUtils;
+import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -22,12 +20,12 @@ public class AnalystHologram extends EntityArmorStand {
         this.owner = owner;
         this.type = type;
         this.boost = boost;
-        this.setPosition(target.getLocation().getX(), target.getLocation().getY(), target.getLocation().getZ());
         this.target = target;
         this.setCustomNameVisible(true);
         this.setInvisible(true);
         this.setMarker(true);
         this.setSilent(true);
+        this.setPosition(target.getLocation().getX(), target.getLocation().getY() + boost, target.getLocation().getZ());
     }
 
     @Override
