@@ -3,8 +3,10 @@ package de.hglabor.plugins.kitapi.kit.kits.analyst;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.pvp.recraft.Recraft;
-import de.hglabor.utils.noriskutils.NMSUtils;
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.server.v1_16_R3.ChatComponentText;
+import net.minecraft.server.v1_16_R3.EntityArmorStand;
+import net.minecraft.server.v1_16_R3.EntityTypes;
+import net.minecraft.server.v1_16_R3.World;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -21,15 +23,18 @@ public class AnalystHologram extends EntityArmorStand {
         this.type = type;
         this.boost = boost;
         this.target = target;
+        this.persist = false;
         this.setCustomNameVisible(true);
         this.setInvisible(true);
         this.setMarker(true);
         this.setSilent(true);
-        this.setPosition(target.getLocation().getX(), target.getLocation().getY() + boost, target.getLocation().getZ());
     }
 
     @Override
     public void tick() {
+        if (!valid) {
+            return;
+        }
         super.tick();
         if (!target.isOnline() || target.isDead() || !target.isValid()) {
             this.die();
@@ -41,7 +46,7 @@ public class AnalystHologram extends EntityArmorStand {
         }
         this.setCustomName(new ChatComponentText(getInformation()));
         Location location = target.getEyeLocation().clone();
-        this.teleportAndSync(location.getX(), location.getY() + boost, location.getZ());
+        this.setPosition(location.getX(), location.getY() + boost, location.getZ());
     }
 
     private String getInformation() {
