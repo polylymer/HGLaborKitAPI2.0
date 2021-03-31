@@ -114,7 +114,11 @@ public class GladiatorKit extends AbstractKit implements Listener {
             return true;
         }
         for (BlockVector3 blockVector3 : region) {
-            if (!world.getBlockAt(BukkitAdapter.adapt(world, blockVector3)).getType().isAir()) {
+            Location adapt = BukkitAdapter.adapt(world, blockVector3);
+            if (!world.getWorldBorder().isInside(adapt)) {
+                return false;
+            }
+            if (!world.getBlockAt(adapt).getType().isAir()) {
                 return false;
             }
         }
