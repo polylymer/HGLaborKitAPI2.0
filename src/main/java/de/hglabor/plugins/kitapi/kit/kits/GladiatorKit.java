@@ -96,6 +96,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
     }
 
 
+    //one day stackoverflow haha
     private Region getGladiatorLocation(Location location, int radius, int height) {
         Random random = new Random();
         AbstractRegion region = new CylinderRegion(BukkitAdapter.adapt(location.getWorld()), BukkitAdapter.asBlockVector(location), Vector2.at(radius, radius), location.getBlockY(), location.getBlockY() + height);
