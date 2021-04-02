@@ -25,19 +25,24 @@ public class KangarooKit extends AbstractKit {
     private final int boostUpPower;
     @IntArg
     private final int boostForwardPower;
-    private final String isJumpingKey;
+    @IntArg
+    private final int maxJumps;
+    private final String jumpAmountKey;
+    private final String sneakJumpKey;
 
     private KangarooKit() {
         super("Kangaroo", Material.FIREWORK_ROCKET);
         setMainKitItem(getDisplayMaterial());
         boostUpPower = 1;
         boostForwardPower = 1;
-        isJumpingKey = this.getName() + "isJumping";
+        maxJumps = 2;
+        jumpAmountKey = this.getName() + "jumpAmount";
+        sneakJumpKey = this.getName() + "hadSneakJump";
     }
 
     @Override
     public void onDeactivation(KitPlayer kitPlayer) {
-        kitPlayer.putKitAttribute(isJumpingKey, false);
+        kitPlayer.putKitAttribute(jumpAmountKey, false);
     }
 
     @KitEvent
@@ -52,8 +57,9 @@ public class KangarooKit extends AbstractKit {
 
     @KitEvent
     public void onPlayerMoveEvent(PlayerMoveEvent event, KitPlayer kitPlayer) {
-        if (event.getPlayer().isOnGround() && kitPlayer.getKitAttributeOrDefault(isJumpingKey, false)) {
-            kitPlayer.putKitAttribute(isJumpingKey, false);
+        if (event.getPlayer().isOnGround() && kitPlayer.getKitAttributeOrDefault(jumpAmountKey, 0) > 0) {
+            kitPlayer.putKitAttribute(jumpAmountKey, 0);
+            kitPlayer.putKitAttribute(sneakJumpKey, false);
         }
     }
 
@@ -66,10 +72,10 @@ public class KangarooKit extends AbstractKit {
         Player otherPlayer = lastHitInformation.getLastPlayer();
         boolean isInCombat = kitPlayer.isInCombat();
 
-        if (kitPlayer.getKitAttributeOrDefault(isJumpingKey, false)) {
+        Integer currentJump = kitPlayer.getKitAttributeOrDefault(jumpAmountKey, 0);
+        if (currentJump >= maxJumps) {
             return;
         }
-        // if (jumpingPlayers.contains(player.getUniqueId())) return;
 
         boolean jumpingAway = otherPlayer != null && !isLookingAt(player, otherPlayer.getLocation().add(0, otherPlayer.getEyeHeight(), 0));
         if (isInCombat && jumpingAway) {
@@ -77,18 +83,22 @@ public class KangarooKit extends AbstractKit {
             return;
         }
 
-        // delayed to prevent double jumps
-        Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> kitPlayer.putKitAttribute(isJumpingKey, true), 2);
 
-        if (!player.isSneaking()) {
+        if (player.isSneaking()) {
+            //Player should only be able to get a big boost once
+            if (kitPlayer.getKitAttributeOrDefault(sneakJumpKey, false)) {
+                return;
+            }
             Vector boost = direction.multiply(1.5 * boostForwardPower).setY(0.6);
             player.setVelocity(boost);
+            kitPlayer.putKitAttribute(sneakJumpKey, true);
         } else {
             if (isInCombat) {
                 return;
             }
             player.setVelocity(player.getVelocity().setY(0.9 * boostUpPower));
         }
+        kitPlayer.putKitAttribute(jumpAmountKey, currentJump + 1);
     }
 
     // mathe, nicht hinterfragen (rechnet aus ob man sich ungefähr in die richtung von dem gegner/target boosten will)
