@@ -31,9 +31,8 @@ public class KangarooKit extends AbstractKit implements Listener {
     private final int boostForwardPower;
 
     private HashSet<UUID> jumpingPlayers = new HashSet<>();
-
-
-    protected KangarooKit() {
+    
+    private KangarooKit() {
         super("Kangaroo", Material.FIREWORK_ROCKET);
         setMainKitItem(getDisplayMaterial());
         boostUpPower = 1;
