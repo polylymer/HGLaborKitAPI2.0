@@ -9,6 +9,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 public abstract class KitEvents {
@@ -47,6 +48,9 @@ public abstract class KitEvents {
     }
 
     public void onPlayerKillsLivingEntity(EntityDeathEvent event, Player killer, Entity entity) {
+    }
+
+    public void onPlayerMoveEvent(PlayerMoveEvent event, KitPlayer kitPlayer) {
     }
 
     public void onKitPlayerDeath(PlayerDeathEvent event) {

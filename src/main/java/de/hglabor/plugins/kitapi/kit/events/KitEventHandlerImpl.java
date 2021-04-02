@@ -14,6 +14,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 public class KitEventHandlerImpl extends KitEventHandler implements Listener {
@@ -130,6 +131,12 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
                     KitApi.getInstance().getPlayer(killer),
                     KitApi.getInstance().getPlayer(event.getEntity())));
         }
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
+        useKitItem(event, kitPlayer, kit -> kit.onPlayerMoveEvent(event, kitPlayer));
     }
 
     @EventHandler

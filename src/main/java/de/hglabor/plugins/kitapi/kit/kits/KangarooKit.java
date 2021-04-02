@@ -6,57 +6,59 @@ import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.pvp.LastHitInformation;
-import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+
+import static de.hglabor.utils.localization.Localization.t;
 
 public class KangarooKit extends AbstractKit implements Listener {
     public final static KangarooKit INSTANCE = new KangarooKit();
 
-    // boost power is not linear beacuse of spigot vectors, use with caution
+    // boost power is not linear because of spigot vectors, use with caution
     @IntArg
     private final int boostUpPower;
     @IntArg
     private final int boostForwardPower;
+    private final String isJumpingKey;
 
-    private HashSet<UUID> jumpingPlayers = new HashSet<>();
-    
     private KangarooKit() {
         super("Kangaroo", Material.FIREWORK_ROCKET);
         setMainKitItem(getDisplayMaterial());
         boostUpPower = 1;
         boostForwardPower = 1;
+        isJumpingKey = this.getName() + "isJumping";
+    }
+
+    @Override
+    public void onDeactivation(KitPlayer kitPlayer) {
+        kitPlayer.putKitAttribute(isJumpingKey, false);
     }
 
     @KitEvent
-    @EventHandler
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         handleKangarooEvent(event);
     }
 
     @KitEvent
-    @EventHandler
     public void onPlayerLeftClickKitItem(PlayerInteractEvent event) {
         handleKangarooEvent(event);
     }
 
-
-    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
-        if (player.isOnGround()) {
-            jumpingPlayers.remove(player.getUniqueId());
+    @KitEvent
+    public void onPlayerMoveEvent(PlayerMoveEvent event, KitPlayer kitPlayer) {
+        if (event.getPlayer().isOnGround() && kitPlayer.getKitAttributeOrDefault(isJumpingKey, false)) {
+            kitPlayer.putKitAttribute(isJumpingKey, false);
         }
     }
 
@@ -69,28 +71,28 @@ public class KangarooKit extends AbstractKit implements Listener {
         Player otherPlayer = lastHitInformation.getLastPlayer();
         boolean isInCombat = kitPlayer.isInCombat();
 
-        // ich glaub hier muss irgendwas mit @KitEvent oder so ich hab die api immer noch nicht verstanden bitte überprüfen @norisk
-        if (player.getInventory().getItemInMainHand().getType() == Material.FIREWORK_ROCKET) {
-            event.setCancelled(true);
-            if (jumpingPlayers.contains(player.getUniqueId())) return;
+        if (kitPlayer.getKitAttributeOrDefault(isJumpingKey, false)) {
+            return;
+        }
+        // if (jumpingPlayers.contains(player.getUniqueId())) return;
 
-            boolean jumpingAway = !isLookingAt(player, otherPlayer.getLocation().add(0, otherPlayer.getEyeHeight(), 0));
-            if (isInCombat)
-                if (jumpingAway) {
-                    Localization.INSTANCE.getMessage("kangaroo.jumpingAway", ChatUtils.getPlayerLocale(player));
-                    return;
-                }
+        boolean jumpingAway = otherPlayer != null && !isLookingAt(player, otherPlayer.getLocation().add(0, otherPlayer.getEyeHeight(), 0));
+        if (isInCombat && jumpingAway) {
+            player.sendMessage(t("kangaroo.jumpingAway", ChatUtils.getPlayerLocale(player)));
+            return;
+        }
 
-            // delayed to prevent double jumps
-            Bukkit.getScheduler().scheduleSyncDelayedTask(KitApi.getInstance().getPlugin(), () -> jumpingPlayers.add(player.getUniqueId()), 2);
+        // delayed to prevent double jumps
+        Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> kitPlayer.putKitAttribute(isJumpingKey, true), 2);
 
-            if (!player.isSneaking()) {
-                Vector boost = direction.multiply(1.5 * boostForwardPower).setY(0.6);
-                player.setVelocity(boost);
-            } else {
-                if (isInCombat) return;
-                player.setVelocity(player.getVelocity().setY(0.9 * boostUpPower));
+        if (!player.isSneaking()) {
+            Vector boost = direction.multiply(1.5 * boostForwardPower).setY(0.6);
+            player.setVelocity(boost);
+        } else {
+            if (isInCombat) {
+                return;
             }
+            player.setVelocity(player.getVelocity().setY(0.9 * boostUpPower));
         }
     }
 
@@ -102,7 +104,9 @@ public class KangarooKit extends AbstractKit implements Listener {
         Vector boost = p.getLocation().getDirection().multiply(1.5).setY(0);
         Location newLocation = p.getLocation().add(boost);
 
-        if (target.distance(newLocation) > target.distance(p.getLocation())) return false;
+        if (target.distance(newLocation) > target.distance(p.getLocation())) {
+            return false;
+        }
 
         Vector cp = direction.crossProduct(look);
         double length = cp.length();
