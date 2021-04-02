@@ -3,6 +3,7 @@ package de.hglabor.plugins.kitapi.kit.events;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -14,6 +15,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 public class KitEventHandlerImpl extends KitEventHandler implements Listener {
@@ -72,12 +74,13 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
 
     @EventHandler
     public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event) {
-        if (event.getRightClicked() instanceof Player) {
+        Entity rightClicked = event.getRightClicked();
+        if (rightClicked instanceof Player) {
             KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
-            useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickPlayerWithKitItem(event, (Player) event.getRightClicked()));
-        } else if (event.getRightClicked() instanceof LivingEntity) {
+            useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickPlayerWithKitItem(event, (Player) rightClicked));
+        } else if (rightClicked instanceof LivingEntity) {
             KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
-            useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickLivingEntityWithKitItem(event));
+            useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickLivingEntityWithKitItem(event,kitPlayer, (LivingEntity) rightClicked));
         }
     }
 
@@ -133,6 +136,12 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
     }
 
     @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
+        useKitItem(event, kitPlayer, kit -> kit.onPlayerMoveEvent(event, kitPlayer));
+    }
+
+    @EventHandler
     public void onEntityResurrect(EntityResurrectEvent event) {
         if (event.getEntity() instanceof Player) {
             KitPlayer kitPlayer = playerSupplier.getKitPlayer((Player) event.getEntity());
@@ -152,7 +161,7 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
     public void onPlayerLeftClickKitItem(PlayerInteractEvent event) {
         if (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
             KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
-            useKitItem(event, kitPlayer, kit -> kit.onPlayerLeftClickKitItem(event));
+            useKitItem(event, kitPlayer, kit -> kit.onPlayerLeftClickKitItem(event,kitPlayer));
         }
     }
 

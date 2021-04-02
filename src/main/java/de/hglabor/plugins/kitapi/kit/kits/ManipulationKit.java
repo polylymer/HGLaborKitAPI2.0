@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableMap;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
-import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.pathfinder.*;
@@ -27,6 +26,8 @@ import org.bukkit.metadata.FixedMetadataValue;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
+import static de.hglabor.utils.localization.Localization.t;
 
 public class ManipulationKit extends AbstractKit implements Listener {
     public final static ManipulationKit INSTANCE = new ManipulationKit();
@@ -60,12 +61,10 @@ public class ManipulationKit extends AbstractKit implements Listener {
         }
     }
 
-    @KitEvent
     @Override
-    public void onPlayerRightClickLivingEntityWithKitItem(PlayerInteractAtEntityEvent event) {
+    public void onPlayerRightClickLivingEntityWithKitItem(PlayerInteractAtEntityEvent event, KitPlayer kitPlayer, LivingEntity entity) {
         Player player = event.getPlayer();
-        if (event.getRightClicked() instanceof Mob) {
-
+        if (entity instanceof Mob) {
             Mob mob = (Mob) event.getRightClicked();
             EntityInsentient craftMonster = (EntityInsentient) ((CraftEntity) mob).getHandle();
 
@@ -73,15 +72,15 @@ public class ManipulationKit extends AbstractKit implements Listener {
                 Player manipulator = getManipulator(mob);
                 if (manipulator != null && manipulator.getUniqueId().equals(player.getUniqueId())) {
                     //NACHRICHT KOMMT 2x WEGEN 2 HÄNDEN
-                    player.sendMessage(Localization.INSTANCE.getMessage("manipulator.alreadyYourMob", ChatUtils.getPlayerLocale(player)));
+                    player.sendMessage(t("manipulator.alreadyYourMob", ChatUtils.getPlayerLocale(player)));
                     return;
                 }
-                player.sendMessage(Localization.INSTANCE.getMessage("manipulator.alreadyControlled", ChatUtils.getPlayerLocale(player)));
+                player.sendMessage(t("manipulator.alreadyControlled", ChatUtils.getPlayerLocale(player)));
                 return;
             }
 
             if (getManipulatedMobAmount(player) >= maxManipulatedMobs) {
-                player.sendMessage(Localization.INSTANCE.getMessage("manipulator.maxAmount", ChatUtils.getPlayerLocale(player)));
+                player.sendMessage(t("manipulator.maxAmount", ChatUtils.getPlayerLocale(player)));
                 return;
             }
 
