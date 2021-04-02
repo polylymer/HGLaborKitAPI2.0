@@ -11,18 +11,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
 import static de.hglabor.utils.localization.Localization.t;
 
-public class KangarooKit extends AbstractKit implements Listener {
+public class KangarooKit extends AbstractKit {
     public final static KangarooKit INSTANCE = new KangarooKit();
 
     // boost power is not linear because of spigot vectors, use with caution
