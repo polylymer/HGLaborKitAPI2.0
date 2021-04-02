@@ -16,8 +16,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;
 
-import javax.crypto.spec.PSource;
-
 public class MagmaKit extends AbstractKit {
     public final static MagmaKit INSTANCE = new MagmaKit();
     @IntArg
