@@ -46,7 +46,7 @@ public class KangarooKit extends AbstractKit {
     }
 
     @KitEvent
-    public void onPlayerLeftClickKitItem(PlayerInteractEvent event) {
+    public void onPlayerLeftClickKitItem(PlayerInteractEvent event, KitPlayer kitPlayer) {
         handleKangarooEvent(event);
     }
 

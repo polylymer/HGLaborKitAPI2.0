@@ -63,7 +63,7 @@ public class ShapeShifterKit extends AbstractKit {
 
     @KitEvent
     @Override
-    public void onPlayerLeftClickKitItem(PlayerInteractEvent event) {
+    public void onPlayerLeftClickKitItem(PlayerInteractEvent event, KitPlayer kitPlayer) {
         DisguiseAPI.undisguiseToAll(event.getPlayer());
     }
 
