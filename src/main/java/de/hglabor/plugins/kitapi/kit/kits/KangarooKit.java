@@ -64,6 +64,7 @@ public class KangarooKit extends AbstractKit {
     }
 
     private void handleKangarooEvent(PlayerInteractEvent event) {
+        event.setCancelled(true);
         Player player = event.getPlayer();
         Vector direction = player.getLocation().getDirection();
 
