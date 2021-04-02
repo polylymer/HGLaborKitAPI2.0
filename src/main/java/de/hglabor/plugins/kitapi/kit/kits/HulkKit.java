@@ -8,12 +8,11 @@ import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-public class HulkKit extends AbstractKit implements Listener {
+public class HulkKit extends AbstractKit {
     public final static HulkKit INSTANCE = new HulkKit();
 
     @FloatArg(min = 0.0F)
