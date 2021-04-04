@@ -38,14 +38,18 @@ public abstract class KitEventHandler extends KitEvents {
 
         Logger.debug(String.format("%s, %s", kit.getName(), event.getEventName()));
 
-        if (!kit.getKitEvents().contains(event.getClass())) {
+        //other events will be also triggered like playermoveevent and print cooldown
+        if (kit.getKitEvents().stream().noneMatch(kitEventInfo -> kitEventInfo.getEvent().equals(event.getClass()))) {
             //Complete Garbage I hope this doesnt break something
-            if (kit.getKitEvents().stream().noneMatch(kitEvent -> event.getClass().getSuperclass().equals(kitEvent)))
+            if (kit.getKitEvents().stream().noneMatch(kitEvent -> event.getClass().getSuperclass().equals(kitEvent.getEvent()))) {
+                Logger.debug(String.format("%s, %s §4DIDNT FIT", kit.getName(), event.getEventName()));
                 return false;
+            }
         }
 
         //Player doesnt have kit
         if (!kitPlayer.hasKit(kit)) {
+            Logger.debug(String.format("%s no kit %s", player.getName(), kit.getName()));
             return false;
         }
         //Players kits are disabled
@@ -54,10 +58,21 @@ public abstract class KitEventHandler extends KitEvents {
             return false;
         }
         //Player is on kitcooldown
-        if (KitApi.getInstance().sendCooldownMessage(kitPlayer, kit)) {
-            return false;
+        KitEventInfo kitEventInfo = kit.getKitEvents().stream().filter(info -> info.getEvent().equals(event.getClass())).findFirst().orElse(null);
+        //ugly lol?
+        if (kitEventInfo != null) {
+            if (!kitEventInfo.isIgnoreCooldown()) {
+                if (KitApi.getInstance().sendCooldownMessage(kitPlayer, kit)) {
+                    return false;
+                }
+            }
+        } else {
+            if (KitApi.getInstance().sendCooldownMessage(kitPlayer, kit)) {
+                return false;
+            }
         }
 
+        Logger.debug(String.format("%s, %s §aSUCCESSFULL", kit.getName(), event.getEventName()));
         return true;
     }
 

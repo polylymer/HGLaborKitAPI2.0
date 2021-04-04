@@ -1,20 +1,24 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
-public class HulkKit extends AbstractKit {
+public class HulkKit extends AbstractKit implements Listener {
     public final static HulkKit INSTANCE = new HulkKit();
-
     @FloatArg(min = 0.0F)
     private final float cooldown;
     @FloatArg(min = 0.1F)
@@ -22,48 +26,59 @@ public class HulkKit extends AbstractKit {
 
     private HulkKit() {
         super("Hulk", Material.PISTON);
+        setMainKitItem(Material.AIR);
         cooldown = 3.0F;
         boostPower = 1;
     }
 
     @KitEvent
-    public void onPlayerRightClickLivingEntityWithKitItem(PlayerInteractAtEntityEvent event, KitPlayer kitPlayer, LivingEntity entity) {
-        Player player = event.getPlayer();
-        if (player.getPassengers().size() > 1) {
-            return;
-        }
-        player.addPassenger(entity);
-        kitPlayer.activateKitCooldown(this);
+    @Override
+    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, Player rightClicked) {
+        hulkEntity(event.getPlayer(), KitApi.getInstance().getPlayer(event.getPlayer()), rightClicked);
     }
 
     @KitEvent
+    @Override
+    public void onPlayerRightClickLivingEntityWithKitItem(PlayerInteractAtEntityEvent event, KitPlayer kitPlayer, LivingEntity entity) {
+        hulkEntity(event.getPlayer(), kitPlayer, entity);
+    }
+
+    @KitEvent(ignoreCooldown = true)
     public void onPlayerLeftClickKitItem(PlayerInteractEvent event, KitPlayer kitPlayer) {
         Player player = event.getPlayer();
         if (player.getPassengers().size() > 0) {
-            Entity hulkedEntity = player.getPassengers().get(0);
+            LivingEntity hulkedEntity = (LivingEntity) player.getPassengers().get(0);
             launchEntity(hulkedEntity, player);
         }
     }
 
-    @KitEvent
+    @KitEvent(ignoreCooldown = true)
     public void onHitLivingEntityWithKitItem(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
         Player player = (Player) event.getDamager();
         if (player.getPassengers().size() > 0 && player.getPassengers().get(0).equals(entity)) {
             event.setCancelled(true);
         }
         launchEntity(entity, player);
-        entity.setNoDamageTicks(10);
     }
 
-    private void launchEntity(Entity hulkedEntity, Player player) {
-        player.removePassenger(hulkedEntity);
-        hulkedEntity.setVelocity(player.getLocation().getDirection().normalize().multiply(boostPower));
-    }
-
-   /* @EventHandler
+    @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         event.getPlayer().leaveVehicle();
-    } */
+    }
+
+    private void launchEntity(LivingEntity hulkedEntity, Player player) {
+        player.removePassenger(hulkedEntity);
+        hulkedEntity.setVelocity(player.getLocation().getDirection().normalize().multiply(boostPower));
+        hulkedEntity.setNoDamageTicks(10);
+    }
+
+    private void hulkEntity(Player player, KitPlayer kitPlayer, LivingEntity entity) {
+        if (player.getPassengers().size() > 1) {
+            return;
+        }
+        player.addPassenger(entity);
+        kitPlayer.activateKitCooldown(this);
+    }
 
     @Override
     public float getCooldown() {

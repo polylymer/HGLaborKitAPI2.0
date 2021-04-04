@@ -16,6 +16,7 @@ import de.hglabor.plugins.kitapi.supplier.KitPlayerSupplier;
 import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -209,6 +210,10 @@ public final class KitApi {
     }
 
     public boolean hasKitItemInAnyHand(Player player, AbstractKit kit) {
+        //TODO edgecase hulk
+        if (kit.getMainKitItem() != null && kit.getMainKitItem().getType().equals(Material.AIR) && player.getInventory().getItemInMainHand().getType().equals(Material.AIR)) {
+            return true;
+        }
         return player.getInventory().getItemInOffHand().isSimilar(kit.getMainKitItem()) || player.getInventory().getItemInMainHand().isSimilar(kit.getMainKitItem());
     }
 

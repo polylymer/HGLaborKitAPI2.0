@@ -2,6 +2,7 @@ package de.hglabor.plugins.kitapi.kit;
 
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitSettings;
+import de.hglabor.plugins.kitapi.kit.events.KitEventInfo;
 import de.hglabor.plugins.kitapi.kit.events.KitEvents;
 import de.hglabor.plugins.kitapi.kit.settings.BoolArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
@@ -23,11 +24,6 @@ public abstract class AbstractKit extends KitEvents {
      */
     private final List<ItemStack> additionalKitItems;
     /**
-     * Used for customizing specific values of a kit
-     * e.g. likelihood, cooldown, radius
-     */
-    private final Map<KitSettings, Object> settings;
-    /**
      * Each language has a different itemstack
      */
     private final Map<Locale, ItemStack> displayItems;
@@ -35,7 +31,7 @@ public abstract class AbstractKit extends KitEvents {
      * Register the events the kit is using,
      * so the KitEventHandler can handle them
      */
-    private final Set<Class<? extends Event>> kitEvents;
+    private final Set<KitEventInfo> kitEvents;
     private ItemStack mainKitItem;
     /**
      * use this to toggle gamemode specific kits
@@ -66,7 +62,6 @@ public abstract class AbstractKit extends KitEvents {
 
     protected AbstractKit(String name, ItemStack displayItem) {
         this.name = name;
-        this.settings = new HashMap<>();
         this.displayItems = new HashMap<>();
         this.kitEvents = new HashSet<>();
         this.additionalKitItems = new ArrayList<>();
@@ -132,7 +127,11 @@ public abstract class AbstractKit extends KitEvents {
     }
 
     public void setMainKitItem(Material material) {
-        mainKitItem = new ItemBuilder(material).setDescription(KIT_ITEM_DESC).build();
+        if (material.equals(Material.AIR)) {
+            mainKitItem = new ItemStack(Material.AIR);
+        } else {
+            mainKitItem = new ItemBuilder(material).setDescription(KIT_ITEM_DESC).build();
+        }
     }
 
     public void setMainKitItem(ItemStack item) {
@@ -156,21 +155,6 @@ public abstract class AbstractKit extends KitEvents {
 
     public void setUsesOffHand(boolean usesOffHand) {
         this.usesOffHand = usesOffHand;
-    }
-
-    /**
-     * use this for settings as likelyhood, radius or...
-     * used later in kitsettings menu for configuring
-     */
-    @Deprecated
-    public <V> void addSetting(KitSettings settings, V value) {
-        this.settings.put(settings, value);
-    }
-
-    @Deprecated
-    @SuppressWarnings("unchecked")
-    public <T> T getSetting(KitSettings settings) {
-        return (T) this.settings.getOrDefault(settings, null);
     }
 
     public float getCooldown() {
@@ -205,7 +189,7 @@ public abstract class AbstractKit extends KitEvents {
         isUsable = usable;
     }
 
-    public Set<Class<? extends Event>> getKitEvents() {
+    public Set<KitEventInfo> getKitEvents() {
         return kitEvents;
     }
 
