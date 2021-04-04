@@ -1,8 +1,10 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
+import com.comphenix.protocol.PacketType;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.events.KitEventHandler;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
@@ -59,6 +61,21 @@ public class HulkKit extends AbstractKit implements Listener {
             event.setCancelled(true);
         }
         launchEntity(entity, player);
+    }
+
+    //TODO made in rush dont know if theres any problem lol
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player) {
+            Player player = (Player) event.getDamager();
+            KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
+            if (!kitPlayer.hasKit(this)) {
+                return;
+            }
+            if (player.getPassengers().size() > 0 && player.getPassengers().get(0).equals(event.getEntity())) {
+                event.setCancelled(true);
+            }
+        }
     }
 
     @EventHandler
