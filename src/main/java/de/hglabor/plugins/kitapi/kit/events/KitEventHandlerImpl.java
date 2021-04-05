@@ -18,6 +18,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
+import java.lang.reflect.Method;
+
 public class KitEventHandlerImpl extends KitEventHandler implements Listener {
     public KitEventHandlerImpl() {
         super(KitApi.getInstance().getPlayerSupplier());
@@ -80,7 +82,7 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
             useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickPlayerWithKitItem(event, (Player) rightClicked));
         } else if (rightClicked instanceof LivingEntity) {
             KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
-            useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickLivingEntityWithKitItem(event,kitPlayer, (LivingEntity) rightClicked));
+            useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickLivingEntityWithKitItem(event, kitPlayer, (LivingEntity) rightClicked));
         }
     }
 
@@ -161,7 +163,7 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
     public void onPlayerLeftClickKitItem(PlayerInteractEvent event) {
         if (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
             KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
-            useKitItem(event, kitPlayer, kit -> kit.onPlayerLeftClickKitItem(event,kitPlayer));
+            useKitItem(event, kitPlayer, kit -> kit.onPlayerLeftClickKitItem(event, kitPlayer));
         }
     }
 

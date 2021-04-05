@@ -2,6 +2,7 @@ package de.hglabor.plugins.kitapi.config;
 
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.events.KitEventInfo;
 import de.hglabor.plugins.kitapi.kit.settings.*;
 import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.utils.noriskutils.ReflectionUtils;
@@ -132,11 +133,11 @@ public final class KitApiConfig {
                 }
                 Class<?> clazz = ((KitEvent) annotation).clazz();
                 if (!clazz.equals(Void.class)) {
-                    kit.getKitEvents().add((Class<? extends Event>) clazz);
+                    kit.getKitEvents().add(new KitEventInfo(((KitEvent) annotation).ignoreCooldown(), clazz));
                 } else {
                     for (Class<?> param : method.getParameterTypes()) {
                         if (Event.class.isAssignableFrom(param)) {
-                            kit.getKitEvents().add((Class<? extends Event>) param);
+                            kit.getKitEvents().add(new KitEventInfo(((KitEvent) annotation).ignoreCooldown(), param));
                         }
                     }
                 }
