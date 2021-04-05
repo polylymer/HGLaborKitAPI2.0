@@ -15,9 +15,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.List;
 
 public class HulkKit extends AbstractKit implements Listener {
     public final static HulkKit INSTANCE = new HulkKit();
@@ -74,6 +77,17 @@ public class HulkKit extends AbstractKit implements Listener {
             }
             if (player.getPassengers().size() > 0 && player.getPassengers().get(0).equals(event.getEntity())) {
                 event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onKitPlayerDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+        List<Entity> passengers = player.getPassengers();
+        if (passengers.size() > 0) {
+            for (Entity passenger : passengers) {
+                player.removePassenger(passenger);
             }
         }
     }
