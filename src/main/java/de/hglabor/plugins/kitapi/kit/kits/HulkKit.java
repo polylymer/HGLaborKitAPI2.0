@@ -80,14 +80,16 @@ public class HulkKit extends AbstractKit implements Listener {
             }
         }
     }
-
-    @EventHandler
-    public void onKitPlayerDeath(PlayerDeathEvent event) {
-        Player player = event.getEntity();
-        List<Entity> passengers = player.getPassengers();
-        if (passengers.size() > 0) {
-            for (Entity passenger : passengers) {
-                player.removePassenger(passenger);
+    
+    @Override
+    public void onDeactivation(KitPlayer kitPlayer) {
+        Player player = Bukkit.getPlayer(kitPlayer.getUUID());
+        if (player != null) {
+            List<Entity> passengers = player.getPassengers();
+            if (passengers.size() > 0) {
+                for (Entity passenger : passengers) {
+                    player.removePassenger(passenger);
+                }
             }
         }
     }
