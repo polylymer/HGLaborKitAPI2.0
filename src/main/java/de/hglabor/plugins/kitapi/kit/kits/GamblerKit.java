@@ -7,21 +7,25 @@ import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.RandomCollection;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Wolf;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 
 public class GamblerKit extends AbstractKit implements Listener {
@@ -78,10 +82,42 @@ public class GamblerKit extends AbstractKit implements Listener {
 
     private void initRandomEffects() {
 
-        int potionDauer = 7 * 20;
+        int potionDauer = 10 * 20;
+
+        RandomCollection<Consumer<Player>> badItems = new RandomCollection<>();
+        badItems.add("§6Pumpkin Head", 0.75, p -> p.getInventory().setHelmet(new ItemStack(Material.PUMPKIN)));
+        badItems.add("§6Pumpkin Head (trololol)", 0.075, p -> {
+            ItemStack pumpkin = new ItemStack(Material.PUMPKIN);
+            ItemMeta pumpkinMeta = pumpkin.getItemMeta();
+            pumpkinMeta.addEnchant(Enchantment.BINDING_CURSE, 1, true);
+            pumpkin.setItemMeta(pumpkinMeta);
+            p.getInventory().setHelmet(new ItemStack(pumpkin));
+        });
+        badItems.add("§8Dirt", 1, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(
+                KitApi.getInstance().getPlayer(p), this,
+                Collections.singletonList(new ItemStack(Material.DIRT, 16))));
+        badItems.add("§8Dried Kelp", 1, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(
+                KitApi.getInstance().getPlayer(p), this,
+                Collections.singletonList(new ItemStack(Material.DRIED_KELP_BLOCK))));
 
         RandomCollection<Consumer<Player>> cantBeClassifiedBad = new RandomCollection<>();
-        cantBeClassifiedBad.add("§4§lInstant Death", 0.01, p -> p.setHealth(0));
+
+        cantBeClassifiedBad.add("§4§lInstant Death", 0.01, p -> p.teleport(new Location(p.getWorld(), p.getLocation().getX(), -1.0, p.getLocation().getZ())));
+
+        badItems.add("§2Creeper", 0.25, p -> {
+            p.getWorld().spawnEntity(p.getLocation(), EntityType.CREEPER);
+        });
+        cantBeClassifiedBad.add("§l§2Charged Creeper", 0.1, p -> {
+            Creeper creeper = (Creeper) p.getWorld().spawnEntity(p.getLocation(), EntityType.CREEPER);
+            creeper.setPowered(true);
+        });
+        cantBeClassifiedBad.add("§0Wither", 0.001, p -> {
+            p.getWorld().spawnEntity(p.getLocation(), EntityType.WITHER);
+        });
+//        cantBeClassifiedBad.add("Random Teleport", 1, p -> p.teleport(KitApi.getInstance());
+        cantBeClassifiedBad.add("Coords Leak", 0.5, p -> {
+            Bukkit.broadcastMessage("§7"+ p.getName() + " befindet sich bei §bX: " + p.getLocation().getX() + "Y: " + p.getLocation().getY() +  "Z: " + p.getLocation().getZ());
+        });
 
         RandomCollection<Consumer<Player>> badPotionEffects = new RandomCollection<>();
         badPotionEffects.add("§aPoison", 1, p -> p.addPotionEffect(new PotionEffect(PotionEffectType.POISON, potionDauer, 0)));
@@ -89,10 +125,12 @@ public class GamblerKit extends AbstractKit implements Listener {
         badPotionEffects.add("§dLevitation", 1, p -> p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, potionDauer, 0)));
         badPotionEffects.add("§0Blindness", 1, p -> p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, potionDauer, 0)));
         badPotionEffects.add("§8Slowness", 1, p -> p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, potionDauer, 0)));
+        badPotionEffects.add("§8Glowing", 1, p -> p.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, potionDauer, 0)));
 
 
-        badLuckCollection.add(1, cantBeClassifiedBad);
+        badLuckCollection.add(0.75, cantBeClassifiedBad);
         badLuckCollection.add(1, badPotionEffects);
+        badLuckCollection.add(1, badItems);
 
         //GOOD EFFECTS
         RandomCollection<Consumer<Player>> goodPotionEffects = new RandomCollection<>();
@@ -103,24 +141,96 @@ public class GamblerKit extends AbstractKit implements Listener {
         goodPotionEffects.add("Invisibility", 1, p -> p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, potionDauer, 0)));
 
         RandomCollection<Consumer<Player>> goodItems = new RandomCollection<>();
-        goodItems.add("§6Wood", 1, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(
+
+        goodItems.add("§6Wood", 0.7, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(
                 KitApi.getInstance().getPlayer(p), this,
-                Collections.singletonList(new ItemStack(Material.OAK_PLANKS, 10))));
-        goodItems.add("§6Recraft", 1, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(
+                Collections.singletonList(new ItemStack(Material.OAK_PLANKS, 32))));
+
+        goodItems.add("§7Elytra", 0.02, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(
+                KitApi.getInstance().getPlayer(p), this,
+                Collections.singletonList(new ItemStack(Material.ELYTRA))));
+
+        goodItems.add("§6Recraft", 0.6, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(
                 KitApi.getInstance().getPlayer(p), this,
                 Arrays.asList(
-                        new ItemStack(Material.RED_MUSHROOM, 10),
-                        new ItemStack(Material.BROWN_MUSHROOM, 10),
-                        new ItemStack(Material.BOWL, 10)
+                        new ItemStack(Material.RED_MUSHROOM, 16),
+                        new ItemStack(Material.BROWN_MUSHROOM, 16),
+                        new ItemStack(Material.BOWL, 16)
                 )));
-        goodItems.add("§9Water Bucket", 1, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(KitApi.getInstance().getPlayer(p), this,
+        goodItems.add("§9Water Bucket", 0.3, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(KitApi.getInstance().getPlayer(p), this,
                 Collections.singletonList(new ItemStack(Material.WATER_BUCKET))));
+
+        goodItems.add("§2Spawn Egg", 0.1, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(KitApi.getInstance().getPlayer(p), this,
+                Collections.singletonList(new ItemStack(Material.CREEPER_SPAWN_EGG))));
+
+        goodItems.add("$fIron Sword", 0.1, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(
+                KitApi.getInstance().getPlayer(p), this,
+                Collections.singletonList(new ItemStack(Material.IRON_SWORD, 1))));
+
+        goodItems.add("§6Golden Apple", 0.3, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(
+                KitApi.getInstance().getPlayer(p), this,
+                Collections.singletonList(new ItemStack(Material.GOLDEN_APPLE, 1))));
+
+        goodItems.add("§bDiamond Sword", 0.01, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(
+                KitApi.getInstance().getPlayer(p), this,
+                Collections.singletonList(new ItemStack(Material.DIAMOND_SWORD, 1))));
+
+        goodItems.add("§5End Crystal", 0.05, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(
+                KitApi.getInstance().getPlayer(p), this,
+                Arrays.asList(
+                        new ItemStack(Material.END_CRYSTAL, 1),
+                        new ItemStack(Material.OBSIDIAN, 1)
+                )));
+
+        goodItems.add("§bDiamond Set", 0.001, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(
+                KitApi.getInstance().getPlayer(p), this,
+                Arrays.asList(
+                        new ItemStack(Material.DIAMOND_BOOTS, 1),
+                        new ItemStack(Material.DIAMOND_LEGGINGS, 1),
+                        new ItemStack(Material.DIAMOND_CHESTPLATE, 1),
+                        new ItemStack(Material.DIAMOND_HELMET, 1),
+                        new ItemStack(Material.DIAMOND_SWORD, 1)
+                )));
+        goodItems.add("§7Chain Set", 0.2, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(
+                KitApi.getInstance().getPlayer(p), this,
+                Arrays.asList(
+                        new ItemStack(Material.CHAINMAIL_BOOTS, 1),
+                        new ItemStack(Material.CHAINMAIL_LEGGINGS, 1),
+                        new ItemStack(Material.CHAINMAIL_CHESTPLATE, 1),
+                        new ItemStack(Material.CHAINMAIL_HELMET, 1),
+                        new ItemStack(Material.STONE_SWORD, 1)
+                )));
+        goodItems.add("§6Golden Set", 0.25, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(
+                KitApi.getInstance().getPlayer(p), this,
+                Arrays.asList(
+                        new ItemStack(Material.GOLDEN_BOOTS, 1),
+                        new ItemStack(Material.GOLDEN_LEGGINGS, 1),
+                        new ItemStack(Material.GOLDEN_CHESTPLATE, 1),
+                        new ItemStack(Material.GOLDEN_HELMET, 1),
+                        new ItemStack(Material.GOLDEN_SWORD, 1)
+                )));
+
+        goodItems.add("§3Coco Set", 0.2, p -> KitApi.getInstance().giveKitItemsIfSlotEmpty(
+                KitApi.getInstance().getPlayer(p), this,
+                Arrays.asList(
+                        new ItemStack(Material.COCOA_BEANS, 16),
+                        new ItemStack(Material.JUNGLE_LOG, 4)
+                )));
 
         RandomCollection<Consumer<Player>> cantBeClassified = new RandomCollection<>();
         cantBeClassified.add("§dDoggos", 1, p -> {
             Wolf wolf = (Wolf) p.getWorld().spawnEntity(p.getLocation(), EntityType.WOLF);
             wolf.setOwner(p);
         });
+        cantBeClassified.add("§Mooshroom", 1, p -> {
+            p.getWorld().spawnEntity(p.getLocation(), EntityType.MUSHROOM_COW);
+        });
+        cantBeClassified.add("§5Horse", 0.25, p -> {
+            ZombieHorse horse = (ZombieHorse) p.getWorld().spawnEntity(p.getLocation(), EntityType.ZOMBIE_HORSE);
+            horse.setTamed(true);
+            horse.getInventory().setSaddle(new ItemStack(Material.SADDLE));
+        });
+
 
         goodLuckCollection.add(1, goodPotionEffects);
         goodLuckCollection.add(1, goodItems);
