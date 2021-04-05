@@ -18,6 +18,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 import java.util.Random;
@@ -64,6 +66,9 @@ public class SmogmogKit extends AbstractKit implements Listener {
             AreaEffectCloud cloud = (AreaEffectCloud) e.getDamager();
             if (involved.getUniqueId().toString().equals(cloud.getCustomName())) {
                 e.setCancelled(true);
+            }
+            else {
+                involved.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 3 * 20, 0));
             }
         }
     }
