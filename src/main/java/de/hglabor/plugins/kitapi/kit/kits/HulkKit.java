@@ -1,13 +1,10 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import com.comphenix.protocol.PacketType;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
-import de.hglabor.plugins.kitapi.kit.events.KitEventHandler;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -18,6 +15,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.List;
 
 public class HulkKit extends AbstractKit implements Listener {
     public final static HulkKit INSTANCE = new HulkKit();
@@ -76,6 +75,18 @@ public class HulkKit extends AbstractKit implements Listener {
                 event.setCancelled(true);
             }
         }
+    }
+
+    @Override
+    public void onDeactivation(KitPlayer kitPlayer) {
+        kitPlayer.getBukkitPlayer().ifPresent(player -> {
+            List<Entity> passengers = player.getPassengers();
+            if (passengers.size() > 0) {
+                for (Entity passenger : passengers) {
+                    player.removePassenger(passenger);
+                }
+            }
+        });
     }
 
     @EventHandler
