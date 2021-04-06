@@ -228,7 +228,7 @@ public class GamblerKit extends AbstractKit implements Listener {
             wolf.setMetadata(gamblerAnimal, new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
             wolf.setOwner(p);
         });
-        cantBeClassified.add("§Mooshroom", 1, p -> p.getWorld().spawnEntity(p.getLocation(), EntityType.MUSHROOM_COW));
+        cantBeClassified.add("Mooshroom", 1, p -> p.getWorld().spawnEntity(p.getLocation(), EntityType.MUSHROOM_COW));
         cantBeClassified.add("§5Horse", 0.25, p -> {
             ZombieHorse horse = (ZombieHorse) p.getWorld().spawnEntity(p.getLocation(), EntityType.ZOMBIE_HORSE);
             horse.setTamed(true);
