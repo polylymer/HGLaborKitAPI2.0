@@ -32,6 +32,8 @@ public class SmogmogKit extends AbstractKit implements Listener {
     private final int effectDuration;
     @PotionTypeArg
     private final PotionType potionType;
+    @PotionTypeArg
+    private final PotionEffectType extraPotionEffectType;
 
     private SmogmogKit() {
         super("Smogmog", Material.POPPED_CHORUS_FRUIT);
@@ -39,6 +41,7 @@ public class SmogmogKit extends AbstractKit implements Listener {
         radius = 8F;
         effectDuration = 3;
         potionType = PotionType.INSTANT_DAMAGE;
+        extraPotionEffectType = PotionEffectType.BLINDNESS;
         setMainKitItem(getDisplayMaterial());
     }
 
@@ -68,7 +71,7 @@ public class SmogmogKit extends AbstractKit implements Listener {
                 e.setCancelled(true);
             }
             else {
-                involved.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 3 * 20, 0));
+                involved.addPotionEffect(new PotionEffect(extraPotionEffectType, effectDuration * 20, 0));
             }
         }
     }
