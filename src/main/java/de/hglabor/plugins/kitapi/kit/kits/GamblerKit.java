@@ -281,7 +281,7 @@ public class GamblerKit extends AbstractKit implements Listener {
                 cancel();
             } else {
                 player.playSound(player.getLocation(), Sound.BLOCK_BAMBOO_BREAK, 0.8F, 0.75F + random.nextFloat() / 2.0F);
-                player.sendTitle(name, "", 0, tick, 0);
+                player.sendTitle("", name, 0, tick, 0);
             }
         }
 
