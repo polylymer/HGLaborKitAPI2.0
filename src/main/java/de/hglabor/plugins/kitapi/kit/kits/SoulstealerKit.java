@@ -15,10 +15,13 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
@@ -59,6 +62,17 @@ public class SoulstealerKit extends AbstractKit implements Listener {
         DeathTimer deathTimer = kitPlayer.getKitAttribute(runnableKey);
         if (deathTimer != null)
             deathTimer.dropLoot();
+    }
+
+    @EventHandler
+    public void onCraftItem(CraftItemEvent event) {
+        for (ItemStack itemStack : event.getInventory()) {
+            if (itemStack == null) continue;
+            if (itemStack.isSimilar(firstSword)) {
+                event.setCancelled(true);
+                return;
+            }
+        }
     }
 
     @EventHandler
