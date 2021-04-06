@@ -152,6 +152,10 @@ public class GladiatorKit extends AbstractKit implements Listener {
         }
     }
 
+    public Material getMaterial() {
+        return material;
+    }
+
     private class GladiatorFight extends BukkitRunnable {
         private final Region region;
         private final Player gladiator;
