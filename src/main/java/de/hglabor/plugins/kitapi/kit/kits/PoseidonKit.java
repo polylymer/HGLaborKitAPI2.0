@@ -31,6 +31,14 @@ public class PoseidonKit extends AbstractKit {
         isInWaterKey = this.getName() + "isInWater";
     }
 
+    @Override
+    public void onDeactivation(KitPlayer kitPlayer) {
+        // sollte durch https://github.com/HGLabor/HGLaborKitAPI2.0/commit/1b37b91c9827d4098446392930b710e94b847a0e?branch=1b37b91c9827d4098446392930b710e94b847a0e&diff=unified nicht mehr useable sein glaube dann auch wenn nicht dann ist blöd
+        ItemMeta kititemMeta = getMainKitItem().getItemMeta();
+        clearEnchants(kititemMeta);
+        getMainKitItem().setItemMeta(kititemMeta);
+    }
+
     @KitEvent
     public void onPlayerMoveEvent(PlayerMoveEvent event, KitPlayer kitPlayer) {
         Player player = event.getPlayer();
