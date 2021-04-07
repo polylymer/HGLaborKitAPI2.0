@@ -1,9 +1,12 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
+import com.google.common.collect.ImmutableMap;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
+import de.hglabor.utils.localization.Localization;
+import de.hglabor.utils.noriskutils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,6 +15,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.Arrays;
@@ -20,9 +24,12 @@ import java.util.Random;
 
 public class GardenerKit extends AbstractKit {
     public final static GardenerKit INSTANCE = new GardenerKit();
+    private final String bushedEnabled;
 
     private GardenerKit() {
         super("Gardener", Material.SWEET_BERRY_BUSH);
+        setMainKitItem(getDisplayMaterial());
+        bushedEnabled = this.getName() + "bushedEnabled";
     }
 
     List<Material> destructibleBlocks = Arrays.asList(
@@ -34,7 +41,19 @@ public class GardenerKit extends AbstractKit {
     );
 
     @KitEvent
+    public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
+        boolean enabled = kitPlayer.getKitAttributeOrDefault(bushedEnabled, true);
+        kitPlayer.putKitAttribute(bushedEnabled, !enabled);
+        player.sendMessage(Localization.INSTANCE.getMessage("gardener.bushStatus", ImmutableMap.of("status", String.valueOf(!enabled)), ChatUtils.getPlayerLocale(player)));
+    }
+
+    @KitEvent
     public void onPlayerMoveEvent(PlayerMoveEvent event, KitPlayer kitPlayer) {
+
+        if (!kitPlayer.getKitAttributeOrDefault(bushedEnabled, true)) return;
+
         Player player = event.getPlayer();
         Location playerLocation = player.getLocation();
 
