@@ -147,7 +147,7 @@ public class GamblerKit extends AbstractKit implements Listener {
             String y = String.valueOf(location.getY());
             String z = String.valueOf(location.getZ());
             //TODO Localization
-            Bukkit.broadcastMessage(Localization.INSTANCE.getMessage("gambler.coordsLeak", ImmutableMap.of("x", x, "y", y, "z", z), ChatUtils.getPlayerLocale(p)));
+            ChatUtils.broadcastMessage(Localization.INSTANCE.getMessage("gambler.coordsLeak", ImmutableMap.of("x", x, "y", y, "z", z), ChatUtils.getPlayerLocale(p)));
         });
 
         //POTION EFFECTS
@@ -295,13 +295,13 @@ public class GamblerKit extends AbstractKit implements Listener {
         });
 
         cantBeClassified.add("§7Normie§a+", 0.00003, p -> { // wenn das jemand holt gib ich dem 20 euro
-            p.sendMessage("§7Du hast den Rang Normie+ gewonnen! Schicke diese Nachicht an bluefireoly und er wird dir gerne den Rang geben. (Zählt nur in HG)");
+            p.sendMessage(Localization.INSTANCE.getMessage("gambler.wonNormiePlus", ChatUtils.getPlayerLocale(p)));
         });
 
 
         goodLuckCollection.add(1, goodPotionEffects);
         goodLuckCollection.add(1, goodItems);
-        goodLuckCollection.add(1, cantBeClassified);
+        goodLuckCollection.add(0.75, cantBeClassified);
     }
 
     @Override
