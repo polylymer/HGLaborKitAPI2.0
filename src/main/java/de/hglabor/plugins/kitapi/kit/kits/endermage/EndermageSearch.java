@@ -8,6 +8,7 @@ import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -94,7 +95,10 @@ public class EndermageSearch extends BukkitRunnable {
     protected void mageTeleportPlayer(Player player, boolean isMage) {
         int delay = EndermageKit.INSTANCE.getInvulnerabilityAfterMage();
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
-        player.teleport(endermagePortal.getLocation().clone().add(0, 1, 0));
+        Location teleportLocation = endermagePortal.getLocation().clone().add(0, 1, 0);
+        teleportLocation.setPitch(0F);
+        teleportLocation.setYaw(0F);
+        player.teleport(teleportLocation);
         player.setMetadata(EndermageKit.INSTANCE.getHasBeenMagedKey(), new FixedMetadataValue(plugin, ""));
         kitPlayer.putKitAttribute(EndermageKit.INSTANCE.getHasBeenMagedKey(), new EndermageProperties(System.currentTimeMillis()));
         if (isMage) {
