@@ -34,6 +34,7 @@ public class ScoutKit extends AbstractKit {
 
     private ScoutKit() {
         super("Scout", Material.POTION);
+        setKitItemPlaceable(true);
         this.potionEffectType = PotionEffectType.SPEED;
         this.duration = 67;
         this.amplifier = 1;
