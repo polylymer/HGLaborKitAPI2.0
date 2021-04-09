@@ -147,7 +147,7 @@ public class GamblerKit extends AbstractKit implements Listener {
             String y = String.valueOf(location.getY());
             String z = String.valueOf(location.getZ());
             //TODO Localization
-            ChatUtils.broadcastMessage(Localization.INSTANCE.getMessage("gambler.coordsLeak", ImmutableMap.of("x", x, "y", y, "z", z), ChatUtils.getPlayerLocale(p)));
+            ChatUtils.broadcastMessage(Localization.INSTANCE.getMessage("gambler.coordsLeak", ImmutableMap.of("x", (int) x, "y", (int) y, "z", (int) z), ChatUtils.getPlayerLocale(p)));
         });
 
         //POTION EFFECTS
