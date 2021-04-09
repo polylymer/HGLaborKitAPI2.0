@@ -167,6 +167,35 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
         }
     }
 
+    @EventHandler
+    public void onHitEntityWithKitItem(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player) {
+            KitPlayer kitPlayer = playerSupplier.getKitPlayer((Player) event.getDamager());
+            for (AbstractKit playerKit : kitPlayer.getKits()) {
+                if (((Player) event.getDamager()).getInventory().getItemInMainHand().isSimilar(playerKit.getMainKitItem())) {
+                    useKitItem(event, kitPlayer, kit -> kit.onHitEntityWithKitItem(event, kitPlayer, event.getEntity()));
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerRightClickEntityWithKitItem(PlayerInteractAtEntityEvent event) {
+        Entity rightClicked = event.getRightClicked();
+        if (rightClicked instanceof Player) {
+            KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
+            useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickPlayerWithKitItem(event, (Player) rightClicked));
+        } else if (rightClicked instanceof LivingEntity) {
+            KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
+            useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickLivingEntityWithKitItem(event, kitPlayer, (LivingEntity) rightClicked));
+        } else {  // ich weiss nicht ob man dann die anderen wegmachen kann (onPlayerRightClickLivingEntityWithKitItem) ich lass einfaxh will nix kaputtmachen
+            KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
+            useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickEntityWithKitItem(event, kitPlayer, rightClicked));
+        }
+    }
+
+
+
     public void useKit(Event event, KitPlayer kitPlayer, KitExecutor kitExecutor) {
         kitPlayer.getKits().stream().filter(kit -> canUseKit(event, kitPlayer, kit)).forEach(kitExecutor::execute);
     }
