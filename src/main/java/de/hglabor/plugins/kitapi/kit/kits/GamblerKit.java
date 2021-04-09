@@ -143,11 +143,11 @@ public class GamblerKit extends AbstractKit implements Listener {
         //COORDS LEAK
         cantBeClassifiedBad.add("Coords Leak", 0.5, p -> {
             Location location = p.getLocation();
-            String x = String.valueOf(location.getX());
-            String y = String.valueOf(location.getY());
-            String z = String.valueOf(location.getZ());
+            String x = String.valueOf(location.getBlockX());
+            String y = String.valueOf(location.getBlockY());
+            String z = String.valueOf(location.getBlockZ());
             //TODO Localization
-            ChatUtils.broadcastMessage(Localization.INSTANCE.getMessage("gambler.coordsLeak", ImmutableMap.of("x", (int) x, "y", (int) y, "z", (int) z), ChatUtils.getPlayerLocale(p)));
+            ChatUtils.broadcastMessage(Localization.INSTANCE.getMessage("gambler.coordsLeak", ImmutableMap.of("x", x, "y", y, "z", z), ChatUtils.getPlayerLocale(p)));
         });
 
         //POTION EFFECTS
