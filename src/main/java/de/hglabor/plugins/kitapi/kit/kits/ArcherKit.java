@@ -64,8 +64,8 @@ public class ArcherKit extends AbstractKit implements Listener {
     public void onProjectileHitEvent(ProjectileHitEvent event, KitPlayer kitPlayer, Entity hitEntity) {
         if (hitEntity instanceof LivingEntity) {
             kitPlayer.getBukkitPlayer().ifPresent(player -> {
-                KitApi.getInstance().giveKitItemsIfSlotEmpty(kitPlayer, this, List.of(new ItemStack(Material.ARROW, 1)));
-                
+                KitApi.getInstance().giveKitItemsIfInvFull(kitPlayer, this, List.of(new ItemStack(Material.ARROW, 1)));
+
                 Map<String, String> hearts = Map.of("hearts", String.valueOf((int) ((LivingEntity) hitEntity).getHealth()));
                 String key = "archer.hit";
                 Locale playerLocale = ChatUtils.getPlayerLocale(player);
