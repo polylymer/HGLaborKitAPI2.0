@@ -6,6 +6,7 @@ import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -190,6 +191,24 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
         useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickEntityWithKitItem(event, kitPlayer, rightClicked));
     }
 
+    @EventHandler
+    public void onProjectileHit(ProjectileHitEvent event) {
+        Projectile entity = event.getEntity();
+        if (entity.getShooter() != null && entity.getShooter() instanceof Player) {
+            KitPlayer kitPlayer = playerSupplier.getKitPlayer((Player) entity.getShooter());
+            if (event.getHitEntity() != null) {
+                useKit(event, kitPlayer, kit -> kit.onProjectileHitEvent(event, kitPlayer, event.getHitEntity()));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityShootBow(EntityShootBowEvent event) {
+        if (event.getEntity() instanceof Player) {
+            KitPlayer kitPlayer = playerSupplier.getKitPlayer((Player) event.getEntity());
+            useKitItem(event, kitPlayer, kit -> kit.onKitPlayerShootBow(event, kitPlayer, event.getProjectile()));
+        }
+    }
 
     public void useKit(Event event, KitPlayer kitPlayer, KitExecutor kitExecutor) {
         kitPlayer.getKits().stream().filter(kit -> canUseKit(event, kitPlayer, kit)).forEach(kitExecutor::execute);
