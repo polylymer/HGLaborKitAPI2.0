@@ -5,4 +5,6 @@ import org.bukkit.entity.Player;
 
 public interface KitPlayerSupplier {
     KitPlayer getKitPlayer(Player player);
+
+    KitPlayer getRandomAlivePlayer();
 }

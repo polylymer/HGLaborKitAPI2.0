@@ -22,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -44,6 +45,7 @@ public class GrapplerKit extends AbstractKit implements Listener {
     @IntArg
     private final int maxUses;
     private final String hasShotKey;
+    private final String projectileKey;
     @FloatArg(min = 0.0F)
     private final float cooldown;
 
@@ -53,9 +55,22 @@ public class GrapplerKit extends AbstractKit implements Listener {
         spamCooldown = 2;
         maxUses = 2;
         hasShotKey = this.getName() + "hasShoot";
+        this.projectileKey = this.getName() + "projectile";
         this.grapplerArrow = new ItemBuilder(Material.ARROW).setName("Grappler Arrow").build();
         this.onCooldown = new HashMap<>();
         setMainKitItem(new ItemBuilder(Material.CROSSBOW).setUnbreakable(true).build());
+    }
+
+    @Override
+    public void onDisable(KitPlayer kitPlayer) {
+        if(!kitPlayer.isValid()) {
+            return;
+        }
+        if(kitPlayer.getKitAttribute(projectileKey) != null) {
+            Projectile projectile = kitPlayer.getKitAttribute(projectileKey);
+            removeGrapplerHook(projectile);
+            projectile.remove();
+        }
     }
 
     @EventHandler
@@ -69,7 +84,7 @@ public class GrapplerKit extends AbstractKit implements Listener {
                 Vector vector = getVectorForPoints(shooter.getLocation(), event.getEntity().getLocation(), inCombat);
                 Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> {
                     KitPlayer player = KitApi.getInstance().getPlayer(shooter);
-                    if (!player.isValid())
+                    if (!player.isValid() && !player.hasKit(this))
                         return;
                     shooter.setGravity(true);
                     shooter.setVelocity(vector);
@@ -93,6 +108,7 @@ public class GrapplerKit extends AbstractKit implements Listener {
         if (kitPlayer.getKitAttribute(hasShotKey)) {
             kitPlayer.putKitAttribute(hasShotKey, false);
             Arrow projectile = (Arrow) event.getEntity();
+            kitPlayer.putKitAttribute(projectileKey, projectile);
             projectile.setCritical(false);
             projectile.setMetadata(KitMetaData.GRAPPLER_ARROW.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
             GrapplerHookEntity grapplerHookEntity = new GrapplerHookEntity(((CraftPlayer) player).getHandle(), ((CraftWorld) player.getWorld()).getHandle(), 1, 1);

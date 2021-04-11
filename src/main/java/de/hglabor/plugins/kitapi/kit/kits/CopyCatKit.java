@@ -57,7 +57,7 @@ public class CopyCatKit extends AbstractKit {
         killer.putKitAttribute(copiedKitKey, newKit);
 
         //ENABLE NEW KIT
-        KitApi.getInstance().giveKitItemsIfSlotEmpty(killer, newKit);
+        KitApi.getInstance().giveKitItemsIfInvFull(killer, newKit);
         newKit.onEnable(killer);
     }
 

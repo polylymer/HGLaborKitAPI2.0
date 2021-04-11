@@ -158,6 +158,8 @@ public final class KitApi {
         kits.add(KangarooKit.INSTANCE);
         kits.add(HulkKit.INSTANCE);
         kits.add(PoseidonKit.INSTANCE);
+        kits.add(PhantomKit.INSTANCE);
+        kits.add(ArcherKit.INSTANCE);
         //kits.add(BeamKit.INSTANCE);
         //sort alphabetically
         kits.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
@@ -210,6 +212,10 @@ public final class KitApi {
         return playerSupplier.getKitPlayer(player);
     }
 
+    public KitPlayer getRandomAlivePlayer() {
+        return playerSupplier.getRandomAlivePlayer();
+    }
+
     public boolean hasKitItemInAnyHand(Player player, AbstractKit kit) {
         //TODO edgecase hulk
         if (kit.getMainKitItem() != null && kit.getMainKitItem().getType().equals(Material.AIR) && player.getInventory().getItemInMainHand().getType().equals(Material.AIR)) {
@@ -218,11 +224,11 @@ public final class KitApi {
         return player.getInventory().getItemInOffHand().isSimilar(kit.getMainKitItem()) || player.getInventory().getItemInMainHand().isSimilar(kit.getMainKitItem());
     }
 
-    public void giveKitItemsIfSlotEmpty(KitPlayer kitPlayer, AbstractKit kit) {
+    public void giveKitItemsIfInvFull(KitPlayer kitPlayer, AbstractKit kit) {
         itemSupplier.giveKitItems(kitPlayer, kit);
     }
 
-    public void giveKitItemsIfSlotEmpty(KitPlayer kitPlayer, AbstractKit kit, List<ItemStack> items) {
+    public void giveKitItemsIfInvFull(KitPlayer kitPlayer, AbstractKit kit, List<ItemStack> items) {
         itemSupplier.giveKitItems(kitPlayer, kit, items);
     }
 

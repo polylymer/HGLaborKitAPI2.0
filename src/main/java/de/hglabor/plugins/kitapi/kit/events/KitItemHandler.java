@@ -8,11 +8,13 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -39,6 +41,24 @@ public class KitItemHandler implements Listener {
         for (AbstractKit kit : kitPlayer.getKits())
             if (kit.isUsingOffHand())
                 event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+            return;
+        }
+        if (event.getItem() == null) {
+            return;
+        }
+        KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
+        for (AbstractKit kit : kitPlayer.getKits()) {
+            if (kit.isKitItemPlaceable())
+                continue;
+            for (ItemStack kitItem : kit.getKitItems())
+                if (event.getItem().isSimilar(kitItem) || kit.isKitItem(event.getItem()))
+                    event.setCancelled(true);
+        }
     }
 
     @EventHandler
