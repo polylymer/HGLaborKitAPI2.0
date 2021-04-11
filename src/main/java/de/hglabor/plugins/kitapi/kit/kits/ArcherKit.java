@@ -21,6 +21,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -64,10 +65,11 @@ public class ArcherKit extends AbstractKit implements Listener {
         if (hitEntity instanceof LivingEntity) {
             kitPlayer.getBukkitPlayer().ifPresent(player -> {
                 KitApi.getInstance().giveKitItemsIfSlotEmpty(kitPlayer, this, List.of(new ItemStack(Material.ARROW, 1)));
-                player.sendMessage(t(
-                        "archer.hit",
-                        Map.of("hearts", String.valueOf((int) ((LivingEntity) hitEntity).getHealth())),
-                        ChatUtils.getPlayerLocale(player)));
+                
+                Map<String, String> hearts = Map.of("hearts", String.valueOf((int) ((LivingEntity) hitEntity).getHealth()));
+                String key = "archer.hit";
+                Locale playerLocale = ChatUtils.getPlayerLocale(player);
+                player.sendMessage(t(key, hearts, playerLocale));
             });
         }
     }
