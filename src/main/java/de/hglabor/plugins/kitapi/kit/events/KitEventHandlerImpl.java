@@ -6,6 +6,7 @@ import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,7 +19,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
-import java.lang.reflect.Method;
+@FunctionalInterface
+interface KitExecutor {
+    void execute(AbstractKit kit);
+}
 
 public class KitEventHandlerImpl extends KitEventHandler implements Listener {
     public KitEventHandlerImpl() {
@@ -87,14 +91,19 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
     }
 
     @EventHandler
-    public void onHitLivingEntityWithKitItem(EntityDamageByEntityEvent event) {
-        if (event.getEntity() instanceof LivingEntity && event.getDamager() instanceof Player) {
-            KitPlayer kitPlayer = playerSupplier.getKitPlayer((Player) event.getDamager());
+    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
+        if (!(event.getDamager() instanceof Player)) {
+            return;
+        }
+        KitPlayer kitPlayer = playerSupplier.getKitPlayer((Player) event.getDamager());
+        if (event.getEntity() instanceof LivingEntity) {
             for (AbstractKit playerKit : kitPlayer.getKits()) {
                 if (((Player) event.getDamager()).getInventory().getItemInMainHand().isSimilar(playerKit.getMainKitItem())) {
                     useKitItem(event, kitPlayer, kit -> kit.onHitLivingEntityWithKitItem(event, kitPlayer, (LivingEntity) event.getEntity()));
                 }
             }
+        } else {
+            useKitItem(event, kitPlayer, kit -> kit.onHitEntityWithKitItem(event, kitPlayer, event.getEntity()));
         }
     }
 
@@ -167,16 +176,45 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
         }
     }
 
+    @EventHandler
+    public void onPlayerRightClickEntityWithKitItem(PlayerInteractAtEntityEvent event) {
+        Entity rightClicked = event.getRightClicked();
+        if (rightClicked instanceof Player) {
+            KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
+            useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickPlayerWithKitItem(event, (Player) rightClicked));
+        }
+        if (rightClicked instanceof LivingEntity) {
+            KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
+            useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickLivingEntityWithKitItem(event, kitPlayer, (LivingEntity) rightClicked));
+        }
+        KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
+        useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickEntityWithKitItem(event, kitPlayer, rightClicked));
+    }
+
+    @EventHandler
+    public void onProjectileHit(ProjectileHitEvent event) {
+        Projectile entity = event.getEntity();
+        if (entity.getShooter() != null && entity.getShooter() instanceof Player) {
+            KitPlayer kitPlayer = playerSupplier.getKitPlayer((Player) entity.getShooter());
+            if (event.getHitEntity() != null) {
+                useKit(event, kitPlayer, kit -> kit.onProjectileHitEvent(event, kitPlayer, event.getHitEntity()));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityShootBow(EntityShootBowEvent event) {
+        if (event.getEntity() instanceof Player) {
+            KitPlayer kitPlayer = playerSupplier.getKitPlayer((Player) event.getEntity());
+            useKitItem(event, kitPlayer, kit -> kit.onKitPlayerShootBow(event, kitPlayer, event.getProjectile()));
+        }
+    }
+
     public void useKit(Event event, KitPlayer kitPlayer, KitExecutor kitExecutor) {
         kitPlayer.getKits().stream().filter(kit -> canUseKit(event, kitPlayer, kit)).forEach(kitExecutor::execute);
     }
 
     public void useKitItem(Event event, KitPlayer kitPlayer, KitExecutor kitExecutor) {
         kitPlayer.getKits().stream().filter(kit -> canUseKitItem(event, kitPlayer, kit)).forEach(kitExecutor::execute);
-    }
-
-    @FunctionalInterface
-    interface KitExecutor {
-        void execute(AbstractKit kit);
     }
 }
