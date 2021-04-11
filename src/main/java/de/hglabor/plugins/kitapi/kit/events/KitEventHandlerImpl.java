@@ -177,6 +177,14 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
         }
     }
 
+    @EventHandler
+    public void onEntityShootBow(EntityShootBowEvent event) {
+        if (event.getEntity() instanceof Player) {
+            KitPlayer kitPlayer = playerSupplier.getKitPlayer((Player) event.getEntity());
+            useKitItem(event, kitPlayer, kit -> kit.onKitPlayerShootBow(event, kitPlayer, event.getProjectile()));
+        }
+    }
+
     public void useKit(Event event, KitPlayer kitPlayer, KitExecutor kitExecutor) {
         kitPlayer.getKits().stream().filter(kit -> canUseKit(event, kitPlayer, kit)).forEach(kitExecutor::execute);
     }

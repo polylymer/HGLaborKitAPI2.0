@@ -65,6 +65,9 @@ public abstract class KitEvents {
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
     }
 
+    public void onKitPlayerShootBow(EntityShootBowEvent event, KitPlayer kitPlayer, Entity projectile) {
+    }
+
     public void onBlockBreakWithKitItem(BlockBreakEvent event) {
     }
 
