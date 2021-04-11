@@ -21,18 +21,44 @@ public class GravityKit extends AbstractKit {
     private final int maxUses;
     @IntArg(min = 0)
     private final int gravityAmplifier;
+    /**
+     * Duration of the gravity effect applied to a player on hit
+     */
     @IntArg(min = 1)
+    private final int targetGravityDuration;
+    /**
+     * The duration of the effect when using item normally
+     */
+    @IntArg(min = 20)
     private final int gravityDuration;
+    /**
+     * The duration of the effect applied when using the item
+     * and being in combat
+     */
+    @IntArg(min = 0)
+    private final int combatGravityDuration;
     @FloatArg(min = 0.0F)
     private final float cooldown;
+    /**
+     * Time how long the combat block
+     * for activating levitation should last
+     * 10 is the maximum value because it's the default
+     * for the check
+     */
+    @IntArg(min = 0, max = 10)
+    private final int inCombatCheckTimeout;
+
 
     private GravityKit() {
         super("Gravity", Material.MAGENTA_GLAZED_TERRACOTTA);
-        setMainKitItem(getDisplayMaterial());
-        cooldown = 30F;
-        maxUses = 3;
-        gravityAmplifier = 3;
-        gravityDuration = 1;
+        this.setMainKitItem(this.getDisplayMaterial());
+        this.cooldown = 30F;
+        this.maxUses = 3;
+        this.gravityAmplifier = 3;
+        this.targetGravityDuration = 1;
+        this.inCombatCheckTimeout = 5;
+        this.gravityDuration = 30;
+        this.combatGravityDuration = 4;
     }
 
     @Override
@@ -48,21 +74,27 @@ public class GravityKit extends AbstractKit {
     @KitEvent
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
-        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(event.getPlayer());
         Player player = event.getPlayer();
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
+        //Cancel if effect is present
         if (player.hasPotionEffect(PotionEffectType.LEVITATION)) {
             kitPlayer.activateKitCooldown(this);
             player.removePotionEffect(PotionEffectType.LEVITATION);
-        } else {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, Integer.MAX_VALUE, gravityAmplifier));
         }
+        //Shorten levitation effect in combat to avoid running away
+        player.addPotionEffect(new PotionEffect(
+                PotionEffectType.LEVITATION,
+                (kitPlayer.isInCombat(this.inCombatCheckTimeout) ? this.combatGravityDuration : this.gravityDuration) * 20,
+                this.gravityAmplifier
+        ));
     }
 
     @KitEvent
     @Override
     public void onHitLivingEntityWithKitItem(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
-        entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 20 * gravityDuration, gravityAmplifier));
-        KitApi.getInstance().checkUsesForCooldown(attacker, this, maxUses);
+        entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 20 * this.targetGravityDuration,
+                this.gravityAmplifier));
+        KitApi.getInstance().checkUsesForCooldown(attacker, this, this.maxUses);
     }
 
     @Override
