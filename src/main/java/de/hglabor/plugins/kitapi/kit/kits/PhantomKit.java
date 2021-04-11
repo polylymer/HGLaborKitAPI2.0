@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class PhantomKit extends AbstractKit implements Listener {
     public static final PhantomKit INSTANCE = new PhantomKit();
@@ -47,12 +48,22 @@ public class PhantomKit extends AbstractKit implements Listener {
         kitPlayer.activateKitCooldown(this);
     }
 
-    @KitEvent
     @EventHandler
     public void onEntityToggleGlideEvent(EntityToggleGlideEvent event) {
-        if (!(event.getEntity() instanceof Player)) return;
-        KitPlayer kitPlayer = KitApi.getInstance().getPlayer((Player) event.getEntity());
-        if (!kitPlayer.hasKit(this)) return;
+        if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
+        Player entity = (Player) event.getEntity();
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(entity);
+        
+        if (!kitPlayer.hasKit(this)) {
+            return;
+        }
+
+        ItemStack chestplate = entity.getInventory().getChestplate();
+        if (chestplate != null && chestplate.getType().equals(Material.ELYTRA)) {
+            return;
+        }
         if (!(event.getEntity().isOnGround())) {
             event.setCancelled(true);
         }
@@ -62,5 +73,4 @@ public class PhantomKit extends AbstractKit implements Listener {
     public float getCooldown() {
         return cooldown;
     }
-
 }
