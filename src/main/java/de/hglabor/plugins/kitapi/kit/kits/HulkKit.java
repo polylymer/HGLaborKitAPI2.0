@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -33,14 +34,7 @@ public class HulkKit extends AbstractKit implements Listener {
     }
 
     @KitEvent
-    @Override
-    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, Player rightClicked) {
-        hulkEntity(event.getPlayer(), KitApi.getInstance().getPlayer(event.getPlayer()), rightClicked);
-    }
-
-    @KitEvent
-    @Override
-    public void onPlayerRightClickLivingEntityWithKitItem(PlayerInteractAtEntityEvent event, KitPlayer kitPlayer, LivingEntity entity) {
+    public void onPlayerRightClickEntityWithKitItem(PlayerInteractAtEntityEvent event, KitPlayer kitPlayer, Entity entity) {
         hulkEntity(event.getPlayer(), kitPlayer, entity);
     }
 
@@ -48,13 +42,13 @@ public class HulkKit extends AbstractKit implements Listener {
     public void onPlayerLeftClickKitItem(PlayerInteractEvent event, KitPlayer kitPlayer) {
         Player player = event.getPlayer();
         if (player.getPassengers().size() > 0) {
-            LivingEntity hulkedEntity = (LivingEntity) player.getPassengers().get(0);
+            Entity hulkedEntity = player.getPassengers().get(0);
             launchEntity(hulkedEntity, player);
         }
     }
 
     @KitEvent(ignoreCooldown = true)
-    public void onHitLivingEntityWithKitItem(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
+    public void onHitEntityWithKitItem(EntityDamageByEntityEvent event, KitPlayer attacker, Entity entity) {
         Player player = (Player) event.getDamager();
         if (player.getPassengers().size() > 0 && player.getPassengers().get(0).equals(entity)) {
             event.setCancelled(true);
@@ -82,9 +76,7 @@ public class HulkKit extends AbstractKit implements Listener {
         kitPlayer.getBukkitPlayer().ifPresent(player -> {
             List<Entity> passengers = player.getPassengers();
             if (passengers.size() > 0) {
-                for (Entity passenger : passengers) {
-                    player.removePassenger(passenger);
-                }
+                passengers.forEach(player::removePassenger);
             }
         });
     }
@@ -94,13 +86,13 @@ public class HulkKit extends AbstractKit implements Listener {
         event.getPlayer().leaveVehicle();
     }
 
-    private void launchEntity(LivingEntity hulkedEntity, Player player) {
+    private void launchEntity(Entity hulkedEntity, Player player) {
         player.removePassenger(hulkedEntity);
         hulkedEntity.setVelocity(player.getLocation().getDirection().normalize().multiply(boostPower));
-        hulkedEntity.setNoDamageTicks(10);
+        if (hulkedEntity instanceof LivingEntity) ((LivingEntity) hulkedEntity).setNoDamageTicks(10);
     }
 
-    private void hulkEntity(Player player, KitPlayer kitPlayer, LivingEntity entity) {
+    private void hulkEntity(Player player, KitPlayer kitPlayer, Entity entity) {
         if (player.getPassengers().size() > 1) {
             return;
         }
