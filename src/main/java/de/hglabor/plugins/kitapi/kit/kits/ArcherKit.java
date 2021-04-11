@@ -1,14 +1,17 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
+import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.ChanceUtils;
+import de.hglabor.utils.noriskutils.ChatUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -18,7 +21,10 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static de.hglabor.utils.localization.Localization.t;
 
 public class ArcherKit extends AbstractKit implements Listener {
     public final static ArcherKit INSTANCE = new ArcherKit();
@@ -55,10 +61,18 @@ public class ArcherKit extends AbstractKit implements Listener {
 
     @KitEvent
     public void onProjectileHitEvent(ProjectileHitEvent event, KitPlayer kitPlayer, Entity hitEntity) {
-
+        if (hitEntity instanceof LivingEntity) {
+            kitPlayer.getBukkitPlayer().ifPresent(player -> {
+                KitApi.getInstance().giveKitItemsIfSlotEmpty(kitPlayer, this, List.of(new ItemStack(Material.ARROW, 1)));
+                player.sendMessage(t(
+                        "archer.hit",
+                        Map.of("hearts", String.valueOf((int) ((LivingEntity) hitEntity).getHealth())),
+                        ChatUtils.getPlayerLocale(player)));
+            });
+        }
     }
 
-    @Override
+    @KitEvent
     public void onKitPlayerShootBow(EntityShootBowEvent event, KitPlayer kitPlayer, Entity projectile) {
         if (!ChanceUtils.roll(effectLikelihood)) {
             return;
