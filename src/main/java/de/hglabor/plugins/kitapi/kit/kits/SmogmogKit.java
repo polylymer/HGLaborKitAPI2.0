@@ -5,6 +5,7 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
+import de.hglabor.plugins.kitapi.kit.settings.PotionEffectArg;
 import de.hglabor.plugins.kitapi.kit.settings.PotionTypeArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Color;
@@ -32,7 +33,7 @@ public class SmogmogKit extends AbstractKit implements Listener {
     private final int effectDuration;
     @PotionTypeArg
     private final PotionType potionType;
-    @PotionTypeArg
+    @PotionEffectArg
     private final PotionEffectType extraPotionEffectType;
 
     private SmogmogKit() {
