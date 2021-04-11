@@ -67,4 +67,7 @@ public abstract class KitEvents {
 
     public void onBlockBreakWithKitItem(BlockBreakEvent event) {
     }
+
+    public void onProjectileHitEvent(ProjectileHitEvent event, KitPlayer kitPlayer, Entity hitEntity) {
+    }
 }

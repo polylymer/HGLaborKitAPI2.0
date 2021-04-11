@@ -5,15 +5,18 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
+import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.CrossbowMeta;
@@ -46,19 +49,10 @@ public class ArcherKit extends AbstractKit implements Listener {
         initArrowEffects();
     }
 
-
-    @KitEvent
     @Override
-    public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        if (player.getInventory().getItemInMainHand().getType() != Material.CROSSBOW) return;
-        ItemStack crossbow = player.getInventory().getItemInMainHand();
-        if (!crossBowIsCharged(crossbow)) return;
-        chargeCrossbow(crossbow);
+    public void onProjectileHitEvent(ProjectileHitEvent event, KitPlayer kitPlayer, Entity hitEntity) {
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(KitApi.getInstance().getPlugin(), () -> chargeCrossbow(crossbow), (long) (cooldown * 20));
     }
-
 
     @EventHandler
     public void onBowShoot(EntityShootBowEvent event) {
