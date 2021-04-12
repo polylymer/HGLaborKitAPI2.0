@@ -30,7 +30,7 @@ public abstract class AbstractKit extends KitEvents {
      * so the KitEventHandler can handle them
      */
     private final Set<KitEventInfo> kitEvents;
-    private ItemStack mainKitItem;
+    protected ItemStack mainKitItem;
     /**
      * use this to toggle gamemode specific kits
      */

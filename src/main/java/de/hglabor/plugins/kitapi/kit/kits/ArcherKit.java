@@ -3,6 +3,7 @@ package de.hglabor.plugins.kitapi.kit.kits;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.items.KitItemBuilder;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.ChanceUtils;
@@ -40,6 +41,7 @@ public class ArcherKit extends AbstractKit implements Listener {
 
     private ArcherKit() {
         super("Archer", Material.BOW);
+        setKitItemPlaceable(true);
         effectDurationInSeconds = 4;
         arrows = 6;
         effectAmplifier = 0;
@@ -56,7 +58,7 @@ public class ArcherKit extends AbstractKit implements Listener {
                 PotionEffectType.POISON,
                 PotionEffectType.INCREASE_DAMAGE);
         effectLikelihood = 50;
-        setMainKitItem(getDisplayMaterial());
+        mainKitItem = new KitItemBuilder(Material.BOW).setUnbreakable(true).build();
         addAdditionalKitItems(new ItemStack(Material.ARROW, arrows));
     }
 
