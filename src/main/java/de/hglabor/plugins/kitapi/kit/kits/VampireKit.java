@@ -13,23 +13,26 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
+import static de.hglabor.utils.localization.Localization.t;
+
 public class VampireKit extends AbstractKit {
     public final static VampireKit INSTANCE = new VampireKit();
 
     @DoubleArg
-    private final double heartsProKill, defaultHealth;
-    private final String maxHealthKey;
+    private final double heartsProKill, defaultHealth, maxHealth;
+    private final String currentHealthKey;
 
     private VampireKit() {
         super("Vampire", Material.POPPY);
         this.heartsProKill = 2D;
         this.defaultHealth = 20D;
-        this.maxHealthKey = this.getName() + "maxHealth";
+        this.maxHealth = 40D;
+        this.currentHealthKey = this.getName() + "currentHealth";
     }
 
     @Override
     public void onEnable(KitPlayer kitPlayer) {
-        kitPlayer.getBukkitPlayer().ifPresent(player -> player.setMaxHealth(kitPlayer.getKitAttributeOrDefault(maxHealthKey, defaultHealth)));
+        kitPlayer.getBukkitPlayer().ifPresent(player -> player.setMaxHealth(kitPlayer.getKitAttributeOrDefault(currentHealthKey, defaultHealth)));
     }
 
     @Override
@@ -42,9 +45,14 @@ public class VampireKit extends AbstractKit {
     public void onPlayerKillsPlayer(KitPlayer killer, KitPlayer dead) {
         killer.getBukkitPlayer().ifPresent(player -> {
             player.sendMessage(Localization.INSTANCE.getMessage("vampire.extraHealth", ImmutableMap.of("hearts", String.valueOf(heartsProKill)), ChatUtils.getPlayerLocale(player)));
-            player.setMaxHealth(player.getMaxHealth() + heartsProKill);
-            player.setHealth(player.getMaxHealth());
-            killer.putKitAttribute(maxHealthKey, player.getMaxHealth());
+            double newHealth = player.getMaxHealth() + heartsProKill;
+            if (newHealth <= maxHealth) {
+                player.setMaxHealth(newHealth);
+                player.setHealth(player.getMaxHealth());
+                killer.putKitAttribute(currentHealthKey, player.getMaxHealth());
+            } else {
+                player.sendMessage(t("vampire.maxHealth", ChatUtils.getPlayerLocale(player)));
+            }
         });
     }
 

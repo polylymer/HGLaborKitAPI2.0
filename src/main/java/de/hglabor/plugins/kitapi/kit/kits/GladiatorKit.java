@@ -64,16 +64,15 @@ public class GladiatorKit extends AbstractKit implements Listener {
 
     @KitEvent
     @Override
-    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event) {
+    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, Player rightClicked) {
         Player player = event.getPlayer();
-        Player enemy = (Player) event.getRightClicked();
         World world = player.getWorld();
 
-        if (player.hasMetadata(KitMetaData.INGLADIATOR.getKey()) || enemy.hasMetadata(KitMetaData.INGLADIATOR.getKey())) {
+        if (player.hasMetadata(KitMetaData.INGLADIATOR.getKey()) || rightClicked.hasMetadata(KitMetaData.INGLADIATOR.getKey())) {
             return;
         }
 
-        enemy.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
+        rightClicked.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
         player.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
 
         //Adding +2 so player cant build up and escape because 1 is somehow not enough
@@ -91,12 +90,13 @@ public class GladiatorKit extends AbstractKit implements Listener {
         }
 
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
-        GladiatorFight gladiatorFight = new GladiatorFight(gladiatorRegion, kitPlayer, KitApi.getInstance().getPlayer(enemy), radius, height);
+        GladiatorFight gladiatorFight = new GladiatorFight(gladiatorRegion, kitPlayer, KitApi.getInstance().getPlayer(rightClicked), radius, height);
         kitPlayer.putKitAttribute(attributeKey, gladiatorFight);
         gladiatorFight.runTaskTimer(KitApi.getInstance().getPlugin(), 0, 20);
     }
 
 
+    //one day stackoverflow haha
     private Region getGladiatorLocation(Location location, int radius, int height) {
         Random random = new Random();
         AbstractRegion region = new CylinderRegion(BukkitAdapter.adapt(location.getWorld()), BukkitAdapter.asBlockVector(location), Vector2.at(radius, radius), location.getBlockY(), location.getBlockY() + height);
@@ -115,7 +115,11 @@ public class GladiatorKit extends AbstractKit implements Listener {
             return true;
         }
         for (BlockVector3 blockVector3 : region) {
-            if (!world.getBlockAt(BukkitAdapter.adapt(world, blockVector3)).getType().isAir()) {
+            Location adapt = BukkitAdapter.adapt(world, blockVector3);
+            if (!world.getWorldBorder().isInside(adapt)) {
+                return false;
+            }
+            if (!world.getBlockAt(adapt).getType().isAir()) {
                 return false;
             }
         }
@@ -146,6 +150,10 @@ public class GladiatorKit extends AbstractKit implements Listener {
         } else if (block.getType().equals(Material.RED_STAINED_GLASS)) {
             event.setCancelled(false);
         }
+    }
+
+    public Material getMaterial() {
+        return material;
     }
 
     private class GladiatorFight extends BukkitRunnable {

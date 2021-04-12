@@ -28,6 +28,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import static de.hglabor.utils.localization.Localization.t;
+
 public class ManipulationKit extends AbstractKit implements Listener {
     public final static ManipulationKit INSTANCE = new ManipulationKit();
     @IntArg
@@ -62,10 +64,9 @@ public class ManipulationKit extends AbstractKit implements Listener {
 
     @KitEvent
     @Override
-    public void onPlayerRightClickLivingEntityWithKitItem(PlayerInteractAtEntityEvent event) {
+    public void onPlayerRightClickLivingEntityWithKitItem(PlayerInteractAtEntityEvent event, KitPlayer kitPlayer, LivingEntity entity) {
         Player player = event.getPlayer();
-        if (event.getRightClicked() instanceof Mob) {
-
+        if (entity instanceof Mob) {
             Mob mob = (Mob) event.getRightClicked();
             EntityInsentient craftMonster = (EntityInsentient) ((CraftEntity) mob).getHandle();
 
@@ -73,15 +74,15 @@ public class ManipulationKit extends AbstractKit implements Listener {
                 Player manipulator = getManipulator(mob);
                 if (manipulator != null && manipulator.getUniqueId().equals(player.getUniqueId())) {
                     //NACHRICHT KOMMT 2x WEGEN 2 HÄNDEN
-                    player.sendMessage(Localization.INSTANCE.getMessage("manipulator.alreadyYourMob", ChatUtils.getPlayerLocale(player)));
+                    player.sendMessage(t("manipulator.alreadyYourMob", ChatUtils.getPlayerLocale(player)));
                     return;
                 }
-                player.sendMessage(Localization.INSTANCE.getMessage("manipulator.alreadyControlled", ChatUtils.getPlayerLocale(player)));
+                player.sendMessage(t("manipulator.alreadyControlled", ChatUtils.getPlayerLocale(player)));
                 return;
             }
 
             if (getManipulatedMobAmount(player) >= maxManipulatedMobs) {
-                player.sendMessage(Localization.INSTANCE.getMessage("manipulator.maxAmount", ChatUtils.getPlayerLocale(player)));
+                player.sendMessage(t("manipulator.maxAmount", ChatUtils.getPlayerLocale(player)));
                 return;
             }
 

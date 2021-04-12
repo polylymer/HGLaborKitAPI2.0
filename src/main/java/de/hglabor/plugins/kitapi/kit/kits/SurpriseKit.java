@@ -23,7 +23,7 @@ public class SurpriseKit extends AbstractKit {
             if (kit.equals(this)) {
                 randomKit = getRandomEnabledKit();
                 kitplayer.getKits().set(kitSlot, randomKit);
-                KitApi.getInstance().giveKitItemsIfSlotEmpty(kitplayer, randomKit);
+                KitApi.getInstance().giveKitItemsIfInvFull(kitplayer, randomKit);
                 randomKit.onEnable(kitplayer);
             }
             kitSlot++;

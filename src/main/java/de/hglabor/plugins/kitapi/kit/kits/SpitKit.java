@@ -2,9 +2,10 @@ package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
-import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.settings.DoubleArg;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
+import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.Material;
@@ -26,10 +27,18 @@ public class SpitKit extends AbstractKit implements Listener {
     public static final SpitKit INSTANCE = new SpitKit();
     @FloatArg(min = 0.0F)
     private final float cooldown;
+    private final String spitProjectileKey;
+    @DoubleArg
+    private final double spitDamage;
+    @IntArg
+    private final int spitSoupHealing;
 
     private SpitKit() {
-        super("Spit",Material.GHAST_TEAR);
+        super("Spit", Material.GHAST_TEAR);
         cooldown = 10;
+        spitSoupHealing = 3;
+        spitDamage = 4D;
+        spitProjectileKey = this.getName() + " Soup";
         setMainKitItem(getDisplayMaterial());
     }
 
@@ -39,7 +48,7 @@ public class SpitKit extends AbstractKit implements Listener {
         Player player = event.getPlayer();
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         Entity entity = player.launchProjectile(LlamaSpit.class);
-        entity.setMetadata(KitMetaData.SPIT_PROJECTILE.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
+        entity.setMetadata(spitProjectileKey, new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
         player.playSound(player.getLocation(), Sound.ENTITY_LLAMA_SPIT, 100, 100);
         kitPlayer.activateKitCooldown(this);
     }
@@ -49,11 +58,11 @@ public class SpitKit extends AbstractKit implements Listener {
         if (!(event.getEntity() instanceof Player) || !(event.getDamager() instanceof LlamaSpit)) {
             return;
         }
-        if (!(event.getDamager().hasMetadata(KitMetaData.SPIT_SOUP.getKey()))) {
+        if (!(event.getDamager().hasMetadata(spitProjectileKey))) {
             return;
         }
         Player player = (Player) event.getEntity();
-        event.setDamage(4);
+        event.setDamage(spitDamage);
         if (player.getInventory().contains(Material.MUSHROOM_STEW)) {
             spitInSoup(player);
         }
@@ -64,12 +73,20 @@ public class SpitKit extends AbstractKit implements Listener {
         ItemStack randomItem = player.getInventory().getItem(random);
         if (randomItem != null) {
             if (randomItem.getType().equals(Material.MUSHROOM_STEW)) {
-                ItemStack itemStack = new ItemBuilder(Material.SUSPICIOUS_STEW).setName(KitMetaData.SPIT_SOUP.getKey()).build();
+                ItemStack itemStack = new ItemBuilder(Material.SUSPICIOUS_STEW).setName(spitProjectileKey).build();
                 player.getInventory().setItem(random, itemStack);
             } else {
                 spitInSoup(player);
             }
         }
+    }
+
+    public String getSpitProjectileKey() {
+        return spitProjectileKey;
+    }
+
+    public int getSpitSoupHealing() {
+        return spitSoupHealing;
     }
 
     @Override

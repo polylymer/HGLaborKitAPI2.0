@@ -1,4 +1,4 @@
-package de.hglabor.plugins.kitapi.kit.config;
+package de.hglabor.plugins.kitapi.pvp;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

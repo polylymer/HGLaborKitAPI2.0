@@ -7,4 +7,6 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD})
 public @interface KitEvent {
     Class<?> clazz() default Void.class;
+
+    boolean ignoreCooldown() default false;
 }
