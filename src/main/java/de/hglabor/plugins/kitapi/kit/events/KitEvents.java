@@ -24,6 +24,9 @@ public abstract class KitEvents {
     public void onPlayerRightClicksOneOfMultipleKitItems(PlayerInteractEvent event, ItemStack item) {
     }
 
+    public void onPlayerLeftClicksOneOfMultipleKitItems(PlayerInteractEvent event, ItemStack item) {
+    }
+
     public void onHitLivingEntityWithKitItem(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
     }
 
