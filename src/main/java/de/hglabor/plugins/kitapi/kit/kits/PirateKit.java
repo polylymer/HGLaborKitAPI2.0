@@ -95,7 +95,7 @@ public class PirateKit extends MultipleKitItemsKit implements Listener {
         Player player = event.getPlayer();
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         if (kitPlayer.hasKit(this)) {
-            List<Block> barrels = kitPlayer.getKitAttributeOrDefault(explosionBarrelsKey, Collections.emptyList());
+            List<Block> barrels = kitPlayer.getKitAttributeOrDefault(explosionBarrelsKey, new ArrayList<>());
             barrel.setMetadata(explosionBarrelMetaKey, new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
             barrel.setMetadata(UUID_KEY, new FixedMetadataValue(KitApi.getInstance().getPlugin(), player.getUniqueId()));
             barrels.add(barrel);
