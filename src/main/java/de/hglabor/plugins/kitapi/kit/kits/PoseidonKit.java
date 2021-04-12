@@ -74,20 +74,6 @@ public class PoseidonKit extends AbstractKit implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
-        KitPlayer killer = KitApi.getInstance().getPlayer(event.getPlayer());
-        killer.getBukkitPlayer().ifPresent(player -> {
-            if (killer.getKitAttribute(rainRunnable) != null) {
-                ((PoseidonRain) killer.getKitAttribute(rainRunnable)).addTime(rainTime);
-            } else {
-                PoseidonRain poseidonRain = new PoseidonRain(player);
-                killer.putKitAttribute(rainRunnable, poseidonRain);
-                poseidonRain.runTaskTimer(KitApi.getInstance().getPlugin(), 0, 20);
-            }
-        });
-    }
-
     @KitEvent
     public void onPlayerKillsPlayer(KitPlayer killer, KitPlayer victim) {
         killer.getBukkitPlayer().ifPresent(player -> {
