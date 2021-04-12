@@ -160,6 +160,7 @@ public final class KitApi {
         kits.add(PoseidonKit.INSTANCE);
         kits.add(PhantomKit.INSTANCE);
         kits.add(ArcherKit.INSTANCE);
+        kits.add(PirateKit.INSTANCE);
         //kits.add(BeamKit.INSTANCE);
         //sort alphabetically
         kits.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
