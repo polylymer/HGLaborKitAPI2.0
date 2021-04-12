@@ -178,6 +178,8 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
     public void onPlayerLeftClickKitItem(PlayerInteractEvent event) {
         if (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
             KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
+            ItemStack kitItem = event.getItem() != null ? event.getItem() : new ItemStack(Material.AIR);
+            useOneOfMultipleKitItems(event, kitPlayer, kitItem, kit -> kit.onPlayerLeftClicksOneOfMultipleKitItems(event, kitItem));
             useKitItem(event, kitPlayer, kit -> kit.onPlayerLeftClickKitItem(event, kitPlayer));
         }
     }
