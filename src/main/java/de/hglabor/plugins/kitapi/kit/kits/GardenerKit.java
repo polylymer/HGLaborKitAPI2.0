@@ -1,70 +1,96 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
-import com.google.common.collect.ImmutableMap;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
+import de.hglabor.plugins.kitapi.kit.items.KitItemBuilder;
+import de.hglabor.plugins.kitapi.kit.settings.LongArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
-import de.hglabor.utils.localization.Localization;
-import de.hglabor.utils.noriskutils.ChatUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
+import java.util.Queue;
 
 public class GardenerKit extends AbstractKit {
     public final static GardenerKit INSTANCE = new GardenerKit();
+    private final String lastBlocksKey;
+    private final List<Material> destructibleBlocks;
+
+    @LongArg
+    private final long delayInTicks;
 
     private GardenerKit() {
         super("Gardener", Material.SWEET_BERRIES);
+        mainKitItem = new KitItemBuilder(Material.POPPY).build();
+        lastBlocksKey = this.getName() + "lastBlocks";
+        destructibleBlocks = Arrays.asList(
+                Material.AIR,
+                Material.GRASS,
+                Material.TALL_GRASS,
+                Material.SNOW,
+                Material.DEAD_BUSH
+        );
+        delayInTicks = 5;
     }
 
-    List<Material> destructibleBlocks = Arrays.asList(
-            Material.AIR,
-            Material.GRASS,
-            Material.TALL_GRASS,
-            Material.SNOW,
-            Material.DEAD_BUSH
-    );
+    @Override
+    public void onEnable(KitPlayer kitPlayer) {
+        if (kitPlayer.getKitAttribute(lastBlocksKey) == null) {
+            kitPlayer.putKitAttribute(lastBlocksKey, new LinkedList<>());
+        }
+    }
 
+    @KitEvent
+    public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
+    }
 
     @KitEvent
     public void onPlayerMoveEvent(PlayerMoveEvent event, KitPlayer kitPlayer) {
-
-        Bukkit.broadcastMessage(event.getFrom().toString());
-
-        if (true) return;
-
-        Player player = event.getPlayer();
-        Location playerLocation = player.getLocation();
-
-        if (!player.isOnGround()) return;
-        if (event.getFrom().getZ() == event.getTo().getZ() && event.getFrom().getX() == event.getTo().getX()) return;
-
-        Block blockBehind = playerLocation.subtract(playerLocation.getDirection().normalize().multiply(3).setY(0)).getBlock();
-        if (destructibleBlocks.contains(blockBehind.getType())) {
-            if (blockBehind.getLocation() == player.getLocation().getBlock().getLocation()) return; // keine ahnung denke das kann raus XDD
-
-            if (blockBehind.getLocation().clone().subtract(0, 1, 0).getBlock().getType() == Material.AIR) return;
-            blockBehind.setType(Material.SWEET_BERRY_BUSH);
-
-            for (int i = 0; i < new Random().nextInt(3); i++) {
-                blockBehind.applyBoneMeal(BlockFace.UP); // warum auch immer kann man diese scheiss beeren büsche nicht als Ageable casten ohne packets zu benutzen
-                // hab nochmal getestet geht nich ich fick spigot
-            }
-
-            Bukkit.getScheduler().scheduleSyncDelayedTask(KitApi.getInstance().getPlugin(), () -> blockBehind.setType(Material.AIR), 3 * 20);
+        Block fromBlock = event.getFrom().getBlock();
+        if (fromBlock.equals(event.getTo().getBlock())) {
+            return;
         }
+
+        Block[] lastBlocks = kitPlayer.getKitAttribute(lastBlocksKey);
+        if (lastBlocks[2] == null || !fromBlock.equals(lastBlocks[2])) {
+            Block old2 = lastBlocks[2];
+            Block old1 = lastBlocks[1];
+            Block old0 = lastBlocks[0];
+            lastBlocks[2] = fromBlock;
+            lastBlocks[1] = old2;
+            lastBlocks[0] = old1;
+            if (old0 != null && old0.getType().equals(Material.SWEET_BERRY_BUSH)) {
+                old0.setType(Material.AIR);
+            }
+        }
+
+        Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> {
+            for (int i = 0; i < lastBlocks.length; i++) {
+                Block block = lastBlocks[i];
+                if (block != null) {
+                    if (!block.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS_BLOCK)) {
+                        continue;
+                    }
+                    if (!destructibleBlocks.contains(block.getType())) {
+                        continue;
+                    }
+                    block.setType(Material.SWEET_BERRY_BUSH);
+                    Ageable blockData = (Ageable) block.getBlockData();
+                    blockData.setAge(i);
+                    block.setBlockData(blockData);
+                }
+            }
+        }, delayInTicks);
     }
 
     @KitEvent
