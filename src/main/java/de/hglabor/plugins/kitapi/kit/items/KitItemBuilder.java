@@ -75,7 +75,9 @@ public class KitItemBuilder {
 
     public KitItemBuilder addLore(String... lore) {
         List<String> text = new ArrayList<>();
-        text.addAll(Objects.requireNonNull(itemMeta.getLore()));
+        if (itemMeta.getLore() != null) {
+            text.addAll(itemMeta.getLore());
+        }
         text.addAll(Arrays.asList(lore));
         itemMeta.setLore(text);
         return this;
