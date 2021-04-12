@@ -8,7 +8,6 @@ import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -114,7 +113,10 @@ public class BeequeenKit extends AbstractKit implements Listener {
         }
 
         private void stop() {
-            oldBlockData.keySet().forEach(block -> block.setBlockData(oldBlockData.get(block)));
+            oldBlockData.keySet().forEach(block -> {
+                block.setBlockData(oldBlockData.get(block));
+                block.removeMetadata(isHoneyBlockKey, KitApi.getInstance().getPlugin());
+            });
             cancel();
         }
     }
