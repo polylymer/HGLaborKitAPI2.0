@@ -3,29 +3,28 @@ package de.hglabor.plugins.kitapi.kit.kits;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.MultipleKitItemsKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.items.KitItemAction;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.block.Action;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class PiratKit extends MultipleKitItemsKit {
+public class PiratKit extends MultipleKitItemsKit implements Listener {
     public static final PiratKit INSTANCE = new PiratKit();
 
     @IntArg
@@ -33,7 +32,7 @@ public class PiratKit extends MultipleKitItemsKit {
     @FloatArg(min = 0.1F, max = 100f)
     private final float explosionPower;
 
-    private final HashMap<UUID, ArrayList<Block>> explosionBarrels = new HashMap<>();
+    private final Map<UUID, ArrayList<Block>> explosionBarrels = new HashMap<>();
 
     // KitItems
 
@@ -59,41 +58,34 @@ public class PiratKit extends MultipleKitItemsKit {
     // sollte der fernzünder droppen können? -> müsste dann das item als key nehmen
     // fass mit piston verschieben = boom
 
-    @Override
-    public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
 
-        // soll einmalig beim bekommen der items ausgeführt werden, muss noch machen
-        canon.getItemMeta().getPersistentDataContainer().set(markerKeyKitPirat("fire_charge"), PersistentDataType.BYTE, (byte) 1);
-        explosionBarrel.getItemMeta().getPersistentDataContainer().set(markerKeyKitPirat("explosion_barrel"), PersistentDataType.BYTE, (byte) 1);
-        remoteDetonator.getItemMeta().getPersistentDataContainer().set(markerKeyKitPirat("remote_detonator"), PersistentDataType.BYTE, (byte) 1);
-
+    @KitEvent
+    public void onPlayerRightClicksOneOfMultipleKitItems(PlayerInteractEvent event, ItemStack item) {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
         World world = player.getWorld();
 
         ArrayList<Block> explosionBarrelsForPlayer = explosionBarrels.get(uuid);
 
-        if (!event.hasItem()) return;
-
         // Detonator
-        if (event.getItem().isSimilar(remoteDetonator)) { // Wird nicht gleich sein, da es noch KitItem tags bekommt - muss mir was ausdenken, außerdem löst das hier sowieso nur aus, wenn ein KitItem angeklickt wird - gilt das auch für "additionalKitItems"?
-            // Rechtsklick
-            if (isRightclick(event.getAction())) {
-                // Alle Fässer explodieren lassen
-                for (Block b : explosionBarrelsForPlayer) {
-                    if (isExplosionBarrel(b)) // Überprüfen, ob es ein Valides Pulverfass ist
-                        world.createExplosion(b.getLocation(), explosionPower);
-                }
-                // Liste der Fässer säubern - alle Fässer sind schließlich explodiert
-                explosionBarrels.get(uuid).clear();
-            } else if (isLeftclick(event.getAction())) {
+        if (item.isSimilar(remoteDetonator)) {
+            // Alle Fässer explodieren lassen
+            for (Block b : explosionBarrelsForPlayer) {
+                if (isExplosionBarrel(b)) // Überprüfen, ob es ein Valides Pulverfass ist
+                    world.createExplosion(b.getLocation(), explosionPower);
+            }
+            // Liste der Fässer säubern - alle Fässer sind schließlich explodiert
+            explosionBarrels.get(uuid).clear();
+        }
+
+            /* Well its always rightclick look at method name
+            else if (Utils.isLeftclick(event.getAction())) {
                 // Fass an erster Position explodieren lassen
                 if (isExplosionBarrel(explosionBarrelsForPlayer.get(0)))// Überprüfen, ob es ein Valides Pulverfass ist
                     world.createExplosion(explosionBarrelsForPlayer.get(0).getLocation(), explosionPower);
                 // Das explodierte Fass entfernen
                 explosionBarrelsForPlayer.remove(0);
-            }
-        }
+            } */
 
         // TODO = Beim platzieren eines Pulverfasses das Pulverfass als solches markieren und in die Liste eintragen
         Block block = event.getClickedBlock();
@@ -115,18 +107,5 @@ public class PiratKit extends MultipleKitItemsKit {
 
     private boolean isExplosionBarrel(Block block) {
         return block.hasMetadata(KitMetaData.EXPLOSION_BARREL.getKey());
-    }
-
-    private NamespacedKey markerKeyKitPirat(String key) {
-        return new NamespacedKey(KitApi.getInstance().getPlugin(), "hglaborkitapi2.0_marker_" + "kit_pirat_" + key);
-    }
-
-    // Add to Utils?
-    private boolean isRightclick(Action action) {
-        return action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK;
-    }
-
-    private boolean isLeftclick(Action action) {
-        return action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK;
     }
 }
