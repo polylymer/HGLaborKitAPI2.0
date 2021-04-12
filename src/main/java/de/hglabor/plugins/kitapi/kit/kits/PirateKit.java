@@ -45,9 +45,9 @@ public class PirateKit extends MultipleKitItemsKit implements Listener {
 
     private final ItemStack canon = new KitItemBuilder(Material.FIRE_CHARGE).setName("Kanone").setDescription("Abschuss!!").build();
     private final ItemStack remoteDetonator = new KitItemBuilder(Material.TRIPWIRE_HOOK).setName("Fernzünder").setDescription("Explosion!!").build();
-    
+
     protected PirateKit() {
-        super("Pirat", Material.FIRE_CHARGE);
+        super("Pirate", Material.FIRE_CHARGE);
         Map<KitItemAction, Float> kitActions = Map.of(
                 new KitItemAction(canon, "pirate.canon"), 5F,
                 new KitItemAction(remoteDetonator, "pirate.remoteDetonator"), 5F
