@@ -151,6 +151,10 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
+        //Player was just moving mouse
+        if (event.getTo().distanceSquared(event.getFrom()) == 0) {
+            return;
+        }
         KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
         useKitItem(event, kitPlayer, kit -> kit.onPlayerMoveEvent(event, kitPlayer));
     }
