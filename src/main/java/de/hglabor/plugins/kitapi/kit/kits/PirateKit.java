@@ -85,6 +85,8 @@ public class PirateKit extends MultipleKitItemsKit implements Listener {
             }
             barrels.clear();
         } else if (item.isSimilar(canon)) {
+            //so setzt man cooldown
+            this.activateCooldown(kitPlayer, item);
             //FEUER...
         }
 
