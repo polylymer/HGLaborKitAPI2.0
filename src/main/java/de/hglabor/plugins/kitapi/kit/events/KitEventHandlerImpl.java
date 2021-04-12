@@ -127,7 +127,7 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
     @EventHandler
     public void onBlockBreakWithKitItem(BlockBreakEvent event) {
         KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
-        useKitItem(event, kitPlayer, kit -> kit.onBlockBreakWithKitItem(event));
+        useKit(event, kitPlayer, kit -> kit.onBlockBreakWithKitItem(event));
     }
 
     @EventHandler

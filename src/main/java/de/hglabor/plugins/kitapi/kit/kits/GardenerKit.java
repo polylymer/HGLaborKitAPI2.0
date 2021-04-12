@@ -24,12 +24,9 @@ import java.util.Random;
 
 public class GardenerKit extends AbstractKit {
     public final static GardenerKit INSTANCE = new GardenerKit();
-    private final String bushedEnabled;
 
     private GardenerKit() {
-        super("Gardener", Material.SWEET_BERRY_BUSH);
-        setMainKitItem(getDisplayMaterial());
-        bushedEnabled = this.getName() + "bushedEnabled";
+        super("Gardener", Material.SWEET_BERRIES);
     }
 
     List<Material> destructibleBlocks = Arrays.asList(
@@ -40,19 +37,13 @@ public class GardenerKit extends AbstractKit {
             Material.DEAD_BUSH
     );
 
-    @KitEvent
-    public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
-        boolean enabled = kitPlayer.getKitAttributeOrDefault(bushedEnabled, true);
-        kitPlayer.putKitAttribute(bushedEnabled, !enabled);
-        player.sendMessage(Localization.INSTANCE.getMessage("gardener.bushStatus", ImmutableMap.of("status", String.valueOf(!enabled)), ChatUtils.getPlayerLocale(player)));
-    }
 
     @KitEvent
     public void onPlayerMoveEvent(PlayerMoveEvent event, KitPlayer kitPlayer) {
 
-        if (!kitPlayer.getKitAttributeOrDefault(bushedEnabled, true)) return;
+        Bukkit.broadcastMessage(event.getFrom().toString());
+
+        if (true) return;
 
         Player player = event.getPlayer();
         Location playerLocation = player.getLocation();
