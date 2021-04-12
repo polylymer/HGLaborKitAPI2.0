@@ -79,7 +79,7 @@ public class PoseidonKit extends AbstractKit implements Listener {
         KitPlayer killer = KitApi.getInstance().getPlayer(event.getPlayer());
         killer.getBukkitPlayer().ifPresent(player -> {
             if (killer.getKitAttribute(rainRunnable) != null) {
-                ((PoseidonRain) killer.getKitAttribute(rainRunnable)).addTime(rainTime * 1000L);
+                ((PoseidonRain) killer.getKitAttribute(rainRunnable)).addTime(rainTime);
             } else {
                 PoseidonRain poseidonRain = new PoseidonRain(player);
                 killer.putKitAttribute(rainRunnable, poseidonRain);
@@ -92,7 +92,7 @@ public class PoseidonKit extends AbstractKit implements Listener {
     public void onPlayerKillsPlayer(KitPlayer killer, KitPlayer victim) {
         killer.getBukkitPlayer().ifPresent(player -> {
             if (killer.getKitAttribute(rainRunnable) != null) {
-                ((PoseidonRain) killer.getKitAttribute(rainRunnable)).addTime(rainTime * 1000L);
+                ((PoseidonRain) killer.getKitAttribute(rainRunnable)).addTime(rainTime);
             } else {
                 PoseidonRain poseidonRain = new PoseidonRain(player);
                 killer.putKitAttribute(rainRunnable, poseidonRain);
@@ -105,11 +105,12 @@ public class PoseidonKit extends AbstractKit implements Listener {
         private final Player player;
         private final BossBar rainBar;
         private long endTime;
+        private int timer;
 
         private PoseidonRain(Player player) {
             this.rainBar = Bukkit.createBossBar(t("poseidon.rain", ChatUtils.getPlayerLocale(player)), BarColor.BLUE, BarStyle.SOLID);
             this.player = player;
-            this.endTime = System.currentTimeMillis() + rainTime * 1000L;
+            this.endTime = rainTime;
             this.startRain();
         }
 
@@ -124,17 +125,13 @@ public class PoseidonKit extends AbstractKit implements Listener {
         public void run() {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2 * 20, speedAmplifier));
             player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 2 * 20, regenerationAmplifier));
-            long l = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) / 1000;
-            long l1 = TimeUnit.MILLISECONDS.toSeconds(endTime) / 1000;
-            System.out.println("Current: " + l + " EndTime:" + l1);
-            double progress = (double) ((int) l / (int) l1);
-            //TODO always gives 0 or 1
-            System.out.println(progress);
+            //TODO maybe otherway around
+            double progress = (double) timer / (double) endTime;
             rainBar.setProgress(Math.min(progress, 1));
-            System.out.println(rainBar.getProgress());
-            if (System.currentTimeMillis() > endTime) {
+            if (timer > endTime) {
                 stop();
             }
+            timer++;
         }
 
         public void stop() {
@@ -146,7 +143,7 @@ public class PoseidonKit extends AbstractKit implements Listener {
             KitApi.getInstance().getPlayer(player).putKitAttribute(rainRunnable, null);
         }
 
-        public void addTime(long time) {
+        public void addTime(int time) {
             endTime += time;
         }
     }
