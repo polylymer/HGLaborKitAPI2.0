@@ -67,7 +67,8 @@ public abstract class MultipleKitItemsKit extends MultipleCooldownsKit<KitItemAc
             return false;
         }
 
-        Cooldown kitCooldown = kitPlayer.getKitAttributeOrDefault(getCooldownKey(itemStack),new Cooldown(false));
+        String cooldownKey = getCooldownKey(itemStack);
+        Cooldown kitCooldown = kitPlayer.getKitAttributeOrDefault(cooldownKey,new Cooldown(false));
         Player player = Bukkit.getPlayer(kitPlayer.getUUID());
         if (player == null) {
             return false;
@@ -76,11 +77,11 @@ public abstract class MultipleKitItemsKit extends MultipleCooldownsKit<KitItemAc
         if (kitCooldown.hasCooldown()) {
             long timeLeft = (kitCooldown.getEndTime()) - System.currentTimeMillis();
             if (timeLeft <= 0) {
-                kitPlayer.clearCooldown(this);
+                kitPlayer.putKitAttribute(cooldownKey,null);
                 return false;
             }
             Locale locale = ChatUtils.getPlayerLocale(player);
-            player.sendActionBar(t("kit.cooldown",
+            player.sendActionBar(t("kit.multipleCooldown",
                     ImmutableMap.of(
                             "numberInSeconds", String.valueOf(timeLeft / 1000D),
                             "action", t(kitItemAction.getLocalizationKey(), locale)),
