@@ -1,8 +1,8 @@
 package de.hglabor.plugins.kitapi.kit.events;
 
 import de.hglabor.plugins.kitapi.KitApi;
-import de.hglabor.plugins.kitapi.kit.MultipleKitItemsKit;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.MultipleKitItemsKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -168,7 +168,7 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
         if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
             KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
             ItemStack kitItem = event.getItem() != null ? event.getItem() : new ItemStack(Material.AIR);
-            useOneOfMultipleKitItems(event, kitPlayer, kitItem, kit -> kit.onPlayerRightClicksOneOfMultipleKitItems(event, kitItem));
+            useOneOfMultipleKitItems(event, kitPlayer, kitItem, kit -> kit.onPlayerRightClicksOneOfMultipleKitItems(event, kitPlayer, kitItem));
             useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickKitItem(event));
         }
     }
@@ -179,7 +179,7 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
         if (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
             KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
             ItemStack kitItem = event.getItem() != null ? event.getItem() : new ItemStack(Material.AIR);
-            useOneOfMultipleKitItems(event, kitPlayer, kitItem, kit -> kit.onPlayerLeftClicksOneOfMultipleKitItems(event, kitItem));
+            useOneOfMultipleKitItems(event, kitPlayer, kitItem, kit -> kit.onPlayerLeftClicksOneOfMultipleKitItems(event, kitPlayer, kitItem));
             useKitItem(event, kitPlayer, kit -> kit.onPlayerLeftClickKitItem(event, kitPlayer));
         }
     }
