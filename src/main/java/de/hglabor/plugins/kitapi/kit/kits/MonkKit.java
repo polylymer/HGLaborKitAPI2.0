@@ -6,6 +6,7 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
+import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChanceUtils;
 import de.hglabor.utils.noriskutils.ChatUtils;
@@ -46,7 +47,7 @@ public class MonkKit extends AbstractKit {
 
     @KitEvent
     @Override
-    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, Player rightClicked) {
+    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, KitPlayer kitPlayer, Player rightClicked) {
         Player player = event.getPlayer();
         PlayerInventory inventory = rightClicked.getInventory();
         player.sendMessage(Localization.INSTANCE.getMessage("monk.successful", ImmutableMap.of("enemy", rightClicked.getName()), ChatUtils.getPlayerLocale(player)));

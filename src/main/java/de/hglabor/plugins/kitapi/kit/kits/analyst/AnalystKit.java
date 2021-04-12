@@ -7,7 +7,6 @@ import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.NMSUtils;
-import net.minecraft.server.v1_16_R3.Entity;
 import net.minecraft.server.v1_16_R3.PacketPlayOutEntityDestroy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -57,9 +56,8 @@ public class AnalystKit extends AbstractKit implements Listener {
 
     @KitEvent
     @Override
-    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, Player rightClicked) {
+    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, KitPlayer kitPlayer, Player rightClicked) {
         Player player = event.getPlayer();
-        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         double boost = 0.25D;
         List<AnalystHologram> analystHolograms = new ArrayList<>();
         for (AnalystHologram.HologramType type : AnalystHologram.HologramType.values()) {
