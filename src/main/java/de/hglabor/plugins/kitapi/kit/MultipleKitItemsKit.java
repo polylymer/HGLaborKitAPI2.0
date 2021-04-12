@@ -67,7 +67,7 @@ public abstract class MultipleKitItemsKit extends MultipleCooldownsKit<KitItemAc
             return false;
         }
 
-        Cooldown kitCooldown = kitPlayer.getKitAttribute(getCooldownKey(itemStack));
+        Cooldown kitCooldown = kitPlayer.getKitAttributeOrDefault(getCooldownKey(itemStack),new Cooldown(false));
         Player player = Bukkit.getPlayer(kitPlayer.getUUID());
         if (player == null) {
             return false;
