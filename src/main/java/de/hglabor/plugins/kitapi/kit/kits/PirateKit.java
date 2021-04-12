@@ -43,12 +43,9 @@ public class PirateKit extends MultipleKitItemsKit implements Listener {
     private final String explosionBarrelsKey;
     private final String UUID_KEY = "uuid";
 
-    // KitItems
     private final ItemStack canon = new KitItemBuilder(Material.FIRE_CHARGE).setName("Kanone").setDescription("Abschuss!!").build();
-
-    // rechtsklick = all, linksklick = one by one
     private final ItemStack remoteDetonator = new KitItemBuilder(Material.TRIPWIRE_HOOK).setName("Fernzünder").setDescription("Explosion!!").build();
-
+    
     protected PirateKit() {
         super("Pirat", Material.FIRE_CHARGE);
         Map<KitItemAction, Float> kitActions = Map.of(
