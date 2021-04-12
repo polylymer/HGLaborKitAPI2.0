@@ -73,13 +73,10 @@ public class PirateKit extends MultipleKitItemsKit implements Listener {
     @KitEvent
     public void onPlayerRightClicksOneOfMultipleKitItems(PlayerInteractEvent event, KitPlayer kitPlayer, ItemStack item) {
         Player player = event.getPlayer();
-        UUID uuid = player.getUniqueId();
         World world = player.getWorld();
 
-        List<Block> barrels = kitPlayer.getKitAttributeOrDefault(explosionBarrelsKey, Collections.emptyList());
-        // Detonator
         if (item.isSimilar(remoteDetonator)) {
-            // Alle Fässer explodieren lassen
+            List<Block> barrels = kitPlayer.getKitAttributeOrDefault(explosionBarrelsKey, Collections.emptyList());
             for (Block barrel : barrels) {
                 if (barrel.hasMetadata(explosionBarrelMetaKey)) {
                     world.createExplosion(barrel.getLocation(), explosionPower);
@@ -90,15 +87,6 @@ public class PirateKit extends MultipleKitItemsKit implements Listener {
             player.launchProjectile(Fireball.class, player.getEyeLocation().getDirection().multiply(fireballSpeed));
             this.activateCooldown(kitPlayer, item);
         }
-
-            /* Well its always rightclick look at method name
-            else if (Utils.isLeftclick(event.getAction())) {
-                // Fass an erster Position explodieren lassen
-                if (isExplosionBarrel(explosionBarrelsForPlayer.get(0)))// Überprüfen, ob es ein Valides Pulverfass ist
-                    world.createExplosion(explosionBarrelsForPlayer.get(0).getLocation(), explosionPower);
-                // Das explodierte Fass entfernen
-                explosionBarrelsForPlayer.remove(0);
-            } */
     }
 
     @EventHandler
