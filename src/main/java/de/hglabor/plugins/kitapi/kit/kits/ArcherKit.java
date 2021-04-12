@@ -88,6 +88,6 @@ public class ArcherKit extends AbstractKit implements Listener {
         PotionEffectType type = potionEffectTypes.get(ThreadLocalRandom.current().nextInt(potionEffectTypes.size()));
         PotionEffect potionEffect = new PotionEffect(type, effectDurationInSeconds * 20, effectAmplifier);
         arrow.addCustomEffect(potionEffect, false);
-        arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
+        arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
     }
 }
