@@ -27,7 +27,7 @@ public class BeequeenKit extends AbstractKit implements Listener {
     public final static BeequeenKit INSTANCE = new BeequeenKit();
 
     @IntArg
-    private final int honeyDurationInSeconds;
+    private final int honeyDurationInSeconds, movementTick;
     @FloatArg(min = 0.0F)
     private final float cooldown;
     private final String honeyTrailKey;
@@ -38,6 +38,7 @@ public class BeequeenKit extends AbstractKit implements Listener {
         mainKitItem = new KitItemBuilder(Material.HONEYCOMB).build();
         honeyDurationInSeconds = 7;
         cooldown = 35F;
+        movementTick = 5;
         honeyTrailKey = this.getName() + "honeyTrailKey";
         isHoneyBlockKey = this.getName() + "honeyBlockKey";
     }
@@ -61,7 +62,7 @@ public class BeequeenKit extends AbstractKit implements Listener {
     public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, KitPlayer kitPlayer, Player rightClicked) {
         kitPlayer.activateKitCooldown(this);
         HoneyTrail honeyTrail = new HoneyTrail(rightClicked);
-        honeyTrail.runTaskTimer(KitApi.getInstance().getPlugin(), 0, 10);
+        honeyTrail.runTaskTimer(KitApi.getInstance().getPlugin(), 0, movementTick);
         kitPlayer.putKitAttribute(honeyTrailKey, honeyTrail);
     }
 
