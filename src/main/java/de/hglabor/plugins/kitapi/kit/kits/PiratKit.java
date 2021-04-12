@@ -1,18 +1,16 @@
 package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.KitApi;
-import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.MultipleKitItemsKit;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
-import de.hglabor.plugins.kitapi.kit.settings.BoolArg;
+import de.hglabor.plugins.kitapi.kit.items.KitItemAction;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.utils.noriskutils.ItemBuilder;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -24,9 +22,10 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
-public class PiratKit extends AbstractKit {
+public class PiratKit extends MultipleKitItemsKit {
     public static final PiratKit INSTANCE = new PiratKit();
 
     @IntArg
@@ -48,6 +47,10 @@ public class PiratKit extends AbstractKit {
 
     protected PiratKit() {
         super("Pirat", Material.FIRE_CHARGE);
+        Map<KitItemAction, Float> kitActions = Map.of(
+                new KitItemAction(canon, "pirate.canon"), 5F,
+                new KitItemAction(remoteDetonator, "pirate.remoteDetonator"), 5F);
+        setItemsAndCooldown(kitActions);
         maxExplosionBarrels = 3;
         explosionPower = 5f;
     }

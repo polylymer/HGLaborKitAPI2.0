@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.inventory.ItemStack;
 
 public abstract class KitEvents {
 
@@ -18,6 +19,9 @@ public abstract class KitEvents {
     }
 
     public void onPlayerGetsAttackedByLivingEntity(EntityDamageByEntityEvent event, Player player, LivingEntity attacker) {
+    }
+
+    public void onPlayerRightClicksOneOfMultipleKitItems(PlayerInteractEvent event, ItemStack item) {
     }
 
     public void onHitLivingEntityWithKitItem(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
