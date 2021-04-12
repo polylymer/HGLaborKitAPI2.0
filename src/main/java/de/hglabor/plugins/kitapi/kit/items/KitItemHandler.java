@@ -1,4 +1,4 @@
-package de.hglabor.plugins.kitapi.kit.events;
+package de.hglabor.plugins.kitapi.kit.items;
 
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
@@ -55,9 +55,8 @@ public class KitItemHandler implements Listener {
         for (AbstractKit kit : kitPlayer.getKits()) {
             if (kit.isKitItemPlaceable())
                 continue;
-            for (ItemStack kitItem : kit.getKitItems())
-                if (event.getItem().isSimilar(kitItem) || kit.isKitItem(event.getItem()))
-                    event.setCancelled(true);
+            if (kit.isKitItem(event.getItem()))
+                event.setCancelled(true);
         }
     }
 
@@ -67,9 +66,8 @@ public class KitItemHandler implements Listener {
         for (AbstractKit kit : kitPlayer.getKits()) {
             if (kit.isKitItemPlaceable())
                 continue;
-            for (ItemStack kitItem : kit.getKitItems())
-                if (event.getItemInHand().isSimilar(kitItem) || kit.isKitItem(event.getItemInHand()))
-                    event.setCancelled(true);
+            if (kit.isKitItem(event.getItemInHand()))
+                event.setCancelled(true);
         }
     }
 
@@ -78,9 +76,8 @@ public class KitItemHandler implements Listener {
         KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
         ItemStack droppedItem = event.getItemDrop().getItemStack();
         for (AbstractKit kit : kitPlayer.getKits())
-            for (ItemStack kitItem : kit.getKitItems())
-                if (kitItem.isSimilar(droppedItem) || kit.isKitItem(droppedItem))
-                    event.setCancelled(true);
+            if (kit.isKitItem(droppedItem))
+                event.setCancelled(true);
     }
 
     @EventHandler
@@ -89,9 +86,8 @@ public class KitItemHandler implements Listener {
         for (ItemStack ingridient : event.getInventory().getMatrix()) {
             if (ingridient == null) continue;
             for (AbstractKit kit : kitPlayer.getKits())
-                for (ItemStack kitItem : kit.getKitItems())
-                    if (kitItem.isSimilar(ingridient) || kit.isKitItem(ingridient))
-                        event.setCancelled(true);
+                if (kit.isKitItem(ingridient))
+                    event.setCancelled(true);
         }
     }
 
@@ -99,12 +95,10 @@ public class KitItemHandler implements Listener {
     public void avoidKitItemDropOnPlayerDeath(ItemSpawnEvent event) {
         ItemStack itemStack = event.getEntity().getItemStack();
         for (AbstractKit kit : KitApi.getInstance().getEnabledKits()) {
-            for (ItemStack kitItem : kit.getKitItems()) {
-                if (kitItem.isSimilar(itemStack) || kit.isKitItem(itemStack)) {
-                    itemStack.setType(Material.AIR);
-                    itemStack.setAmount(0);
-                    event.getEntity().remove();
-                }
+            if (kit.isKitItem(itemStack)) {
+                itemStack.setType(Material.AIR);
+                itemStack.setAmount(0);
+                event.getEntity().remove();
             }
         }
     }

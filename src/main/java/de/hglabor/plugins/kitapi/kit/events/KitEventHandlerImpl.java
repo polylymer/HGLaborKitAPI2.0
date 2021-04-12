@@ -2,7 +2,9 @@ package de.hglabor.plugins.kitapi.kit.events;
 
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.MultipleKitItemsKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -18,6 +20,7 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.inventory.ItemStack;
 
 @FunctionalInterface
 interface KitExecutor {
@@ -164,14 +167,19 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
             KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
+            ItemStack kitItem = event.getItem() != null ? event.getItem() : new ItemStack(Material.AIR);
+            useOneOfMultipleKitItems(event, kitPlayer, kitItem, kit -> kit.onPlayerRightClicksOneOfMultipleKitItems(event, kitPlayer, kitItem));
             useKitItem(event, kitPlayer, kit -> kit.onPlayerRightClickKitItem(event));
         }
     }
+
 
     @EventHandler
     public void onPlayerLeftClickKitItem(PlayerInteractEvent event) {
         if (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
             KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
+            ItemStack kitItem = event.getItem() != null ? event.getItem() : new ItemStack(Material.AIR);
+            useOneOfMultipleKitItems(event, kitPlayer, kitItem, kit -> kit.onPlayerLeftClicksOneOfMultipleKitItems(event, kitPlayer, kitItem));
             useKitItem(event, kitPlayer, kit -> kit.onPlayerLeftClickKitItem(event, kitPlayer));
         }
     }
@@ -215,6 +223,13 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
     }
 
     public void useKitItem(Event event, KitPlayer kitPlayer, KitExecutor kitExecutor) {
-        kitPlayer.getKits().stream().filter(kit -> canUseKitItem(event, kitPlayer, kit)).forEach(kitExecutor::execute);
+        kitPlayer.getKits().stream().filter(kit -> !(kit instanceof MultipleKitItemsKit)).filter(kit -> canUseKitItem(event, kitPlayer, kit)).forEach(kitExecutor::execute);
+    }
+
+    public void useOneOfMultipleKitItems(Event event, KitPlayer kitPlayer, ItemStack itemStack, KitExecutor kitExecutor) {
+        kitPlayer.getKits().stream()
+                .filter(kit -> kit instanceof MultipleKitItemsKit)
+                .filter(kit -> canUseOneOfMultipleKitItems(event, kitPlayer, (MultipleKitItemsKit) kit, itemStack))
+                .forEach(kitExecutor::execute);
     }
 }
