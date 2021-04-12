@@ -12,6 +12,10 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftBee;
+import org.bukkit.entity.Bee;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,14 +24,16 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BeequeenKit extends AbstractKit implements Listener {
     public final static BeequeenKit INSTANCE = new BeequeenKit();
 
     @IntArg
-    private final int honeyDurationInSeconds, movementTick;
+    private final int honeyDurationInSeconds, movementTick, beeAmount;
     @FloatArg(min = 0.0F)
     private final float cooldown;
     private final String honeyTrailKey;
@@ -38,7 +44,8 @@ public class BeequeenKit extends AbstractKit implements Listener {
         mainKitItem = new KitItemBuilder(Material.HONEYCOMB).build();
         honeyDurationInSeconds = 7;
         cooldown = 35F;
-        movementTick = 5;
+        movementTick = 1;
+        beeAmount = 3;
         honeyTrailKey = this.getName() + "honeyTrailKey";
         isHoneyBlockKey = this.getName() + "honeyBlockKey";
     }
@@ -66,7 +73,6 @@ public class BeequeenKit extends AbstractKit implements Listener {
         kitPlayer.putKitAttribute(honeyTrailKey, honeyTrail);
     }
 
-
     @Override
     public float getCooldown() {
         return cooldown;
@@ -78,6 +84,7 @@ public class BeequeenKit extends AbstractKit implements Listener {
         private final BlockFace[] directions;
         private final long endTime;
         private final Map<Block, BlockData> oldBlockData;
+        private final List<Bee> bees;
 
         private HoneyTrail(Player player) {
             this.player = player;
@@ -85,9 +92,16 @@ public class BeequeenKit extends AbstractKit implements Listener {
             this.kitPlayer = KitApi.getInstance().getPlayer(player);
             this.endTime = System.currentTimeMillis() + honeyDurationInSeconds * 1000L;
             this.directions = new BlockFace[]{
-                    BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.SELF,
-                    BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH_WEST, BlockFace.SOUTH_EAST
+                    /* BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH, */ BlockFace.SELF,
+                    /* BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH_WEST, BlockFace.SOUTH_EAST */
             };
+            this.bees = new ArrayList<>();
+            for (int i = 0; i < beeAmount; i++) {
+                Bee bee = (Bee) player.getWorld().spawnEntity(player.getEyeLocation(), EntityType.BEE);
+                bees.add(bee);
+            }
+            //TODO custom pathfinder wies aussieht
+            makeBeesAngry();
         }
 
         @Override
@@ -102,6 +116,8 @@ public class BeequeenKit extends AbstractKit implements Listener {
                 return;
             }
 
+            makeBeesAngry();
+
             Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
             for (BlockFace direction : directions) {
                 Block relative = block.getRelative(direction);
@@ -113,12 +129,21 @@ public class BeequeenKit extends AbstractKit implements Listener {
             }
         }
 
+        private void makeBeesAngry() {
+            for (Bee bee : bees) {
+                bee.setAnger(5);
+                bee.setTarget(player);
+                ((CraftBee) bee).getHandle().setAngerTarget(player.getUniqueId());
+            }
+        }
+
         private void stop() {
+            cancel();
             oldBlockData.keySet().forEach(block -> {
                 block.setBlockData(oldBlockData.get(block));
                 block.removeMetadata(isHoneyBlockKey, KitApi.getInstance().getPlugin());
             });
-            cancel();
+            bees.forEach(Entity::remove);
         }
     }
 }
