@@ -17,19 +17,15 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.concurrent.TimeUnit;
-
 import static de.hglabor.utils.localization.Localization.t;
 
-public class PoseidonKit extends AbstractKit implements Listener {
+public class PoseidonKit extends AbstractKit {
     public static final PoseidonKit INSTANCE = new PoseidonKit();
 
     @IntArg(min = 0)
@@ -74,9 +70,10 @@ public class PoseidonKit extends AbstractKit implements Listener {
         }
     }
 
-    @KitEvent
+    @KitEvent(clazz = PlayerDeathEvent.class)
     public void onPlayerKillsPlayer(KitPlayer killer, KitPlayer victim) {
         killer.getBukkitPlayer().ifPresent(player -> {
+            Bukkit.broadcastMessage("triggered haha?");
             if (killer.getKitAttribute(rainRunnable) != null) {
                 ((PoseidonRain) killer.getKitAttribute(rainRunnable)).addTime(rainTime);
             } else {
