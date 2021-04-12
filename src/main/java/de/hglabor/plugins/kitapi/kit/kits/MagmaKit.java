@@ -73,7 +73,7 @@ public class MagmaKit extends AbstractKit {
                     continue;
                 }
             }
-            setEntityOnFire(player, nearby);
+            if (nearby.getUniqueId() != player.getUniqueId()) setEntityOnFire(player, nearby);
         }
         KitApi.getInstance().getPlayer(player).activateKitCooldown(this);
     }

@@ -1,7 +1,6 @@
 package de.hglabor.plugins.kitapi.kit;
 
 import de.hglabor.plugins.kitapi.KitApi;
-import de.hglabor.plugins.kitapi.kit.config.KitSettings;
 import de.hglabor.plugins.kitapi.kit.events.KitEventInfo;
 import de.hglabor.plugins.kitapi.kit.events.KitEvents;
 import de.hglabor.plugins.kitapi.kit.settings.BoolArg;
@@ -10,7 +9,6 @@ import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -32,7 +30,7 @@ public abstract class AbstractKit extends KitEvents {
      * so the KitEventHandler can handle them
      */
     private final Set<KitEventInfo> kitEvents;
-    private ItemStack mainKitItem;
+    protected ItemStack mainKitItem;
     /**
      * use this to toggle gamemode specific kits
      */
@@ -118,10 +116,6 @@ public abstract class AbstractKit extends KitEvents {
         mainKitItem = new ItemBuilder(item.clone()).setDescription(KIT_ITEM_DESC).setAmount(size).build();
     }
 
-    public void setMainKitItem(Material material, String name) {
-        mainKitItem = new ItemBuilder(material).setDescription(KIT_ITEM_DESC).setName(ChatColor.BLUE + name).build();
-    }
-
     public ItemStack getMainKitItem() {
         return mainKitItem;
     }
@@ -194,7 +188,7 @@ public abstract class AbstractKit extends KitEvents {
     }
 
     public boolean isKitItem(ItemStack itemStack) {
-        return false;
+        return getKitItems().stream().anyMatch(stack -> stack.isSimilar(itemStack));
     }
 
     public boolean isKitItemPlaceable() {

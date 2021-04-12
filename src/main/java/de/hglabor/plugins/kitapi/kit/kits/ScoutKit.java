@@ -34,6 +34,7 @@ public class ScoutKit extends AbstractKit {
 
     private ScoutKit() {
         super("Scout", Material.POTION);
+        setKitItemPlaceable(true);
         this.potionEffectType = PotionEffectType.SPEED;
         this.duration = 67;
         this.amplifier = 1;
@@ -86,7 +87,7 @@ public class ScoutKit extends AbstractKit {
             if (isCancelled()) return;
             List<ItemStack> potions = IntStream.rangeClosed(0, potionAmount).mapToObj(i -> createScoutPotion()).collect(Collectors.toList());
             Localization.INSTANCE.getMessage("scout.newPotions", ImmutableMap.of("amount", String.valueOf(potionAmount)), ChatUtils.getPlayerLocale(kitPlayer.getUUID()));
-            KitApi.getInstance().giveKitItemsIfSlotEmpty(kitPlayer, ScoutKit.INSTANCE, potions);
+            KitApi.getInstance().giveKitItemsIfInvFull(kitPlayer, ScoutKit.INSTANCE, potions);
             kitPlayer.putKitAttribute(timeLeftKey, supplyInterval);
             onEnable(kitPlayer);
         }

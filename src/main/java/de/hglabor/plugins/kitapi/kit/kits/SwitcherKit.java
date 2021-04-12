@@ -30,6 +30,7 @@ public class SwitcherKit extends AbstractKit implements Listener {
     private SwitcherKit() {
         super("Switcher", Material.SNOWBALL);
         cooldown = 5;
+        setKitItemPlaceable(true);
         setMainKitItem(getDisplayMaterial(), 16);
     }
 

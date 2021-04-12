@@ -42,7 +42,7 @@ public class KangarooKit extends AbstractKit {
 
     @Override
     public void onDeactivation(KitPlayer kitPlayer) {
-        kitPlayer.putKitAttribute(jumpAmountKey, false);
+        kitPlayer.putKitAttribute(jumpAmountKey, 0);
     }
 
     @KitEvent
