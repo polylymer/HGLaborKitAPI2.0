@@ -10,7 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -20,7 +20,7 @@ import static de.hglabor.utils.localization.Localization.t;
 
 public abstract class MultipleKitItemsKit extends MultipleCooldownsKit<KitItemAction> {
     protected MultipleKitItemsKit(String name, Material displayMaterial) {
-        super(name, displayMaterial, Collections.emptyMap());
+        super(name, displayMaterial, new HashMap<>());
     }
 
     protected void setItemsAndCooldown(Map<KitItemAction, Float> map) {
