@@ -15,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,7 +35,7 @@ public class PirateKit extends MultipleKitItemsKit implements Listener {
     public static final PirateKit INSTANCE = new PirateKit();
 
     @IntArg
-    private final int explosionBarrelsLimit;
+    private final int explosionBarrelsLimit, fireballSpeed;
     @FloatArg(min = 0.1F, max = 100f)
     private final float explosionPower, additionalExplosionPowerStep, maxAdditionalExplosionPower;
 
@@ -57,6 +58,7 @@ public class PirateKit extends MultipleKitItemsKit implements Listener {
         setItemsAndCooldown(kitActions);
         explosionBarrelsLimit = 3;
         explosionPower = 5F;
+        fireballSpeed = 2;
         explosionBarrelMetaKey = this.getName() + "explosionBarrel";
         explosionBarrelsKey = this.getName() + "explosionBarrelsList";
         maxAdditionalExplosionPower = 5F;
@@ -85,9 +87,8 @@ public class PirateKit extends MultipleKitItemsKit implements Listener {
             }
             barrels.clear();
         } else if (item.isSimilar(canon)) {
-            //so setzt man cooldown
+            player.launchProjectile(Fireball.class, player.getEyeLocation().getDirection().multiply(fireballSpeed));
             this.activateCooldown(kitPlayer, item);
-            //FEUER...
         }
 
             /* Well its always rightclick look at method name
@@ -118,23 +119,6 @@ public class PirateKit extends MultipleKitItemsKit implements Listener {
         }
     }
 
-   /* private void detonateExplosionBarrel(World world, UUID playerUUID) {
-        Block explosionBarrel = world.getBlockAt(explosionBarrelsHolder.get(playerUUID).get(0));
-        if (explosionBarrel.hasMetadata(explosionBarrelMetaKey)) {
-            //whats the 100F?
-            float min = Math.min(Math.min(explosionPower + getAdditionalExplosionPower(explosionBarrel), maxAdditionalExplosionPower), 100f);
-            explosionBarrel.getWorld().createExplosion(explosionBarrel.getLocation(), min);
-            explosionBarrel.setType(Material.AIR);
-            explosionBarrelsHolder.get(playerUUID).remove(0);
-        }
-    } */
-
-    private float getAdditionalExplosionPower(Block block) {
-        AtomicInteger amount = new AtomicInteger();
-        Arrays.stream(((Barrel) block).getInventory().getStorageContents()).filter(itemStack -> itemStack.getType() == Material.GUNPOWDER).collect(Collectors.toList()).forEach(itemStack -> amount.addAndGet(itemStack.getAmount()));
-        return amount.get() * additionalExplosionPowerStep;
-    }
-
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
@@ -156,6 +140,23 @@ public class PirateKit extends MultipleKitItemsKit implements Listener {
                 barrels.removeIf(barrel -> barrel.equals(block));
             });
         }
+    }
+
+   /* private void detonateExplosionBarrel(World world, UUID playerUUID) {
+        Block explosionBarrel = world.getBlockAt(explosionBarrelsHolder.get(playerUUID).get(0));
+        if (explosionBarrel.hasMetadata(explosionBarrelMetaKey)) {
+            //whats the 100F?
+            float min = Math.min(Math.min(explosionPower + getAdditionalExplosionPower(explosionBarrel), maxAdditionalExplosionPower), 100f);
+            explosionBarrel.getWorld().createExplosion(explosionBarrel.getLocation(), min);
+            explosionBarrel.setType(Material.AIR);
+            explosionBarrelsHolder.get(playerUUID).remove(0);
+        }
+    } */
+
+    private float getAdditionalExplosionPower(Block block) {
+        AtomicInteger amount = new AtomicInteger();
+        Arrays.stream(((Barrel) block).getInventory().getStorageContents()).filter(itemStack -> itemStack.getType() == Material.GUNPOWDER).collect(Collectors.toList()).forEach(itemStack -> amount.addAndGet(itemStack.getAmount()));
+        return amount.get() * additionalExplosionPowerStep;
     }
 }
 
