@@ -157,6 +157,7 @@ public final class KitApi {
         kits.add(AnalystKit.INSTANCE);
         kits.add(KangarooKit.INSTANCE);
         kits.add(HulkKit.INSTANCE);
+        kits.add(PoseidonKit.INSTANCE);
         kits.add(PhantomKit.INSTANCE);
         kits.add(ArcherKit.INSTANCE);
         kits.add(PirateKit.INSTANCE);
