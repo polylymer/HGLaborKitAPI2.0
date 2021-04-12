@@ -8,10 +8,7 @@ import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.ChatUtils;
 import de.hglabor.utils.noriskutils.ItemBuilder;
 import de.hglabor.utils.noriskutils.NMSUtils;
-import net.minecraft.server.v1_16_R3.NBTTagCompound;
-import net.minecraft.server.v1_16_R3.NBTTagInt;
-import net.minecraft.server.v1_16_R3.NBTTagString;
-import net.minecraft.server.v1_16_R3.PacketPlayOutGameStateChange;
+import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.boss.BarColor;
@@ -27,6 +24,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.concurrent.TimeUnit;
 
 import static de.hglabor.utils.localization.Localization.t;
 
@@ -51,19 +50,21 @@ public class PoseidonKit extends AbstractKit implements Listener {
     }
 
     private ItemStack createPoseidonKitItem() {
-        ItemStack poseidon = new ItemBuilder(Material.TRIDENT).setUnbreakable(true).setEnchantment(Enchantment.RIPTIDE, 3).setName("Poseidon").build();
-        net.minecraft.server.v1_16_R3.ItemStack itemStack = CraftItemStack.asNMSCopy(poseidon);
-        NBTTagCompound damage = new NBTTagCompound();
-        //TODO doesnt work wanna reduce damage of trident
-        damage.set("AttributeName", NBTTagString.a("generic.attackDamage"));
-        damage.set("Name", NBTTagString.a("generic.attackDamage"));
-        damage.set("Amount", NBTTagInt.a(-8));
-        damage.set("Operation", NBTTagInt.a(0));
-        damage.set("UUIDLeast", NBTTagInt.a(894654));
-        damage.set("UUIDMost", NBTTagInt.a(2872));
-        damage.set("Slot", NBTTagString.a("mainhand"));
-        itemStack.setTag(damage);
-        return CraftItemStack.asBukkitCopy(itemStack);
+        net.minecraft.server.v1_16_R3.ItemStack itemStack = CraftItemStack.asNMSCopy(new ItemStack(Material.TRIDENT));
+        NBTTagList modifiers = new NBTTagList();
+        NBTTagCompound compound = new NBTTagCompound();
+        //Trident Attack Damage should be much lower than default:9 otherwise its too op
+        compound.set("AttributeName", NBTTagString.a("generic.attackDamage"));
+        compound.set("Name", NBTTagString.a("generic.attackDamage"));
+        compound.set("Amount", NBTTagInt.a(2));
+        compound.set("Operation", NBTTagInt.a(0));
+        compound.set("UUIDLeast", NBTTagInt.a(894654));
+        compound.set("UUIDMost", NBTTagInt.a(2872));
+        compound.set("Slot", NBTTagString.a("mainhand"));
+        modifiers.add(compound);
+        compound.set("AttributeModifiers", modifiers);
+        itemStack.setTag(compound);
+        return new ItemBuilder(CraftItemStack.asBukkitCopy(itemStack).clone()).setUnbreakable(true).setEnchantment(Enchantment.RIPTIDE, 3).setName("Poseidon").build();
     }
 
     @Override
@@ -71,6 +72,20 @@ public class PoseidonKit extends AbstractKit implements Listener {
         if (kitPlayer.getKitAttribute(rainRunnable) != null) {
             ((PoseidonRain) kitPlayer.getKitAttribute(rainRunnable)).stop();
         }
+    }
+
+    @EventHandler
+    public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
+        KitPlayer killer = KitApi.getInstance().getPlayer(event.getPlayer());
+        killer.getBukkitPlayer().ifPresent(player -> {
+            if (killer.getKitAttribute(rainRunnable) != null) {
+                ((PoseidonRain) killer.getKitAttribute(rainRunnable)).addTime(rainTime * 1000L);
+            } else {
+                PoseidonRain poseidonRain = new PoseidonRain(player);
+                killer.putKitAttribute(rainRunnable, poseidonRain);
+                poseidonRain.runTaskTimer(KitApi.getInstance().getPlugin(), 0, 20);
+            }
+        });
     }
 
     @KitEvent
@@ -109,8 +124,11 @@ public class PoseidonKit extends AbstractKit implements Listener {
         public void run() {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2 * 20, speedAmplifier));
             player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 2 * 20, regenerationAmplifier));
-            double progress = (double) (System.currentTimeMillis() / 1000) / (double) (endTime / 1000);
-            //TODO always gives 0 or 1 
+            long l = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) / 1000;
+            long l1 = TimeUnit.MILLISECONDS.toSeconds(endTime) / 1000;
+            System.out.println("Current: " + l + " EndTime:" + l1);
+            double progress = (double) ((int) l / (int) l1);
+            //TODO always gives 0 or 1
             System.out.println(progress);
             rainBar.setProgress(Math.min(progress, 1));
             System.out.println(rainBar.getProgress());
