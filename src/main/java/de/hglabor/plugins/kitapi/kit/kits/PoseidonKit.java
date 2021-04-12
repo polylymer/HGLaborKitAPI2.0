@@ -73,7 +73,6 @@ public class PoseidonKit extends AbstractKit {
     @KitEvent(clazz = PlayerDeathEvent.class)
     public void onPlayerKillsPlayer(KitPlayer killer, KitPlayer victim) {
         killer.getBukkitPlayer().ifPresent(player -> {
-            Bukkit.broadcastMessage("triggered haha?");
             if (killer.getKitAttribute(rainRunnable) != null) {
                 ((PoseidonRain) killer.getKitAttribute(rainRunnable)).addTime(rainTime);
             } else {
