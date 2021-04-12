@@ -76,6 +76,8 @@ public class PirateKit extends MultipleKitItemsKit implements Listener {
             List<Block> barrels = kitPlayer.getKitAttributeOrDefault(explosionBarrelsKey, Collections.emptyList());
             for (Block barrel : barrels) {
                 if (barrel.hasMetadata(explosionBarrelMetaKey)) {
+                    barrel.removeMetadata(explosionBarrelMetaKey, KitApi.getInstance().getPlugin());
+                    barrel.removeMetadata(UUID_KEY, KitApi.getInstance().getPlugin());
                     world.createExplosion(barrel.getLocation(), explosionPower);
                 }
             }
@@ -122,7 +124,14 @@ public class PirateKit extends MultipleKitItemsKit implements Listener {
 
                 KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
                 List<Block> barrels = kitPlayer.getKitAttributeOrDefault(explosionBarrelsKey, Collections.emptyList());
-                barrels.removeIf(barrel -> barrel.equals(block));
+                barrels.removeIf(barrel -> {
+                    if (barrel.equals(block)) {
+                        barrel.removeMetadata(explosionBarrelMetaKey, KitApi.getInstance().getPlugin());
+                        barrel.removeMetadata(UUID_KEY, KitApi.getInstance().getPlugin());
+                        return true;
+                    }
+                    return false;
+                });
             });
         }
     }
