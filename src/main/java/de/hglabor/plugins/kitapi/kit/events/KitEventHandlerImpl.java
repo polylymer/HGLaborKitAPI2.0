@@ -53,9 +53,11 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
 
     @EventHandler
     public void onToggleSneakEvent(PlayerToggleSneakEvent event) {
+        KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
         if (event.isSneaking()) {
-            KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getPlayer());
-            useKit(event, kitPlayer, kit -> kit.onPlayerToggleSneakEvent(event));
+            useKit(event, kitPlayer, kit -> kit.onPlayerIsSneakingEvent(event,kitPlayer ));
+        } else {
+            useKit(event, kitPlayer, kit -> kit.onPlayerIsNotSneakingAnymoreEvent(event,kitPlayer));
         }
     }
 

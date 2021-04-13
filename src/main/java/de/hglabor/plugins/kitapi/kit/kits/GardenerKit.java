@@ -3,36 +3,41 @@ package de.hglabor.plugins.kitapi.kit.kits;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
-import de.hglabor.plugins.kitapi.kit.items.KitItemBuilder;
-import de.hglabor.plugins.kitapi.kit.settings.LongArg;
+import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
-import org.bukkit.Bukkit;
+import de.hglabor.utils.noriskutils.CircleUtils;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Queue;
+import java.util.Set;
 
-public class GardenerKit extends AbstractKit {
+public class GardenerKit extends AbstractKit implements Listener {
     public final static GardenerKit INSTANCE = new GardenerKit();
-    private final String lastBlocksKey;
     private final List<Material> destructibleBlocks;
 
-    @LongArg
-    private final long delayInTicks;
+    @IntArg
+    private final int radius;
+    @IntArg
+    private final int heightRadius;
+    private final String blockListKey;
+    private final String gardenerBushKey;
 
     private GardenerKit() {
         super("Gardener", Material.SWEET_BERRIES);
-        mainKitItem = new KitItemBuilder(Material.POPPY).build();
-        lastBlocksKey = this.getName() + "lastBlocks";
         destructibleBlocks = Arrays.asList(
                 Material.AIR,
                 Material.GRASS,
@@ -40,21 +45,90 @@ public class GardenerKit extends AbstractKit {
                 Material.SNOW,
                 Material.DEAD_BUSH
         );
-        delayInTicks = 5;
+        radius = 5;
+        heightRadius = 3;
+        blockListKey = this.getName() + "blockListKey";
+        gardenerBushKey = this.getName() + "gardenerBushKey";
     }
 
     @Override
-    public void onEnable(KitPlayer kitPlayer) {
-        if (kitPlayer.getKitAttribute(lastBlocksKey) == null) {
-            kitPlayer.putKitAttribute(lastBlocksKey, new LinkedList<>());
+    public void onDeactivation(KitPlayer kitPlayer) {
+        Set<Block> blocks = kitPlayer.getKitAttributeOrDefault(blockListKey, new HashSet<>());
+        for (Block block : blocks) {
+            if (block.getType().equals(Material.SWEET_BERRY_BUSH)) {
+                block.removeMetadata(gardenerBushKey, KitApi.getInstance().getPlugin());
+                block.setType(Material.AIR);
+            }
+        }
+        blocks.clear();
+    }
+
+    @KitEvent
+    public void onPlayerIsSneakingEvent(PlayerToggleSneakEvent event, KitPlayer kitPlayer) {
+        Player player = event.getPlayer();
+        Set<Block> blocks = new HashSet<>();
+        for (int i = -heightRadius; i < heightRadius; i++) {
+            Set<Location> locations = CircleUtils.makeCircle(player.getLocation(), radius, 1, false, false, i);
+            for (Location location : locations) {
+                Block block = location.getBlock();
+                if (destructibleBlocks.contains(block.getType()) && block.getRelative(BlockFace.DOWN).getType().isSolid()) {
+                    block.setType(Material.SWEET_BERRY_BUSH);
+                    //Make Bush grow haha
+                    if (block.getBlockData() instanceof Ageable) {
+                        Ageable ageable = (Ageable) block.getBlockData();
+                        ageable.setAge(2);
+                        block.setBlockData(ageable);
+                    }
+                    block.setMetadata(gardenerBushKey, new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
+                    blocks.add(block);
+                }
+            }
+        }
+        kitPlayer.putKitAttribute(blockListKey, blocks);
+    }
+
+    @KitEvent
+    public void onPlayerIsNotSneakingAnymoreEvent(PlayerToggleSneakEvent event, KitPlayer kitPlayer) {
+        onDeactivation(kitPlayer);
+    }
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        Block block = event.getBlock();
+        if (block.hasMetadata(gardenerBushKey)) {
+            event.setCancelled(true);
         }
     }
 
-    @KitEvent
-    public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
+    @EventHandler
+    public void onBlockBreak(EntityDamageByBlockEvent event) {
+        Block block = event.getDamager();
+        if (block == null) {
+            return;
+        }
+        if (event.getEntity() instanceof Player) {
+            KitPlayer player = KitApi.getInstance().getPlayer((Player) event.getEntity());
+            if (!player.hasKit(this)) {
+                return;
+            }
+            if (block.hasMetadata(gardenerBushKey)) {
+                event.setCancelled(true);
+            }
+        }
     }
 
-    @KitEvent
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (event.getClickedBlock() == null) {
+            return;
+        }
+        Block clickedBlock = event.getClickedBlock();
+        if (clickedBlock.hasMetadata(gardenerBushKey)) {
+            event.setCancelled(true);
+        }
+    }
+
+    /*  @KitEvent
     public void onPlayerMoveEvent(PlayerMoveEvent event, KitPlayer kitPlayer) {
         Block fromBlock = event.getFrom().getBlock();
         if (fromBlock.equals(event.getTo().getBlock())) {
@@ -91,13 +165,10 @@ public class GardenerKit extends AbstractKit {
                 }
             }
         }, delayInTicks);
-    }
+    } */
 
-    @KitEvent
-    public void onEntityDamage(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player)) return;
-        if (event.getCause() == EntityDamageEvent.DamageCause.CONTACT)
-            event.setCancelled(true);
-    }
 
+    public String getGardenerBushKey() {
+        return gardenerBushKey;
+    }
 }
