@@ -64,7 +64,7 @@ public class GladiatorKit extends AbstractKit implements Listener {
 
     @KitEvent
     @Override
-    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, Player rightClicked) {
+    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, KitPlayer kitPlayer, Player rightClicked) {
         Player player = event.getPlayer();
         World world = player.getWorld();
 
@@ -89,7 +89,6 @@ public class GladiatorKit extends AbstractKit implements Listener {
             block.setMetadata(KitMetaData.GLADIATOR_BLOCK.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
         }
 
-        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         GladiatorFight gladiatorFight = new GladiatorFight(gladiatorRegion, kitPlayer, KitApi.getInstance().getPlayer(rightClicked), radius, height);
         kitPlayer.putKitAttribute(attributeKey, gladiatorFight);
         gladiatorFight.runTaskTimer(KitApi.getInstance().getPlugin(), 0, 20);

@@ -39,12 +39,11 @@ public class SquidKit extends AbstractKit {
 
     @KitEvent
     @Override
-    public void onPlayerToggleSneakEvent(PlayerToggleSneakEvent event) {
+    public void onPlayerIsSneakingEvent(PlayerToggleSneakEvent event, KitPlayer kitPlayer) {
         if (!event.isSneaking()) {
             return;
         }
         Player player = event.getPlayer();
-        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         int counter = 0;
         for (KitPlayer enemyKitPlayer : getKitPlayerInRadius(player)) {
             Player nearbyPlayer = Bukkit.getPlayer(enemyKitPlayer.getUUID());

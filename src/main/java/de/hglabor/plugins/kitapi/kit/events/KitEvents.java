@@ -33,7 +33,10 @@ public abstract class KitEvents {
     public void onPlayerKillsPlayer(KitPlayer killer, KitPlayer dead) {
     }
 
-    public void onPlayerToggleSneakEvent(PlayerToggleSneakEvent event) {
+    public void onPlayerIsSneakingEvent(PlayerToggleSneakEvent event, KitPlayer kitPlayer) {
+    }
+
+    public void onPlayerIsNotSneakingAnymoreEvent(PlayerToggleSneakEvent event, KitPlayer kitPlayer) {
     }
 
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
@@ -42,7 +45,7 @@ public abstract class KitEvents {
     public void onPlayerLeftClickKitItem(PlayerInteractEvent event, KitPlayer kitPlayer) {
     }
 
-    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, Player rightClicked) {
+    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, KitPlayer kitPlayer, Player rightClicked) {
     }
 
     public void onPlayerRightClickLivingEntityWithKitItem(PlayerInteractAtEntityEvent event, KitPlayer kitPlayer, LivingEntity entity) {
