@@ -65,17 +65,6 @@ public class SoulstealerKit extends AbstractKit implements Listener {
     }
 
     @EventHandler
-    public void onCraftItem(CraftItemEvent event) {
-        for (ItemStack itemStack : event.getInventory()) {
-            if (itemStack == null) continue;
-            if (itemStack.isSimilar(firstSword)) {
-                event.setCancelled(true);
-                return;
-            }
-        }
-    }
-
-    @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {
             Player damager = (Player) event.getDamager();

@@ -82,12 +82,12 @@ public class KitItemHandler implements Listener {
 
     @EventHandler
     public void onCraftItem(CraftItemEvent event) {
-        KitPlayer kitPlayer = playerSupplier.getKitPlayer((Player) event.getWhoClicked());
         for (ItemStack ingridient : event.getInventory().getMatrix()) {
             if (ingridient == null) continue;
-            for (AbstractKit kit : kitPlayer.getKits())
-                if (kit.isKitItem(ingridient))
-                    event.setCancelled(true);
+            //TODO I dont know if this could lag?
+            if (ingridient.hasItemMeta() && KitApi.getInstance().getAllKits().stream().anyMatch(kit -> kit.isKitItem(ingridient))) {
+                event.setCancelled(true);
+            }
         }
     }
 
