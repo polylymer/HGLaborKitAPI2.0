@@ -133,6 +133,8 @@ public class BeequeenKit extends AbstractKit implements Listener {
             for (Bee bee : bees) {
                 bee.setAnger(5);
                 bee.setTarget(player);
+                //TODO still trash custom pathfinder would be better
+                ((CraftBee) bee).getHandle().anger();
                 ((CraftBee) bee).getHandle().setAngerTarget(player.getUniqueId());
             }
         }
