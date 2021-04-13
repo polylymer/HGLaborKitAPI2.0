@@ -65,7 +65,7 @@ public class LastHitInformation {
         return lastDamagerTimestamp;
     }
 
-    private void clear() {
+    public void clear() {
         lastEntity = null;
         lastPlayer = null;
         lastDamager = null;

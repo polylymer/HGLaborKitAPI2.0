@@ -123,6 +123,7 @@ public class KitEventHandlerImpl extends KitEventHandler implements Listener {
     @EventHandler
     public void onKitPlayerDeath(PlayerDeathEvent event) {
         KitPlayer kitPlayer = playerSupplier.getKitPlayer(event.getEntity());
+        kitPlayer.getLastHitInformation().clear();
         useKit(event, kitPlayer, kit -> kit.onKitPlayerDeath(event));
     }
 
