@@ -13,12 +13,16 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.WitherSkull;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class ReaperKit extends AbstractKit {
+public class ReaperKit extends AbstractKit implements Listener {
     public static final ReaperKit INSTANCE = new ReaperKit();
     @IntArg
     private final int maxUses;
@@ -28,6 +32,7 @@ public class ReaperKit extends AbstractKit {
     private final int witherDuration, witherAmplifier;
     @FloatArg(min = 0.0F)
     private final float cooldown;
+    private final String isReaperSkullKey;
 
     private ReaperKit() {
         super("Reaper", Material.WITHER_SKELETON_SKULL);
@@ -37,7 +42,15 @@ public class ReaperKit extends AbstractKit {
         blueWitherLikelihood = 5;
         witherAmplifier = 1;
         witherDuration = 3;
+        isReaperSkullKey = this.getName() + "isReaperSkull";
         setMainKitItem(new ItemBuilder(Material.STONE_HOE).setEnchantment(Enchantment.VANISHING_CURSE, 1).setUnbreakable(true).build());
+    }
+
+    @EventHandler
+    public void onEntityExplode(EntityExplodeEvent event) {
+        if (event.getEntity().hasMetadata(isReaperSkullKey)) {
+            event.blockList().removeIf(block -> block.hasMetadata(BeequeenKit.INSTANCE.getIsHoneyBlockKey()));
+        }
     }
 
     @KitEvent
@@ -48,11 +61,13 @@ public class ReaperKit extends AbstractKit {
         }
     }
 
+
     @KitEvent
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         WitherSkull witherSkull = player.getWorld().spawn(player.getLocation().clone().add(0, 1, 0), WitherSkull.class);
+        witherSkull.setMetadata(isReaperSkullKey, new FixedMetadataValue(KitApi.getInstance().getPlugin(), isReaperSkullKey));
         if (ChanceUtils.roll(blueWitherLikelihood)) {
             witherSkull.setCharged(true);
         }
@@ -63,5 +78,9 @@ public class ReaperKit extends AbstractKit {
     @Override
     public float getCooldown() {
         return cooldown;
+    }
+
+    public String getIsReaperSkullKey() {
+        return isReaperSkullKey;
     }
 }

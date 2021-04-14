@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftBee;
 import org.bukkit.entity.Bee;
 import org.bukkit.entity.Entity;
@@ -71,6 +72,10 @@ public class BeequeenKit extends AbstractKit implements Listener {
         HoneyTrail honeyTrail = new HoneyTrail(rightClicked);
         honeyTrail.runTaskTimer(KitApi.getInstance().getPlugin(), 0, movementTick);
         kitPlayer.putKitAttribute(honeyTrailKey, honeyTrail);
+    }
+
+    public String getIsHoneyBlockKey() {
+        return isHoneyBlockKey;
     }
 
     @Override
