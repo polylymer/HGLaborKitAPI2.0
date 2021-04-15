@@ -17,6 +17,7 @@ import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.WorldEditUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -71,6 +72,9 @@ public class GladiatorKit extends AbstractKit implements Listener {
         if (player.hasMetadata(KitMetaData.INGLADIATOR.getKey()) || rightClicked.hasMetadata(KitMetaData.INGLADIATOR.getKey())) {
             return;
         }
+
+        //Prevent Hulk crash?
+        rightClicked.getPassengers().forEach(Entity::leaveVehicle);
 
         rightClicked.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
         player.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
