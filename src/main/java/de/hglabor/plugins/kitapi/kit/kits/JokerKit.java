@@ -59,7 +59,7 @@ public class JokerKit extends AbstractKit {
         private final List<Integer> inventorySlots;
 
         private final List<Material> swords = Arrays.asList(
-                Material.WOODEN_SHOVEL,
+                Material.WOODEN_SWORD,
                 Material.STONE_SWORD,
                 Material.IRON_SWORD,
                 Material.DIAMOND_SWORD
