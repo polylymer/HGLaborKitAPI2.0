@@ -53,7 +53,7 @@ public class ShapeShifterKit extends AbstractKit {
         Player player = event.getPlayer();
         if (block != null) {
             if (DISABLED_BLOCKS.contains(block.getType())) {
-                player.sendMessage(Localization.INSTANCE.getMessage("shapeshifter.denyTransformation", ChatUtils.getPlayerLocale(player)));
+                player.sendMessage(Localization.INSTANCE.getMessage("shapeshifter.denyTransformation", ChatUtils.locale(player)));
                 return;
             }
             MiscDisguise miscDisguise = new MiscDisguise(DisguiseType.FALLING_BLOCK, block.getType());

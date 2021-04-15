@@ -51,10 +51,10 @@ public class EndermageSearch extends BukkitRunnable {
             EndermageProperties endermageProperties = kitPlayer.getKitAttribute(EndermageKit.INSTANCE.getHasBeenMagedKey());
             if (endermageProperties == null) {
                 player.removeMetadata(EndermageKit.INSTANCE.getHasBeenMagedKey(), plugin);
-                player.sendMessage(Localization.INSTANCE.getMessage("endermage.invincibilityExpired", ChatUtils.getPlayerLocale(player)));
+                player.sendMessage(Localization.INSTANCE.getMessage("endermage.invincibilityExpired", ChatUtils.locale(player)));
             } else if (endermageProperties.getMagedTimeStamp() + (delay * 1000L) <= System.currentTimeMillis()) {
                 player.removeMetadata(EndermageKit.INSTANCE.getHasBeenMagedKey(), plugin);
-                player.sendMessage(Localization.INSTANCE.getMessage("endermage.invincibilityExpired", ChatUtils.getPlayerLocale(player)));
+                player.sendMessage(Localization.INSTANCE.getMessage("endermage.invincibilityExpired", ChatUtils.locale(player)));
             }
         }, delay * 21L);
     }
@@ -105,11 +105,11 @@ public class EndermageSearch extends BukkitRunnable {
             player.sendMessage(Localization.INSTANCE.getMessage("endermage.successfulTeleport",
                     ImmutableMap.of("amount", String.valueOf(magedPeople),
                             "timeInSeconds", String.valueOf(delay)),
-                    ChatUtils.getPlayerLocale(player)));
+                    ChatUtils.locale(player)));
         } else {
             player.sendMessage(Localization.INSTANCE.getMessage("endermage.gotTeleported",
                     ImmutableMap.of("timeInSeconds", String.valueOf(delay)),
-                    ChatUtils.getPlayerLocale(player)));
+                    ChatUtils.locale(player)));
         }
         removeEndermageMetaDataLater(player, delay);
     }

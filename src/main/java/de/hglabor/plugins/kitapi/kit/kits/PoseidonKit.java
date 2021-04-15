@@ -90,7 +90,7 @@ public class PoseidonKit extends AbstractKit {
         private int timer;
 
         private PoseidonRain(Player player) {
-            this.rainBar = Bukkit.createBossBar(t("poseidon.rain", ChatUtils.getPlayerLocale(player)), BarColor.BLUE, BarStyle.SOLID);
+            this.rainBar = Bukkit.createBossBar(t("poseidon.rain", ChatUtils.locale(player)), BarColor.BLUE, BarStyle.SOLID);
             this.player = player;
             this.endTime = rainTime;
             this.startRain();

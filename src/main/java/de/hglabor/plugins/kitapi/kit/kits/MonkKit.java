@@ -50,16 +50,16 @@ public class MonkKit extends AbstractKit {
     public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, KitPlayer kitPlayer, Player rightClicked) {
         Player player = event.getPlayer();
         PlayerInventory inventory = rightClicked.getInventory();
-        player.sendMessage(Localization.INSTANCE.getMessage("monk.successful", ImmutableMap.of("enemy", rightClicked.getName()), ChatUtils.getPlayerLocale(player)));
+        player.sendMessage(Localization.INSTANCE.getMessage("monk.successful", ImmutableMap.of("enemy", rightClicked.getName()), ChatUtils.locale(player)));
         if (ChanceUtils.roll(likelihoodToSwitchArmor)) {
             for (EquipmentSlot armorSlot : armorSlots) {
                 if (inventory.getItem(armorSlot) == null) continue;
-                rightClicked.sendMessage(Localization.INSTANCE.getMessage("monk.itemWasSwitched", ChatUtils.getPlayerLocale(rightClicked)));
+                rightClicked.sendMessage(Localization.INSTANCE.getMessage("monk.itemWasSwitched", ChatUtils.locale(rightClicked)));
                 switchItem(inventory, 0, armorSlot);
                 return;
             }
         }
-        rightClicked.sendMessage(Localization.INSTANCE.getMessage("monk.itemWasSwitched", ChatUtils.getPlayerLocale(rightClicked)));
+        rightClicked.sendMessage(Localization.INSTANCE.getMessage("monk.itemWasSwitched", ChatUtils.locale(rightClicked)));
         switchItem(inventory, 0, inventorySlots.get(random.nextInt(inventorySlots.size())));
         KitApi.getInstance().getPlayer(player).activateKitCooldown(this);
     }

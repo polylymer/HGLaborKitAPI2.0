@@ -117,7 +117,7 @@ public class PirateKit extends MultipleKitItemsKit implements Listener {
             Optional<Player> optionalPlayer = Optional.ofNullable(Bukkit.getPlayer(owner));
             optionalPlayer.ifPresent(player -> {
                 String key = "pirat.destroyed";
-                Locale locale = ChatUtils.getPlayerLocale(owner);
+                Locale locale = ChatUtils.locale(owner);
                 ImmutableMap<String, String> arguments = ImmutableMap.of("location", block.getLocation().toString());
 
                 player.sendMessage(t(key, arguments, locale));

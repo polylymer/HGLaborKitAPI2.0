@@ -72,7 +72,7 @@ public class ArcherKit extends AbstractKit implements Listener {
                         "hearts", String.valueOf((int) ((LivingEntity) hitEntity).getHealth()),
                         "name", hitEntity.getName());
                 String key = "archer.hit";
-                Locale playerLocale = ChatUtils.getPlayerLocale(player);
+                Locale playerLocale = ChatUtils.locale(player);
                 player.sendMessage(t(key, hearts, playerLocale));
             });
         }

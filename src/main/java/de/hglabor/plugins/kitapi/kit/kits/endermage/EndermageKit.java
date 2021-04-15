@@ -65,7 +65,7 @@ public class EndermageKit extends AbstractKit implements Listener {
 
             EndermageSearch endermageRunnable = kitPlayer.getKitAttribute(attributeKey);
             if (endermageRunnable != null && endermageRunnable.isSearchingForPlayers) {
-                player.sendMessage(Localization.INSTANCE.getMessage("endermage.alreadySearching", ChatUtils.getPlayerLocale(player)));
+                player.sendMessage(Localization.INSTANCE.getMessage("endermage.alreadySearching", ChatUtils.locale(player)));
                 return;
             }
 
