@@ -86,7 +86,9 @@ public class GladiatorKit extends AbstractKit implements Listener {
 
         for (BlockVector3 blockVector3 : gladiatorRegion) {
             Block block = world.getBlockAt(BukkitAdapter.adapt(world, blockVector3));
-            block.setMetadata(KitMetaData.GLADIATOR_BLOCK.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
+            if (block.getType().isSolid()) {
+                block.setMetadata(KitMetaData.GLADIATOR_BLOCK.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
+            }
         }
 
         GladiatorFight gladiatorFight = new GladiatorFight(gladiatorRegion, kitPlayer, KitApi.getInstance().getPlayer(rightClicked), radius, height);
