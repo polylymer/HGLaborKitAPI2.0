@@ -1,6 +1,5 @@
 package de.hglabor.plugins.kitapi.kit.kits.endermage;
 
-import com.google.common.collect.ImmutableMap;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
@@ -18,6 +17,10 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Map;
+
+import static de.hglabor.utils.localization.Localization.t;
 
 public class EndermageSearch extends BukkitRunnable {
     protected final int searchDuration;
@@ -99,16 +102,17 @@ public class EndermageSearch extends BukkitRunnable {
         teleportLocation.setPitch(0F);
         teleportLocation.setYaw(0F);
         player.teleport(teleportLocation);
+        player.leaveVehicle();
         player.setMetadata(EndermageKit.INSTANCE.getHasBeenMagedKey(), new FixedMetadataValue(plugin, ""));
         kitPlayer.putKitAttribute(EndermageKit.INSTANCE.getHasBeenMagedKey(), new EndermageProperties(System.currentTimeMillis()));
         if (isMage) {
-            player.sendMessage(Localization.INSTANCE.getMessage("endermage.successfulTeleport",
-                    ImmutableMap.of("amount", String.valueOf(magedPeople),
+            player.sendMessage(t("endermage.successfulTeleport",
+                    Map.of("amount", String.valueOf(magedPeople),
                             "timeInSeconds", String.valueOf(delay)),
                     ChatUtils.locale(player)));
         } else {
-            player.sendMessage(Localization.INSTANCE.getMessage("endermage.gotTeleported",
-                    ImmutableMap.of("timeInSeconds", String.valueOf(delay)),
+            player.sendMessage(t("endermage.gotTeleported",
+                    Map.of("timeInSeconds", String.valueOf(delay)),
                     ChatUtils.locale(player)));
         }
         removeEndermageMetaDataLater(player, delay);
