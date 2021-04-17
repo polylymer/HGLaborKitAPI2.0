@@ -55,12 +55,12 @@ public class MonkKit extends AbstractKit {
             for (EquipmentSlot armorSlot : armorSlots) {
                 if (inventory.getItem(armorSlot) == null) continue;
                 rightClicked.sendMessage(Localization.INSTANCE.getMessage("monk.itemWasSwitched", ChatUtils.locale(rightClicked)));
-                switchItem(inventory, 0, armorSlot);
+                switchItem(inventory, inventory.getHeldItemSlot(), armorSlot);
                 return;
             }
         }
         rightClicked.sendMessage(Localization.INSTANCE.getMessage("monk.itemWasSwitched", ChatUtils.locale(rightClicked)));
-        switchItem(inventory, 0, inventorySlots.get(random.nextInt(inventorySlots.size())));
+        switchItem(inventory, inventory.getHeldItemSlot(), inventorySlots.get(random.nextInt(inventorySlots.size())));
         KitApi.getInstance().getPlayer(player).activateKitCooldown(this);
     }
 
