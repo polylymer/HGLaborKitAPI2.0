@@ -9,6 +9,7 @@ import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ItemBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -198,4 +199,16 @@ public abstract class AbstractKit extends KitEvents {
     public void setKitItemPlaceable(boolean kitItemPlaceable) {
         isKitItemPlaceable = kitItemPlaceable;
     }
+
+    protected List<KitPlayer> getKitPlayersInRadius(Player player, double radius) {
+        List<KitPlayer> enemies = new ArrayList<>();
+        for (Player nearbyPlayer : player.getWorld().getNearbyEntitiesByType(Player.class, player.getLocation(), radius)) {
+            KitPlayer nearbyKitPlayer = KitApi.getInstance().getPlayer(nearbyPlayer);
+            if (nearbyKitPlayer.isValid()) {
+                enemies.add(nearbyKitPlayer);
+            }
+        }
+        return enemies;
+    }
+
 }

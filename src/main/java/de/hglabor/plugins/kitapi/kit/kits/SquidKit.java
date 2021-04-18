@@ -45,7 +45,7 @@ public class SquidKit extends AbstractKit {
         }
         Player player = event.getPlayer();
         int counter = 0;
-        for (KitPlayer enemyKitPlayer : getKitPlayerInRadius(player)) {
+        for (KitPlayer enemyKitPlayer : getKitPlayersInRadius(player, radius)) {
             Player nearbyPlayer = Bukkit.getPlayer(enemyKitPlayer.getUUID());
             if (nearbyPlayer != player && nearbyPlayer != null) {
                 if (enemyKitPlayer.isValid()) {
@@ -59,17 +59,6 @@ public class SquidKit extends AbstractKit {
         if (counter > 0) {
             kitPlayer.activateKitCooldown(this);
         }
-    }
-
-    private List<KitPlayer> getKitPlayerInRadius(Player player) {
-        List<KitPlayer> enemies = new ArrayList<>();
-        for (Player nearbyPlayer : player.getWorld().getNearbyEntitiesByType(Player.class, player.getLocation(), radius)) {
-            KitPlayer nearbyKitPlayer = KitApi.getInstance().getPlayer(nearbyPlayer);
-            if (nearbyKitPlayer.isValid()) {
-                enemies.add(nearbyKitPlayer);
-            }
-        }
-        return enemies;
     }
 
     @Override
