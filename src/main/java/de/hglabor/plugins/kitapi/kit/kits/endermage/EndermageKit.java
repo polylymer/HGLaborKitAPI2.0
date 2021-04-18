@@ -59,6 +59,12 @@ public class EndermageKit extends AbstractKit implements Listener {
             Player player = event.getPlayer();
             KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
 
+            // sonst stuckt man manchmal in block das blöd
+            if (endermagePortal.getLocation().add(0, 1, 0).getBlock().getType() != Material.AIR || endermagePortal.getLocation().add(0, 2, 0).getBlock().getType() != Material.AIR) {
+                player.sendMessage(Localization.INSTANCE.getMessage("endermage.notEnoughSpace", ChatUtils.locale(player)));
+                return;
+            }
+
             if (player.hasMetadata(KitMetaData.INGLADIATOR.getKey())) {
                 return;
             }
@@ -70,8 +76,9 @@ public class EndermageKit extends AbstractKit implements Listener {
             }
 
             BlockData oldBlockData = endermagePortal.getBlockData();
+            Material oldBlock = endermagePortal.getType();
             endermagePortal.setType(Material.END_PORTAL_FRAME);
-            EndermageSearch newEndermageRunnable = new EndermageSearch(player, endermagePortal, oldBlockData);
+            EndermageSearch newEndermageRunnable = new EndermageSearch(player, endermagePortal, oldBlockData, oldBlock);
             kitPlayer.putKitAttribute(attributeKey, newEndermageRunnable);
             newEndermageRunnable.runTaskTimer(KitApi.getInstance().getPlugin(), 0, 20);
         }
