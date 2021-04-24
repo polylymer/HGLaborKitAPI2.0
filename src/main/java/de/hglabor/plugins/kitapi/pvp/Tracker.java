@@ -1,4 +1,3 @@
-
 package de.hglabor.plugins.kitapi.pvp;
 
 import com.google.common.collect.ImmutableMap;
@@ -64,6 +63,8 @@ public class Tracker implements Listener {
         List<Pair<Entity, Double>> pairs = new ArrayList<>();
         for (Entity possibleTarget : playerList.getTrackingTargets()) {
             if (possibleTarget == null)
+                continue;
+            if (!tracker.getWorld().equals(possibleTarget.getWorld()))
                 continue;
             if (tracker == possibleTarget)
                 continue;
