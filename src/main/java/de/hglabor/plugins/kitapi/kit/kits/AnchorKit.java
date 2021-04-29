@@ -18,7 +18,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 
-public class AnchorKit extends AbstractKit implements Listener {
+public class AnchorKit extends AbstractKit {
     public static final AnchorKit INSTANCE = new AnchorKit();
     @SoundArg
     private final Sound hitSound;
