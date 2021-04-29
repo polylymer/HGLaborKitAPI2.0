@@ -39,6 +39,7 @@ public class StomperKit extends AbstractKit {
                 if (livingEntity instanceof Player) {
                     Player playerEntity = (Player) livingEntity;
                     KitPlayer kitPlayer = KitApi.getInstance().getPlayer(playerEntity);
+                    if (kitPlayer.hasKit(NeoKit.INSTANCE)) return;
                     if (kitPlayer.isValid()) {
                         if (!playerEntity.isSneaking()) {
                             livingEntity.damage(STOMPER_DAMAGE, stomper);
