@@ -3,12 +3,13 @@ package de.hglabor.plugins.kitapi.kit.kits;
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
-import de.hglabor.plugins.kitapi.kit.settings.IntArg;
+import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.SoundArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -18,14 +19,13 @@ public class AnchorKit extends AbstractKit {
     public static final AnchorKit INSTANCE = new AnchorKit();
     @SoundArg
     private final Sound hitSound;
-    //0 = false, 1 = true (weil boolarg nicht funktioniert)
-    @IntArg(min = 0, max = 1)
-    private final int setVelocity;
+    @FloatArg
+    private final float soundVolume;
 
     private AnchorKit() {
         super("Anchor", Material.ANVIL);
-        hitSound = Sound.BLOCK_ANVIL_HIT;
-        setVelocity = 1;
+        hitSound = Sound.BLOCK_ANVIL_PLACE;
+        soundVolume = 0.3F;
     }
 
     @KitEvent
@@ -43,16 +43,22 @@ public class AnchorKit extends AbstractKit {
     private void handleAnchor(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof LivingEntity)) return;
         LivingEntity entity = (LivingEntity) event.getEntity();
-        if (setVelocity == 0) {
-            event.setCancelled(true);
-            entity.damage(event.getFinalDamage());
-        } else {
-            Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> {
-                entity.setVelocity(new Vector(0, 0, 0));
-            }, 1L);
-        }
-
+        Entity damager = event.getDamager();
+        Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> {
+            entity.setVelocity(new Vector(0, 0, 0));
+        }, 1L);
+        damager.getLocation().getWorld().playSound(
+                damager.getLocation(),
+                hitSound,
+                soundVolume,
+                1F
+        );
+        entity.getLocation().getWorld().playSound(
+                entity.getLocation(),
+                hitSound,
+                soundVolume,
+                1F
+        );
     }
-
 }
 
