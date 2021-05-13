@@ -13,6 +13,7 @@ import de.hglabor.utils.noriskutils.ItemBuilder;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
+import me.libraryaddict.disguise.disguisetypes.MobDisguise;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -97,7 +98,7 @@ public class ChameleonKit extends AbstractKit {
                         PersistentDataContainer dataContainer = onClick.getCurrentItem().getItemMeta().getPersistentDataContainer();
                         if(dataContainer.has(BINDED_MOB_KEY, PersistentDataType.STRING)) {
                             EntityType entityType = EntityType.valueOf(dataContainer.get(BINDED_MOB_KEY, PersistentDataType.STRING));
-                            DisguiseAPI.disguiseEntity(clickedPlayer, new MiscDisguise(DisguiseType.valueOf(entityType.name())));
+                            DisguiseAPI.disguiseEntity(clickedPlayer, new MobDisguise(DisguiseType.getType(entityType)));
                             clickedPlayer.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 255, false, false));
                         }
                     }
@@ -119,7 +120,7 @@ public class ChameleonKit extends AbstractKit {
     public void onHitLivingEntityWithKitItem(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
         if(!(entity instanceof Player)) {
             if(attacker.getKitAttribute(catchedMobKey) == null) {
-                attacker.putKitAttribute(catchedMobKey, Collections.singletonList(entity.getType()));
+                attacker.putKitAttribute(catchedMobKey, new ArrayList<>(Collections.singletonList(entity.getType())));
             } else {
                 ArrayList<EntityType> catchedMobs = attacker.getKitAttribute(catchedMobKey);
                 if(catchedMobs.size() == maxAnimals) {
@@ -132,7 +133,7 @@ public class ChameleonKit extends AbstractKit {
                         attacker.putKitAttribute(catchedMobKey, catchedMobs);
                     }
                     attacker.getBukkitPlayer().ifPresent(player -> {
-                        DisguiseAPI.disguiseEntity(player, new MiscDisguise(DisguiseType.valueOf(entity.getType().name())));
+                        DisguiseAPI.disguiseEntity(player, new MobDisguise(DisguiseType.getType(entity.getType())));
                         player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 255, false, false));
                     });
                 }
