@@ -77,33 +77,38 @@ public class ChameleonKit extends AbstractKit {
         builder.withName(Localization.INSTANCE.getMessage("chameleon.inventoryName", ChatUtils.locale(player)));
         builder.withSlots(Utils.translateGuiScale(maxAnimals));
         int slot = -1;
-        for (EntityType caughtEntity : ((List<EntityType>) KitApi.getInstance().getPlayer(player).getKitAttribute(catchedMobKey))) {
-            slot++;
-            Material material;
-            try {
-                material = Material.valueOf(caughtEntity.name() + "_SPAWN_EGG");
-            } catch (Exception e) {
-                material = Material.SPAWNER;
-            }
-            ItemStack itemStack = new ItemBuilder(material).setName(caughtEntity.name().replace("_", " ")).setDescription("", ChatColor.DARK_AQUA.toString() + ChatColor.ITALIC + Localization.INSTANCE.getMessage("chameleon.tooltip", ChatUtils.locale(player))).build();
-            ItemMeta meta = itemStack.getItemMeta();
-            meta.getPersistentDataContainer().set(BINDED_MOB_KEY, PersistentDataType.STRING, caughtEntity.name());
-            itemStack.setItemMeta(meta);
-            builder.withItem(itemStack, slot, onClick -> {
-               Player clickedPlayer = (Player) onClick.getWhoClicked();
-               clickedPlayer.closeInventory();
-               KitPlayer kitPlayer = KitApi.getInstance().getPlayer(clickedPlayer);
-                if(!kitPlayer.areKitsDisabled() && kitPlayer.isValid()) {
-                    if(onClick.getCurrentItem().hasItemMeta()) {
-                        PersistentDataContainer dataContainer = onClick.getCurrentItem().getItemMeta().getPersistentDataContainer();
-                        if(dataContainer.has(BINDED_MOB_KEY, PersistentDataType.STRING)) {
-                            EntityType entityType = EntityType.valueOf(dataContainer.get(BINDED_MOB_KEY, PersistentDataType.STRING));
-                            DisguiseAPI.disguiseEntity(clickedPlayer, new MobDisguise(DisguiseType.getType(entityType)));
-                            clickedPlayer.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 255, false, false));
+        if(KitApi.getInstance().getPlayer(player).getKitAttribute(catchedMobKey) != null) {
+            for (EntityType caughtEntity : ((List<EntityType>) KitApi.getInstance().getPlayer(player).getKitAttribute(catchedMobKey))) {
+                slot++;
+                Material material;
+                try {
+                    material = Material.valueOf(caughtEntity.name() + "_SPAWN_EGG");
+                } catch (Exception e) {
+                    material = Material.SPAWNER;
+                }
+                ItemStack itemStack = new ItemBuilder(material).setName(caughtEntity.name().replace("_", " ")).setDescription("", ChatColor.DARK_AQUA.toString() + ChatColor.ITALIC + Localization.INSTANCE.getMessage("chameleon.tooltip", ChatUtils.locale(player))).build();
+                ItemMeta meta = itemStack.getItemMeta();
+                meta.getPersistentDataContainer().set(BINDED_MOB_KEY, PersistentDataType.STRING, caughtEntity.name());
+                itemStack.setItemMeta(meta);
+                builder.withItem(itemStack, slot, onClick -> {
+                    Player clickedPlayer = (Player) onClick.getWhoClicked();
+                    clickedPlayer.closeInventory();
+                    KitPlayer kitPlayer = KitApi.getInstance().getPlayer(clickedPlayer);
+                    if(!kitPlayer.areKitsDisabled() && kitPlayer.isValid()) {
+                        if(onClick.getCurrentItem().hasItemMeta()) {
+                            PersistentDataContainer dataContainer = onClick.getCurrentItem().getItemMeta().getPersistentDataContainer();
+                            if(dataContainer.has(BINDED_MOB_KEY, PersistentDataType.STRING)) {
+                                EntityType entityType = EntityType.valueOf(dataContainer.get(BINDED_MOB_KEY, PersistentDataType.STRING));
+                                clickedPlayer.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 255, false, false));
+                                DisguiseAPI.disguiseEntity(clickedPlayer, new MobDisguise(DisguiseType.getType(entityType)));
+                                if(DisguiseAPI.getDisguise(clickedPlayer).getEntity() instanceof LivingEntity) {
+                                    ((LivingEntity) DisguiseAPI.getDisguise(clickedPlayer).getEntity()).removePotionEffect(PotionEffectType.INVISIBILITY);
+                                }
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
         }
         player.openInventory(builder.build());
     }
@@ -133,8 +138,11 @@ public class ChameleonKit extends AbstractKit {
                         attacker.putKitAttribute(catchedMobKey, catchedMobs);
                     }
                     attacker.getBukkitPlayer().ifPresent(player -> {
-                        DisguiseAPI.disguiseEntity(player, new MobDisguise(DisguiseType.getType(entity.getType())));
                         player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 255, false, false));
+                        DisguiseAPI.disguiseEntity(player, new MobDisguise(DisguiseType.getType(entity.getType())));
+                        if(DisguiseAPI.getDisguise(player).getEntity() instanceof LivingEntity) {
+                            ((LivingEntity) DisguiseAPI.getDisguise(player).getEntity()).removePotionEffect(PotionEffectType.INVISIBILITY);
+                        }
                     });
                 }
             }
