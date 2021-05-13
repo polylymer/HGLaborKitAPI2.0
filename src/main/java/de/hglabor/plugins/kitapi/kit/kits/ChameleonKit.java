@@ -129,7 +129,7 @@ public class ChameleonKit extends AbstractKit {
                 } else {
                     if(!catchedMobs.contains(entity.getType())) {
                         catchedMobs.add(entity.getType());
-                        attacker.updateKitAttribute(catchedMobKey, catchedMobs);
+                        attacker.putKitAttribute(catchedMobKey, catchedMobs);
                     }
                     attacker.getBukkitPlayer().ifPresent(player -> {
                         DisguiseAPI.disguiseEntity(player, new MiscDisguise(DisguiseType.valueOf(entity.getType().name())));
