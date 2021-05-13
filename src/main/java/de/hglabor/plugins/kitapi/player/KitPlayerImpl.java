@@ -127,6 +127,12 @@ public abstract class KitPlayerImpl implements KitPlayer {
     }
 
     @Override
+    public <T> void updateKitAttribute(String key, T value) {
+        kitAttributes.remove(key);
+        kitAttributes.put(key, value);
+    }
+
+    @Override
     public boolean isInInventory() {
         return inInventory;
     }

@@ -74,6 +74,8 @@ public interface KitPlayer {
 
     <T> void putKitAttribute(String key, T value);
 
+    <T> void updateKitAttribute(String key, T value);
+
     String printKits();
 
     int getLeftCps();
