@@ -2,6 +2,7 @@ package de.hglabor.plugins.kitapi.kit.kits.endermage;
 
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.config.KitMetaData;
+import de.hglabor.plugins.kitapi.kit.kits.NeoKit;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.plugins.kitapi.util.Utils;
 import de.hglabor.utils.localization.Localization;
@@ -75,7 +76,7 @@ public class EndermageSearch extends BukkitRunnable {
                 if (nearbyPlayer == player) {
                     continue;
                 }
-                if (nearbyKitPlayer.hasKit(EndermageKit.INSTANCE) || nearbyPlayer.hasMetadata(KitMetaData.INGLADIATOR.getKey()) || !nearbyKitPlayer.isValid()) {
+                if (nearbyKitPlayer.hasKit(EndermageKit.INSTANCE) || nearbyKitPlayer.hasKit(NeoKit.INSTANCE)|| nearbyPlayer.hasMetadata(KitMetaData.INGLADIATOR.getKey()) || !nearbyKitPlayer.isValid()) {
                     continue;
                 }
 
