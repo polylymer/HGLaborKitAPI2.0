@@ -89,7 +89,7 @@ public class GrapplerKit extends AbstractKit implements Listener {
                     shooter.setGravity(true);
                     shooter.setVelocity(vector);
                     if (inCombat)
-                        shooter.sendMessage(Localization.INSTANCE.getMessage("grappler.inCombat", ChatUtils.getPlayerLocale(shooter)));
+                        shooter.sendMessage(Localization.INSTANCE.getMessage("grappler.inCombat", ChatUtils.locale(shooter)));
                 }, 0);
             }
             event.setCancelled(true);
@@ -126,7 +126,7 @@ public class GrapplerKit extends AbstractKit implements Listener {
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (hasInternalCooldown(player)) {
-            player.sendMessage(Localization.INSTANCE.getMessage("kit.spamPrevention", ChatUtils.getPlayerLocale(player)));
+            player.sendMessage(Localization.INSTANCE.getMessage("kit.spamPrevention", ChatUtils.locale(player)));
             return;
         }
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);

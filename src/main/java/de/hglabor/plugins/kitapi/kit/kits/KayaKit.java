@@ -78,7 +78,7 @@ public class KayaKit extends AbstractKit implements Listener {
         Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
         if (block.getType().equals(kayaBlock.getType())) {
             if (block.hasMetadata(kayaBlockKey)) {
-                Localization.INSTANCE.getMessage("kaya.triggerBlock", ChatUtils.getPlayerLocale(player));
+                Localization.INSTANCE.getMessage("kaya.triggerBlock", ChatUtils.locale(player));
                 block.setType(Material.AIR);
             }
         }

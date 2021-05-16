@@ -117,7 +117,7 @@ public abstract class AbstractKit extends KitEvents {
     }
 
     public ItemStack getMainKitItem() {
-        return mainKitItem;
+        return mainKitItem != null ? mainKitItem.clone() : null;
     }
 
     public void setMainKitItem(Material material) {
@@ -139,10 +139,10 @@ public abstract class AbstractKit extends KitEvents {
     public List<ItemStack> getKitItems() {
         List<ItemStack> kitItems = new ArrayList<>();
         if (mainKitItem != null) {
-            kitItems.add(mainKitItem);
+            kitItems.add(mainKitItem.clone());
         }
         if (!additionalKitItems.isEmpty()) {
-            kitItems.addAll(additionalKitItems);
+            additionalKitItems.stream().map(ItemStack::clone).forEach(kitItems::add);
         }
         return kitItems;
     }

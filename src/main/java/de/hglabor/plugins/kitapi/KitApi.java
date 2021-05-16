@@ -15,6 +15,7 @@ import de.hglabor.plugins.kitapi.supplier.KitItemSupplierImpl;
 import de.hglabor.plugins.kitapi.supplier.KitPlayerSupplier;
 import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
+import de.hglabor.utils.noriskutils.feast.Feast;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -23,6 +24,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,6 +40,7 @@ public final class KitApi {
     private KitPlayerSupplier playerSupplier;
     private KitItemSupplier itemSupplier;
     private JavaPlugin plugin;
+    private Feast feast;
 
     private KitApi() {
         this.kits = new ArrayList<>();
@@ -104,8 +107,8 @@ public final class KitApi {
         }
     }
 
-    public void register(KitPlayerSupplier kitPlayerSupplier, KitSelector kitSelector, JavaPlugin plugin) {
-        KitApiConfig.getInstance().register(plugin.getDataFolder());
+    public void register(KitPlayerSupplier kitPlayerSupplier, KitSelector kitSelector, JavaPlugin plugin, Path path) {
+        KitApiConfig.getInstance().register(path.toFile());
         this.playerSupplier = kitPlayerSupplier;
         this.kitSelector = kitSelector;
         this.plugin = plugin;
@@ -163,6 +166,7 @@ public final class KitApi {
         kits.add(PhantomKit.INSTANCE);
         kits.add(ArcherKit.INSTANCE);
         kits.add(JokerKit.INSTANCE);
+        kits.add(ChameleonKit.INSTANCE);
         //kits.add(PirateKit.INSTANCE);
         //kits.add(BeamKit.INSTANCE);
         //sort alphabetically
@@ -272,15 +276,25 @@ public final class KitApi {
                 if (kit.getMainKitItem() != null && hasKitItemInAnyHand(player, kit)) {
                     player.sendActionBar(Localization.INSTANCE.getMessage("kit.cooldown",
                             ImmutableMap.of("numberInSeconds", String.valueOf(timeLeft / 1000D)),
-                            ChatUtils.getPlayerLocale(player)));
+                            ChatUtils.locale(player)));
                 } else if (kit.getMainKitItem() == null) {
                     player.sendActionBar(Localization.INSTANCE.getMessage("kit.cooldown",
                             ImmutableMap.of("numberInSeconds", String.valueOf(timeLeft / 1000D)),
-                            ChatUtils.getPlayerLocale(player)));
+                            ChatUtils.locale(player)));
                 }
                 return true;
             }
         }
         return false;
+    }
+
+    public void setFeast(Feast feast) {
+        if (this.feast == null) {
+            this.feast = feast;
+        }
+    }
+
+    public Feast getFeast() {
+        return feast;
     }
 }

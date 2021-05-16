@@ -35,6 +35,7 @@ public class GardenerKit extends AbstractKit implements Listener {
     private final int heightRadius;
     private final String blockListKey;
     private final String gardenerBushKey;
+    private final List<Material> ackerMaterials;
 
     private GardenerKit() {
         super("Gardener", Material.SWEET_BERRIES);
@@ -45,6 +46,7 @@ public class GardenerKit extends AbstractKit implements Listener {
                 Material.SNOW,
                 Material.DEAD_BUSH
         );
+        ackerMaterials = Arrays.asList(Material.GRASS_BLOCK, Material.DIRT, Material.FARMLAND);
         radius = 5;
         heightRadius = 3;
         blockListKey = this.getName() + "blockListKey";
@@ -71,7 +73,7 @@ public class GardenerKit extends AbstractKit implements Listener {
             Set<Location> locations = CircleUtils.makeCircle(player.getLocation(), radius, 1, false, false, i);
             for (Location location : locations) {
                 Block block = location.getBlock();
-                if (destructibleBlocks.contains(block.getType()) && block.getRelative(BlockFace.DOWN).getType().isSolid()) {
+                if (destructibleBlocks.contains(block.getType()) && ackerMaterials.contains(block.getRelative(BlockFace.DOWN).getType())) {
                     block.setType(Material.SWEET_BERRY_BUSH);
                     //Make Bush grow haha
                     if (block.getBlockData() instanceof Ageable) {

@@ -13,9 +13,11 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class KitItemHandler implements Listener {
@@ -78,6 +80,27 @@ public class KitItemHandler implements Listener {
         for (AbstractKit kit : kitPlayer.getKits())
             if (kit.isKitItem(droppedItem))
                 event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        Inventory clickedInventory = event.getClickedInventory();
+        if (clickedInventory == null || !clickedInventory.getType().equals(InventoryType.GRINDSTONE)) {
+            return;
+        }
+        if (event.getSlot() != 2) {
+            return;
+        }
+        for (int i = 0; i <= 1; i++) {
+            ItemStack item = clickedInventory.getItem(i);
+            if (item == null || !item.hasItemMeta()) {
+                continue;
+            }
+            if (KitApi.getInstance().getAllKits().stream().anyMatch(kit -> kit.isKitItem(item))) {
+                event.setCancelled(true);
+                return;
+            }
+        }
     }
 
     @EventHandler

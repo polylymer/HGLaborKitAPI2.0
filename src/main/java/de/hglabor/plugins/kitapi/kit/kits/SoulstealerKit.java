@@ -89,7 +89,7 @@ public class SoulstealerKit extends AbstractKit implements Listener {
         if (!player.hasMetadata(respawnKey)) {
             Player killer = event.getEntity().getKiller();
             if (killer != null) {
-                killer.sendMessage(Localization.INSTANCE.getMessage("soulstealer.killedSoulStealer", ChatUtils.getPlayerLocale(killer)));
+                killer.sendMessage(Localization.INSTANCE.getMessage("soulstealer.killedSoulStealer", ChatUtils.locale(killer)));
             }
             DeathTimer deathTimer = new DeathTimer(kitPlayer, player.getInventory().getContents());
             kitPlayer.putKitAttribute(runnableKey, deathTimer);
@@ -102,7 +102,7 @@ public class SoulstealerKit extends AbstractKit implements Listener {
     public void onPlayerKillsPlayer(KitPlayer killer, KitPlayer dead) {
         killer.getBukkitPlayer().ifPresent(player -> {
             if (player.hasMetadata(respawnKey)) {
-                player.sendMessage(Localization.INSTANCE.getMessage("soulstealer.revived", ChatUtils.getPlayerLocale(killer.getUUID())));
+                player.sendMessage(Localization.INSTANCE.getMessage("soulstealer.revived", ChatUtils.locale(killer.getUUID())));
                 DeathTimer deathTimer = killer.getKitAttribute(runnableKey);
                 deathTimer.stop();
                 killer.putKitAttribute(runnableKey, null);
@@ -121,7 +121,7 @@ public class SoulstealerKit extends AbstractKit implements Listener {
             this.kitPlayer = kitPlayer;
             this.items = items;
             this.counter = effectDuration;
-            this.bossBar = Bukkit.createBossBar(Localization.INSTANCE.getMessage("soulstealer.bossBar", ChatUtils.getPlayerLocale(kitPlayer.getUUID())), BarColor.WHITE, BarStyle.SOLID);
+            this.bossBar = Bukkit.createBossBar(Localization.INSTANCE.getMessage("soulstealer.bossBar", ChatUtils.locale(kitPlayer.getUUID())), BarColor.WHITE, BarStyle.SOLID);
             this.setLastLocation();
             this.init();
         }
