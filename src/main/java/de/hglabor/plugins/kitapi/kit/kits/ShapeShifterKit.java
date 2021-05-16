@@ -45,7 +45,6 @@ public class ShapeShifterKit extends AbstractKit {
         DISABLED_BLOCKS.addAll(Arrays.stream(Material.values()).filter(material -> material.name().endsWith("SIGN")).collect(Collectors.toList()));
         DISABLED_BLOCKS.addAll(Arrays.stream(Material.values()).filter(material -> material.name().endsWith("BED")).collect(Collectors.toList()));
         DISABLED_BLOCKS.addAll(Arrays.stream(Material.values()).filter(material -> material.name().endsWith("BANNER")).collect(Collectors.toList()));
-        DISABLED_BLOCKS.addAll(Arrays.stream(Material.values()).filter(material -> material.name().endsWith("BANNER")).collect(Collectors.toList()));
         DISABLED_BLOCKS.addAll(Arrays.stream(Material.values()).filter(material -> material.name().endsWith("HEAD")).collect(Collectors.toList()));
         DISABLED_BLOCKS.addAll(Arrays.stream(Material.values()).filter(material -> material.name().endsWith("SKULL")).collect(Collectors.toList()));
     }
