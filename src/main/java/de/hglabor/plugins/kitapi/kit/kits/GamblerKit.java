@@ -147,7 +147,7 @@ public class GamblerKit extends AbstractKit implements Listener {
             String y = String.valueOf(location.getBlockY());
             String z = String.valueOf(location.getBlockZ());
             //TODO Localization
-            ChatUtils.broadcastMessage(Localization.INSTANCE.getMessage("gambler.coordsLeak", ImmutableMap.of("x", x, "y", y, "z", z), ChatUtils.getPlayerLocale(p)));
+            ChatUtils.broadcastMessage(Localization.INSTANCE.getMessage("gambler.coordsLeak", ImmutableMap.of("x", x, "y", y, "z", z), ChatUtils.locale(p)));
         });
 
         //POTION EFFECTS
@@ -295,7 +295,7 @@ public class GamblerKit extends AbstractKit implements Listener {
         });
 
         cantBeClassified.add("§7Normie§a+", 0.00003, p -> { // wenn das jemand holt gib ich dem 20 euro
-            p.sendMessage(Localization.INSTANCE.getMessage("gambler.wonNormiePlus", ChatUtils.getPlayerLocale(p)));
+            p.sendMessage(Localization.INSTANCE.getMessage("gambler.wonNormiePlus", ChatUtils.locale(p)));
         });
 
 

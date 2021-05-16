@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -37,6 +38,7 @@ public class SwitcherKit extends AbstractKit implements Listener {
     @KitEvent
     @Override
     public void onProjectileLaunch(ProjectileLaunchEvent e) {
+        if (!(e.getEntity() instanceof Snowball)) return;
         e.getEntity().setMetadata(KitMetaData.SWITCHER_BALL.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
     }
 

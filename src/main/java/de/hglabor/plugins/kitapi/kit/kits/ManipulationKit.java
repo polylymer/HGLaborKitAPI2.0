@@ -74,15 +74,15 @@ public class ManipulationKit extends AbstractKit implements Listener {
                 Player manipulator = getManipulator(mob);
                 if (manipulator != null && manipulator.getUniqueId().equals(player.getUniqueId())) {
                     //NACHRICHT KOMMT 2x WEGEN 2 HÄNDEN
-                    player.sendMessage(t("manipulator.alreadyYourMob", ChatUtils.getPlayerLocale(player)));
+                    player.sendMessage(t("manipulator.alreadyYourMob", ChatUtils.locale(player)));
                     return;
                 }
-                player.sendMessage(t("manipulator.alreadyControlled", ChatUtils.getPlayerLocale(player)));
+                player.sendMessage(t("manipulator.alreadyControlled", ChatUtils.locale(player)));
                 return;
             }
 
             if (getManipulatedMobAmount(player) >= maxManipulatedMobs) {
-                player.sendMessage(t("manipulator.maxAmount", ChatUtils.getPlayerLocale(player)));
+                player.sendMessage(t("manipulator.maxAmount", ChatUtils.locale(player)));
                 return;
             }
 
@@ -144,7 +144,7 @@ public class ManipulationKit extends AbstractKit implements Listener {
                 if (manipulator != null) {
                     manipulator.sendMessage(Localization.INSTANCE.getMessage("manipulator.mobLoose",
                             ImmutableMap.of("amount", String.valueOf(getManipulatedMobAmount(manipulator))),
-                            ChatUtils.getPlayerLocale(manipulator)));
+                            ChatUtils.locale(manipulator)));
                 }
             }
         }

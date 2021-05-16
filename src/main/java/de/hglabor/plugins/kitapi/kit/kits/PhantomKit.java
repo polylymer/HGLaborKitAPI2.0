@@ -38,9 +38,10 @@ public class PhantomKit extends AbstractKit implements Listener {
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(event.getPlayer());
         Player player = event.getPlayer();
+        if (player.isInsideVehicle()) return;
         if (kitPlayer.isInCombat()) {
             player.setVelocity(player.getVelocity().setY(inCombatBoost));
-            player.sendMessage(Localization.INSTANCE.getMessage("phantom.inCombat", ChatUtils.getPlayerLocale(player)));
+            player.sendMessage(Localization.INSTANCE.getMessage("phantom.inCombat", ChatUtils.locale(player)));
         } else {
             player.setVelocity(player.getVelocity().setY(defaultBoost));
         }
@@ -55,7 +56,7 @@ public class PhantomKit extends AbstractKit implements Listener {
         }
         Player entity = (Player) event.getEntity();
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(entity);
-        
+
         if (!kitPlayer.hasKit(this)) {
             return;
         }

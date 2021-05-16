@@ -12,12 +12,12 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 
-/**
- * @author Hotkeyyy
- * @since 2021/02/25
- */
+
 public class AnchorKit extends AbstractKit {
     public static final AnchorKit INSTANCE = new AnchorKit();
     @SoundArg
@@ -42,11 +42,23 @@ public class AnchorKit extends AbstractKit {
     @Override
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
         if (entity instanceof Player) {
+            if (KitApi.getInstance().getPlayer((Player) entity).hasKit(NeoKit.INSTANCE)) {
+                return;
+            }
             ((Player) entity).playSound(entity.getLocation(), hitSound, 1, 1);
         }
         attacker.getBukkitPlayer().ifPresent(player -> player.playSound(player.getLocation(), hitSound, 1, 1));
         setKnockbackAttribute(entity);
         Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> resetKnockbackAttribute(entity), 1);
+    }
+
+    @KitEvent
+    public void onPlayerGetsAttackedByLivingEntity(EntityDamageByEntityEvent event, Player player, LivingEntity attacker) {
+        if (!(attacker instanceof Player)) return;
+        if (KitApi.getInstance().getPlayer((Player) attacker).hasKit(NeoKit.INSTANCE)) {
+            resetKnockbackAttribute(player);
+            Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> setKnockbackAttribute(player), 1);
+        }
     }
 
     private void setKnockbackAttribute(LivingEntity entity) {

@@ -80,7 +80,7 @@ public class KangarooKit extends AbstractKit {
 
         boolean jumpingAway = otherPlayer != null && !isLookingAt(player, otherPlayer.getLocation().add(0, otherPlayer.getEyeHeight(), 0));
         if (isInCombat && jumpingAway) {
-            player.sendMessage(t("kangaroo.jumpingAway", ChatUtils.getPlayerLocale(player)));
+            player.sendMessage(t("kangaroo.jumpingAway", ChatUtils.locale(player)));
             return;
         }
 

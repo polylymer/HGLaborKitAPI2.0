@@ -17,6 +17,7 @@ import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.WorldEditUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -72,6 +73,9 @@ public class GladiatorKit extends AbstractKit implements Listener {
             return;
         }
 
+        //Prevent Hulk crash?
+        rightClicked.getPassengers().forEach(Entity::leaveVehicle);
+
         rightClicked.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
         player.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
 
@@ -83,11 +87,16 @@ public class GladiatorKit extends AbstractKit implements Listener {
         WorldEditUtils.createCylinder(player.getWorld(), center, radius - 1, false, height, material);
         WorldEditUtils.createCylinder(player.getWorld(), center.clone().add(0, height - 1, 0), radius - 1, true, 1, material);
 
-
-        for (BlockVector3 blockVector3 : gladiatorRegion) {
-            Block block = world.getBlockAt(BukkitAdapter.adapt(world, blockVector3));
-            block.setMetadata(KitMetaData.GLADIATOR_BLOCK.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
-        }
+        //Execute later because async and blocks arent there yet
+        Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> {
+            for (BlockVector3 blockVector3 : gladiatorRegion) {
+                Block block = world.getBlockAt(BukkitAdapter.adapt(world, blockVector3));
+                if (block.getType().isAir()) {
+                    continue;
+                }
+                block.setMetadata(KitMetaData.GLADIATOR_BLOCK.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
+            }
+        }, 5);
 
         GladiatorFight gladiatorFight = new GladiatorFight(gladiatorRegion, kitPlayer, KitApi.getInstance().getPlayer(rightClicked), radius, height);
         kitPlayer.putKitAttribute(attributeKey, gladiatorFight);

@@ -1,4 +1,3 @@
-
 package de.hglabor.plugins.kitapi.pvp;
 
 import com.google.common.collect.ImmutableMap;
@@ -38,7 +37,7 @@ public class Tracker implements Listener {
         KitPlayer kitPlayer = playerList.getKitPlayer(player);
         if (event.getMaterial() == Material.COMPASS) {
             if (target == null) {
-                player.sendMessage(t("hglabor.tracker.noTarget", ChatUtils.getPlayerLocale(player)));
+                player.sendMessage(t("hglabor.tracker.noTarget", ChatUtils.locale(player)));
             } else {
                 player.setCompassTarget(target.getLocation());
                 sendTrackingMessage(player, target, kitPlayer);
@@ -54,9 +53,9 @@ public class Tracker implements Listener {
                             "targetName", target.getName(),
                             "kits", targetKitPlayer.printKits(),
                             "distance", String.valueOf((int) player.getLocation().distance(target.getLocation()))),
-                    ChatUtils.getPlayerLocale(player)));
+                    ChatUtils.locale(player)));
         } else {
-            player.sendMessage(t("hglabor.tracker.target", ImmutableMap.of("targetName", target.getName()), ChatUtils.getPlayerLocale(player)));
+            player.sendMessage(t("hglabor.tracker.target", ImmutableMap.of("targetName", target.getName()), ChatUtils.locale(player)));
         }
     }
 
@@ -64,6 +63,8 @@ public class Tracker implements Listener {
         List<Pair<Entity, Double>> pairs = new ArrayList<>();
         for (Entity possibleTarget : playerList.getTrackingTargets()) {
             if (possibleTarget == null)
+                continue;
+            if (!tracker.getWorld().equals(possibleTarget.getWorld()))
                 continue;
             if (tracker == possibleTarget)
                 continue;

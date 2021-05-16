@@ -38,9 +38,9 @@ public final class KitApiConfig {
         return "kit" + "." + kit.getName() + "." + "settings" + "." + fieldName;
     }
 
-    public void register(File pluginFolder) {
+    public void register(File folder) {
         try {
-            kitFile = new File(pluginFolder, "kitConfig.yml");
+            kitFile = new File(folder, "kitConfig.yml");
             if (!kitFile.exists()) {
                 kitFile.createNewFile();
             }

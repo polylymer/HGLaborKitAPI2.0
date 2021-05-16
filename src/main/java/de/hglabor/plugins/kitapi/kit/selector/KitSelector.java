@@ -111,7 +111,7 @@ public abstract class KitSelector implements Listener {
     }
 
     protected void openFirstPage(Player player) {
-        Inventory page = getPage(0, ChatUtils.getPlayerLocale(player.getUniqueId()));
+        Inventory page = getPage(0, ChatUtils.locale(player.getUniqueId()));
         if (page != null) {
             player.openInventory(page);
         }
@@ -120,7 +120,7 @@ public abstract class KitSelector implements Listener {
     protected boolean nextPage(String title, ItemStack clickedItem, Player player) {
         if (clickedItem.isSimilar(NEXT_PAGE_ITEM)) {
             String pageNumber = title.substring(title.length() - 1);
-            Inventory page = getPage(Integer.parseInt(pageNumber), ChatUtils.getPlayerLocale(player));
+            Inventory page = getPage(Integer.parseInt(pageNumber), ChatUtils.locale(player));
             if (page != null) {
                 player.openInventory(page);
             }
@@ -132,7 +132,7 @@ public abstract class KitSelector implements Listener {
     protected boolean lastPage(String title, ItemStack clickedItem, Player player) {
         if (clickedItem.isSimilar(LAST_PAGE_ITEM)) {
             String pageNumber = title.substring(title.length() - 1);
-            Inventory page = getPage(Integer.parseInt(pageNumber) - 1 - 1, ChatUtils.getPlayerLocale(player));
+            Inventory page = getPage(Integer.parseInt(pageNumber) - 1 - 1, ChatUtils.locale(player));
             if (page != null) {
                 player.openInventory(page);
             }

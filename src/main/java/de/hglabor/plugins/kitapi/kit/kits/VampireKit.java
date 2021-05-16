@@ -44,14 +44,14 @@ public class VampireKit extends AbstractKit {
     @Override
     public void onPlayerKillsPlayer(KitPlayer killer, KitPlayer dead) {
         killer.getBukkitPlayer().ifPresent(player -> {
-            player.sendMessage(Localization.INSTANCE.getMessage("vampire.extraHealth", ImmutableMap.of("hearts", String.valueOf(heartsProKill)), ChatUtils.getPlayerLocale(player)));
+            player.sendMessage(Localization.INSTANCE.getMessage("vampire.extraHealth", ImmutableMap.of("hearts", String.valueOf(heartsProKill)), ChatUtils.locale(player)));
             double newHealth = player.getMaxHealth() + heartsProKill;
             if (newHealth <= maxHealth) {
                 player.setMaxHealth(newHealth);
                 player.setHealth(player.getMaxHealth());
                 killer.putKitAttribute(currentHealthKey, player.getMaxHealth());
             } else {
-                player.sendMessage(t("vampire.maxHealth", ChatUtils.getPlayerLocale(player)));
+                player.sendMessage(t("vampire.maxHealth", ChatUtils.locale(player)));
             }
         });
     }
@@ -59,7 +59,7 @@ public class VampireKit extends AbstractKit {
     @KitEvent
     @Override
     public void onPlayerKillsLivingEntity(EntityDeathEvent event, Player killer, Entity entity) {
-        killer.sendMessage(Localization.INSTANCE.getMessage("vampire.restoredHealth", ChatUtils.getPlayerLocale(killer)));
+        killer.sendMessage(Localization.INSTANCE.getMessage("vampire.restoredHealth", ChatUtils.locale(killer)));
         killer.setHealth(killer.getMaxHealth());
     }
 }
