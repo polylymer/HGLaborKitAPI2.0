@@ -74,13 +74,13 @@ public abstract class KitPlayerImpl implements KitPlayer {
     public abstract boolean isValid();
 
     @Override
-    public boolean isInCombat() {
-        Optional<Player> lastDamager = lastHitInformation.getLastDamager();
-        if (lastDamager.isPresent()) {
-            KitPlayer damager = KitApi.getInstance().getPlayer(lastDamager.get());
-            return damager.isValid() && lastHitInformation.getLastDamagerTimestamp() + 10 * 1000L > System.currentTimeMillis();
+    public boolean isInCombat(int combatTimeLimit) {
+        Optional<Player> lastDamager = this.lastHitInformation.getLastDamager();
+        if (!lastDamager.isPresent()) {
+            return false;
         }
-        return false;
+        KitPlayer damager = KitApi.getInstance().getPlayer(lastDamager.get());
+        return damager.isValid() && lastHitInformation.getLastDamagerTimestamp() + combatTimeLimit * 1000L > System.currentTimeMillis();
     }
 
     @Override

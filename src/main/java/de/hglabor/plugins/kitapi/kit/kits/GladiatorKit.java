@@ -17,6 +17,7 @@ import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.noriskutils.WorldEditUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -64,13 +65,16 @@ public class GladiatorKit extends AbstractKit implements Listener {
 
     @KitEvent
     @Override
-    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, Player rightClicked) {
+    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, KitPlayer kitPlayer, Player rightClicked) {
         Player player = event.getPlayer();
         World world = player.getWorld();
 
         if (player.hasMetadata(KitMetaData.INGLADIATOR.getKey()) || rightClicked.hasMetadata(KitMetaData.INGLADIATOR.getKey())) {
             return;
         }
+
+        //Prevent Hulk crash?
+        rightClicked.getPassengers().forEach(Entity::leaveVehicle);
 
         rightClicked.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
         player.setMetadata(KitMetaData.INGLADIATOR.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
@@ -83,13 +87,17 @@ public class GladiatorKit extends AbstractKit implements Listener {
         WorldEditUtils.createCylinder(player.getWorld(), center, radius - 1, false, height, material);
         WorldEditUtils.createCylinder(player.getWorld(), center.clone().add(0, height - 1, 0), radius - 1, true, 1, material);
 
+        //Execute later because async and blocks arent there yet
+        Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> {
+            for (BlockVector3 blockVector3 : gladiatorRegion) {
+                Block block = world.getBlockAt(BukkitAdapter.adapt(world, blockVector3));
+                if (block.getType().isAir()) {
+                    continue;
+                }
+                block.setMetadata(KitMetaData.GLADIATOR_BLOCK.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
+            }
+        }, 5);
 
-        for (BlockVector3 blockVector3 : gladiatorRegion) {
-            Block block = world.getBlockAt(BukkitAdapter.adapt(world, blockVector3));
-            block.setMetadata(KitMetaData.GLADIATOR_BLOCK.getKey(), new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
-        }
-
-        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         GladiatorFight gladiatorFight = new GladiatorFight(gladiatorRegion, kitPlayer, KitApi.getInstance().getPlayer(rightClicked), radius, height);
         kitPlayer.putKitAttribute(attributeKey, gladiatorFight);
         gladiatorFight.runTaskTimer(KitApi.getInstance().getPlugin(), 0, 20);
@@ -150,6 +158,10 @@ public class GladiatorKit extends AbstractKit implements Listener {
         } else if (block.getType().equals(Material.RED_STAINED_GLASS)) {
             event.setCancelled(false);
         }
+    }
+
+    public Material getMaterial() {
+        return material;
     }
 
     private class GladiatorFight extends BukkitRunnable {

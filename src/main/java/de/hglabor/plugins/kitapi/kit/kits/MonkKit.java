@@ -6,6 +6,7 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
+import de.hglabor.plugins.kitapi.player.KitPlayer;
 import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChanceUtils;
 import de.hglabor.utils.noriskutils.ChatUtils;
@@ -46,20 +47,20 @@ public class MonkKit extends AbstractKit {
 
     @KitEvent
     @Override
-    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, Player rightClicked) {
+    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, KitPlayer kitPlayer, Player rightClicked) {
         Player player = event.getPlayer();
         PlayerInventory inventory = rightClicked.getInventory();
-        player.sendMessage(Localization.INSTANCE.getMessage("monk.successful", ImmutableMap.of("enemy", rightClicked.getName()), ChatUtils.getPlayerLocale(player)));
+        player.sendMessage(Localization.INSTANCE.getMessage("monk.successful", ImmutableMap.of("enemy", rightClicked.getName()), ChatUtils.locale(player)));
         if (ChanceUtils.roll(likelihoodToSwitchArmor)) {
             for (EquipmentSlot armorSlot : armorSlots) {
                 if (inventory.getItem(armorSlot) == null) continue;
-                rightClicked.sendMessage(Localization.INSTANCE.getMessage("monk.itemWasSwitched", ChatUtils.getPlayerLocale(rightClicked)));
-                switchItem(inventory, 0, armorSlot);
+                rightClicked.sendMessage(Localization.INSTANCE.getMessage("monk.itemWasSwitched", ChatUtils.locale(rightClicked)));
+                switchItem(inventory, inventory.getHeldItemSlot(), armorSlot);
                 return;
             }
         }
-        rightClicked.sendMessage(Localization.INSTANCE.getMessage("monk.itemWasSwitched", ChatUtils.getPlayerLocale(rightClicked)));
-        switchItem(inventory, 0, inventorySlots.get(random.nextInt(inventorySlots.size())));
+        rightClicked.sendMessage(Localization.INSTANCE.getMessage("monk.itemWasSwitched", ChatUtils.locale(rightClicked)));
+        switchItem(inventory, inventory.getHeldItemSlot(), inventorySlots.get(random.nextInt(inventorySlots.size())));
         KitApi.getInstance().getPlayer(player).activateKitCooldown(this);
     }
 

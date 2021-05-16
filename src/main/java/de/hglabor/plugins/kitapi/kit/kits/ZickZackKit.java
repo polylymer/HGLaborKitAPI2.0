@@ -19,13 +19,14 @@ import java.util.UUID;
 public class ZickZackKit extends AbstractKit {
     public static final ZickZackKit INSTANCE = new ZickZackKit();
     @IntArg
-    private final int likelihood;
+    private final int likelihood,minCombo;
     private final String comboCounterKey;
 
     private ZickZackKit() {
         super("ZickZack", Material.DIAMOND_BLOCK);
         comboCounterKey = this.getName() + "combos";
         likelihood = 20;
+        minCombo = 3;
     }
 
     @Override
@@ -59,8 +60,14 @@ public class ZickZackKit extends AbstractKit {
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         Map<UUID, Integer> combo = kitPlayer.getKitAttribute(comboCounterKey);
         if (combo.containsKey(attacker.getUniqueId())) {
-            int chance = new Random().nextInt(likelihood) + 1;
             int comboAmount = combo.get(attacker.getUniqueId());
+
+            //Zickzack will only be triggered if player already combod
+            if (comboAmount < minCombo) {
+                return;
+            }
+
+            int chance = new Random().nextInt(likelihood) + 1;
             if (chance > likelihood - comboAmount) {
                 event.setCancelled(true);
                 combo.replace(attacker.getUniqueId(), combo.get(attacker.getUniqueId()) - 1);

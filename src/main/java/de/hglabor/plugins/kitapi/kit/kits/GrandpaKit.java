@@ -13,7 +13,7 @@ public class GrandpaKit extends AbstractKit {
     public static final GrandpaKit INSTANCE = new GrandpaKit();
 
     private GrandpaKit() {
-        super("Grandpa", Material.STICK);
+        super("Grandpa", new ItemBuilder(Material.STICK).setEnchantment(Enchantment.KNOCKBACK, 2).build());
         setMainKitItem(new ItemBuilder(Material.STICK).setEnchantment(Enchantment.KNOCKBACK, 2).build());
     }
 }

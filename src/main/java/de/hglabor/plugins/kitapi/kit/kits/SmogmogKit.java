@@ -5,6 +5,7 @@ import de.hglabor.plugins.kitapi.kit.AbstractKit;
 import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
+import de.hglabor.plugins.kitapi.kit.settings.PotionEffectArg;
 import de.hglabor.plugins.kitapi.kit.settings.PotionTypeArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Color;
@@ -18,6 +19,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 import java.util.Random;
@@ -30,6 +33,8 @@ public class SmogmogKit extends AbstractKit implements Listener {
     private final int effectDuration;
     @PotionTypeArg
     private final PotionType potionType;
+    @PotionEffectArg
+    private final PotionEffectType extraPotionEffectType;
 
     private SmogmogKit() {
         super("Smogmog", Material.POPPED_CHORUS_FRUIT);
@@ -37,6 +42,7 @@ public class SmogmogKit extends AbstractKit implements Listener {
         radius = 8F;
         effectDuration = 3;
         potionType = PotionType.INSTANT_DAMAGE;
+        extraPotionEffectType = PotionEffectType.BLINDNESS;
         setMainKitItem(getDisplayMaterial());
     }
 
@@ -64,6 +70,9 @@ public class SmogmogKit extends AbstractKit implements Listener {
             AreaEffectCloud cloud = (AreaEffectCloud) e.getDamager();
             if (involved.getUniqueId().toString().equals(cloud.getCustomName())) {
                 e.setCancelled(true);
+            }
+            else {
+                involved.addPotionEffect(new PotionEffect(extraPotionEffectType, effectDuration * 20, 0));
             }
         }
     }

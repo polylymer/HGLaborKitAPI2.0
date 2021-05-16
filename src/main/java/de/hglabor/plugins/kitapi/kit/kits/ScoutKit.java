@@ -34,6 +34,7 @@ public class ScoutKit extends AbstractKit {
 
     private ScoutKit() {
         super("Scout", Material.POTION);
+        setKitItemPlaceable(true);
         this.potionEffectType = PotionEffectType.SPEED;
         this.duration = 67;
         this.amplifier = 1;
@@ -50,7 +51,7 @@ public class ScoutKit extends AbstractKit {
         PotionSupplierTask potionSupplierTask = new PotionSupplierTask(kitPlayer);
         kitPlayer.putKitAttribute(runnableKey, potionSupplierTask);
         int timeTilNextPotion = kitPlayer.getKitAttributeOrDefault(timeLeftKey, supplyInterval);
-        Localization.INSTANCE.getMessage("scout.nextSupplyIn", ImmutableMap.of("time", TimeConverter.stringify(timeTilNextPotion * 20)), ChatUtils.getPlayerLocale(kitPlayer.getUUID()));
+        Localization.INSTANCE.getMessage("scout.nextSupplyIn", ImmutableMap.of("time", TimeConverter.stringify(timeTilNextPotion * 20)), ChatUtils.locale(kitPlayer.getUUID()));
         potionSupplierTask.runTaskLater(KitApi.getInstance().getPlugin(), timeTilNextPotion * 20L);
     }
 
@@ -85,8 +86,8 @@ public class ScoutKit extends AbstractKit {
         public void run() {
             if (isCancelled()) return;
             List<ItemStack> potions = IntStream.rangeClosed(0, potionAmount).mapToObj(i -> createScoutPotion()).collect(Collectors.toList());
-            Localization.INSTANCE.getMessage("scout.newPotions", ImmutableMap.of("amount", String.valueOf(potionAmount)), ChatUtils.getPlayerLocale(kitPlayer.getUUID()));
-            KitApi.getInstance().giveKitItemsIfSlotEmpty(kitPlayer, ScoutKit.INSTANCE, potions);
+            Localization.INSTANCE.getMessage("scout.newPotions", ImmutableMap.of("amount", String.valueOf(potionAmount)), ChatUtils.locale(kitPlayer.getUUID()));
+            KitApi.getInstance().giveKitItemsIfInvFull(kitPlayer, ScoutKit.INSTANCE, potions);
             kitPlayer.putKitAttribute(timeLeftKey, supplyInterval);
             onEnable(kitPlayer);
         }

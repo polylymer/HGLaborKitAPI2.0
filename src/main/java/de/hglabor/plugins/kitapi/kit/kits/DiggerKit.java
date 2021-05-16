@@ -14,7 +14,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class DiggerKit extends AbstractKit {
@@ -43,8 +42,16 @@ public class DiggerKit extends AbstractKit {
         Block clickedBlock = event.getClickedBlock();
         Player player = event.getPlayer();
         if (clickedBlock != null) {
+
+            //Reduce Digger item
+            if (player.getInventory().getItemInMainHand().isSimilar(mainKitItem)) {
+                player.getInventory().getItemInMainHand().subtract();
+            } else
+            if (player.getInventory().getItemInOffHand().isSimilar(mainKitItem)) {
+                player.getInventory().getItemInOffHand().subtract();
+            }
+
             Block block = clickedBlock.getLocation().add(0, 1, 0).getBlock();
-            reduceKitItem(event, player);
             KitPlayer kitPlayer = KitApi.getInstance().getPlayer(event.getPlayer());
             kitPlayer.activateKitCooldown(this);
             new BukkitRunnable() {
@@ -78,15 +85,6 @@ public class DiggerKit extends AbstractKit {
                 }
 
             }.runTaskLater(KitApi.getInstance().getPlugin(), 15);
-        }
-    }
-
-    private void reduceKitItem(PlayerInteractEvent event, Player player) {
-        if (event.getHand() != null && event.getItem() != null) {
-            ItemStack itemStack = player.getInventory().getItem(event.getHand());
-            if (itemStack != null) {
-                itemStack.subtract();
-            }
         }
     }
 
