@@ -128,7 +128,7 @@ public class SpidermanKit extends AbstractKit implements Listener {
         }
         if (nearWall(0.5, event.getPlayer())) {
             if (kitPlayer.getKitCooldown(this).hasCooldown()) {
-                player.sendActionBar(Localization.INSTANCE.getMessage("spiderman.noClimbWithCooldown", ChatUtils.getPlayerLocale(player)));
+                player.sendActionBar(Localization.INSTANCE.getMessage("spiderman.noClimbWithCooldown", ChatUtils.locale(player)));
                 return;
             }
             player.setVelocity(new Vector(0, climbVelocity, 0));

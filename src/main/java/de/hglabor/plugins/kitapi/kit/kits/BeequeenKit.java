@@ -55,7 +55,7 @@ public class BeequeenKit extends AbstractKit implements Listener {
     public void onDisable(KitPlayer kitPlayer) {
         HoneyTrail honeyTrail = kitPlayer.getKitAttribute(honeyTrailKey);
         if (honeyTrail != null) {
-            honeyTrail.cancel();
+            honeyTrail.stop();
         }
     }
 

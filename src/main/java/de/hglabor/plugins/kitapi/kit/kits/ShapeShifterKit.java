@@ -15,6 +15,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +32,7 @@ public class ShapeShifterKit extends AbstractKit {
         super("Shapeshifter", Material.REDSTONE_BLOCK);
         setMainKitItem(getDisplayMaterial());
         DISABLED_BLOCKS = new ArrayList<>();
-        DISABLED_BLOCKS.addAll(Arrays.asList(Material.AIR, Material.BARRIER, Material.BEDROCK,
+        DISABLED_BLOCKS.addAll(Arrays.asList(Material.AIR, Material.BARRIER, Material.BEDROCK, Material.SHULKER_BOX,
                 Material.REDSTONE_WIRE, Material.REDSTONE_TORCH, Material.REDSTONE_WALL_TORCH, Material.TORCH, Material.WALL_TORCH,
                 Material.CHEST, Material.PLAYER_HEAD, Material.PLAYER_WALL_HEAD, Material.CONDUIT));
         DISABLED_BLOCKS.addAll(Arrays.stream(Material.values()).filter(material -> material.name().endsWith("SIGN")).collect(Collectors.toList()));
@@ -43,6 +45,7 @@ public class ShapeShifterKit extends AbstractKit {
         Player player = Bukkit.getPlayer(kitPlayer.getUUID());
         if (player != null) {
             DisguiseAPI.undisguiseToAll(player);
+            player.removePotionEffect(PotionEffectType.INVISIBILITY);
         }
     }
 
@@ -53,11 +56,12 @@ public class ShapeShifterKit extends AbstractKit {
         Player player = event.getPlayer();
         if (block != null) {
             if (DISABLED_BLOCKS.contains(block.getType())) {
-                player.sendMessage(Localization.INSTANCE.getMessage("shapeshifter.denyTransformation", ChatUtils.getPlayerLocale(player)));
+                player.sendMessage(Localization.INSTANCE.getMessage("shapeshifter.denyTransformation", ChatUtils.locale(player)));
                 return;
             }
             MiscDisguise miscDisguise = new MiscDisguise(DisguiseType.FALLING_BLOCK, block.getType());
             DisguiseAPI.disguiseEntity(player, miscDisguise);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 255, false, false));
         }
     }
 
@@ -65,6 +69,7 @@ public class ShapeShifterKit extends AbstractKit {
     @Override
     public void onPlayerLeftClickKitItem(PlayerInteractEvent event, KitPlayer kitPlayer) {
         DisguiseAPI.undisguiseToAll(event.getPlayer());
+        event.getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
     }
 
     @KitEvent
@@ -72,6 +77,7 @@ public class ShapeShifterKit extends AbstractKit {
     public void onPlayerGetsAttackedByLivingEntity(EntityDamageByEntityEvent event, Player player, LivingEntity attacker) {
         if (attacker instanceof Player) {
             DisguiseAPI.undisguiseToAll(player);
+            player.removePotionEffect(PotionEffectType.INVISIBILITY);
         }
     }
 }

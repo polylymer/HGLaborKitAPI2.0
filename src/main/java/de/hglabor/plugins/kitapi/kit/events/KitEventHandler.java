@@ -56,7 +56,7 @@ public abstract class KitEventHandler extends KitEvents {
 
         //Players kits are disabled
         if (kitPlayer.areKitsDisabled()) {
-            player.sendActionBar(Localization.INSTANCE.getMessage("kit.disabled", ChatUtils.getPlayerLocale(player)));
+            player.sendActionBar(Localization.INSTANCE.getMessage("kit.disabled", ChatUtils.locale(player)));
             return true;
         }
         return false;

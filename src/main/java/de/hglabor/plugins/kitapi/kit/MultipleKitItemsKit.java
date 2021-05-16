@@ -80,7 +80,7 @@ public abstract class MultipleKitItemsKit extends MultipleCooldownsKit<KitItemAc
                 kitPlayer.putKitAttribute(cooldownKey,null);
                 return false;
             }
-            Locale locale = ChatUtils.getPlayerLocale(player);
+            Locale locale = ChatUtils.locale(player);
             player.sendActionBar(t("kit.multipleCooldown",
                     ImmutableMap.of(
                             "numberInSeconds", String.valueOf(timeLeft / 1000D),

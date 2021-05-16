@@ -20,7 +20,7 @@ public class RecraftInspector {
             Recraft recraft = new Recraft();
             recraft.calcRecraft(player.getInventory().getContents());
             if (recraft.getRecraftPoints() > maxRecraftAmount) {
-                player.sendMessage(t("recraftNerf.tooMuch", ChatUtils.getPlayerLocale(player)));
+                player.sendMessage(t("recraftNerf.tooMuch", ChatUtils.locale(player)));
                 while (recraft.getRecraftPoints() > maxRecraftAmount) {
                     recraft.decrease(player, 1);
                 }

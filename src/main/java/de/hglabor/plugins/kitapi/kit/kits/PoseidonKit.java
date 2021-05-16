@@ -11,6 +11,7 @@ import de.hglabor.utils.noriskutils.NMSUtils;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -19,6 +20,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -38,11 +42,12 @@ public class PoseidonKit extends AbstractKit {
 
     private PoseidonKit() {
         super("Poseidon", new ItemBuilder(Material.TRIDENT).setEnchantment(Enchantment.RIPTIDE, 3).setName("Poseidon").build());
-        setMainKitItem(createPoseidonKitItem());
         rainTime = 25;
         speedAmplifier = 0;
         regenerationAmplifier = 0;
         rainRunnable = this.getName() + "rainRunnable";
+        setKitItemPlaceable(true);
+        setMainKitItem(createPoseidonKitItem());
     }
 
     private ItemStack createPoseidonKitItem() {
@@ -90,7 +95,7 @@ public class PoseidonKit extends AbstractKit {
         private int timer;
 
         private PoseidonRain(Player player) {
-            this.rainBar = Bukkit.createBossBar(t("poseidon.rain", ChatUtils.getPlayerLocale(player)), BarColor.BLUE, BarStyle.SOLID);
+            this.rainBar = Bukkit.createBossBar(t("poseidon.rain", ChatUtils.locale(player)), BarColor.BLUE, BarStyle.SOLID);
             this.player = player;
             this.endTime = rainTime;
             this.startRain();
