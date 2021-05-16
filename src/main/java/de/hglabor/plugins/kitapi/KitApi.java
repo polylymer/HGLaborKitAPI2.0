@@ -160,6 +160,7 @@ public final class KitApi {
         kits.add(AnalystKit.INSTANCE);
         kits.add(KangarooKit.INSTANCE);
         kits.add(HulkKit.INSTANCE);
+        kits.add(DemomanKit.INSTANCE);
         kits.add(GardenerKit.INSTANCE);
         kits.add(BeequeenKit.INSTANCE);
         kits.add(PoseidonKit.INSTANCE);
