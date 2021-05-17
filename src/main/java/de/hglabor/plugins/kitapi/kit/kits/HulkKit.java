@@ -6,16 +6,14 @@ import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
 
 import java.util.List;
 
@@ -67,6 +65,17 @@ public class HulkKit extends AbstractKit implements Listener {
             }
             if (player.getPassengers().size() > 0 && player.getPassengers().get(0).equals(event.getEntity())) {
                 event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onVehicleEnter(VehicleEnterEvent event) {
+        if (!(event.getEntered() instanceof Player)) return;
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer((Player) event.getEntered());
+        if (kitPlayer.hasKit(this)) {
+            if (kitPlayer.getKitCooldown(this).hasCooldown()) {
+                event.setCancelled(event.getVehicle() instanceof Boat || event.getVehicle() instanceof Minecart);
             }
         }
     }
