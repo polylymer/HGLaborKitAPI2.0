@@ -38,7 +38,7 @@ public class LumberjackKit extends AbstractKit {
 
     public void breakSurroundingWood(Block block, KitPlayer kitPlayer) {
         String blockTypeName = block.getType().name().toLowerCase();
-        if (blockTypeName.contains("wood") || blockTypeName.contains("log")) {
+        if (blockTypeName.contains("wood") || blockTypeName.contains("log") || blockTypeName.contains("stem") || blockTypeName.contains("hyphae")) {
             block.breakNaturally();
             AtomicInteger count = kitPlayer.getKitAttribute(logCounterKey);
             if (count.getAndIncrement() > maxLogToBreak) return;
