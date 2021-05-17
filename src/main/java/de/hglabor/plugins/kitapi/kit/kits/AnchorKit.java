@@ -31,12 +31,14 @@ public class AnchorKit extends AbstractKit {
     @KitEvent
     @Override
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
+        if (KitApi.getInstance().getPlayer((Player) entity).hasKit(NeoKit.INSTANCE)) return;
         handleAnchor(event);
     }
 
     @KitEvent
     @Override
     public void onPlayerGetsAttackedByLivingEntity(EntityDamageByEntityEvent event, Player player, LivingEntity attacker) {
+        if (KitApi.getInstance().getPlayer((Player) attacker).hasKit(NeoKit.INSTANCE)) return;
         handleAnchor(event);
     }
 
