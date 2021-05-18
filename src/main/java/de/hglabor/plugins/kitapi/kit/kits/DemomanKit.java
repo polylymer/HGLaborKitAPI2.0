@@ -76,10 +76,11 @@ public class DemomanKit extends AbstractKit implements Listener {
         Player player = event.getPlayer();
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
 
+        if (!kitPlayer.hasKit(this)) return;
+
         if (!Tag.WOODEN_PRESSURE_PLATES.isTagged(eventBlock.getType()) && !Tag.STONE_PRESSURE_PLATES.isTagged(eventBlock.getType()) && !Tag.CARPETS.isTagged(eventBlock.getType()))
             return;
         if (!KitEventHandler.canUseKit(event, kitPlayer, this)) {
-            event.setCancelled(true);
             return;
         }
 
