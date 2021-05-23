@@ -45,6 +45,8 @@ public class SwordmanKit extends AbstractKit {
     private final float cooldown;
     @LongArg
     private final long animationSpeed;
+    @DoubleArg
+    private double minHearts;
 
     protected SwordmanKit() {
         super("Swordman", Material.GOLDEN_SWORD);
@@ -57,6 +59,7 @@ public class SwordmanKit extends AbstractKit {
         this.cooldown = 13f;
         this.animationSpeed = 3;
         this.effectMultiplier = 3;
+        this.minHearts = 3.5;
     }
 
     @KitEvent
@@ -108,7 +111,7 @@ public class SwordmanKit extends AbstractKit {
                     finalEntity.getWorld().spawnParticle(Particle.SWEEP_ATTACK, finalEntity.getLocation().clone().add(0,1.4,0), 1);
                     finalEntity.getWorld().playSound(finalEntity.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1, 1);
                     finalEntity.damage(damage, player);
-                    if(finalEntity.getHealth() < 3.5 && finalEntity instanceof Player) {
+                    if(finalEntity.getHealth() < minHearts && finalEntity instanceof Player) {
                         if(bukkitTask != null) {
                             bukkitTask.cancel();
                         }
