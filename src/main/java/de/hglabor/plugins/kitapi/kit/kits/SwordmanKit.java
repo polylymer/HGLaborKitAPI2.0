@@ -45,6 +45,8 @@ public class SwordmanKit extends AbstractKit {
     private final float cooldown;
     @LongArg
     private final long animationSpeed;
+    @IntArg
+    private int duration;
 
     protected SwordmanKit() {
         super("Swordman", Material.GOLDEN_SWORD);
@@ -57,6 +59,7 @@ public class SwordmanKit extends AbstractKit {
         this.cooldown = 13f;
         this.animationSpeed = 3;
         this.effectMultiplier = 3;
+        this.duration = 10;
     }
 
     @KitEvent
@@ -98,7 +101,7 @@ public class SwordmanKit extends AbstractKit {
         kitPlayer.putKitAttribute(armorStandAttributeKey, armorStand);
         task = Bukkit.getScheduler().runTaskTimer(KitApi.getInstance().getPlugin(), () -> {
             BukkitTask bukkitTask = kitPlayer.getKitAttribute(runnableAttributeKey);
-            if(System.currentTimeMillis() >= activationTime + 15000) {
+            if(System.currentTimeMillis() >= activationTime + duration * 1000D) {
                 armorStand.remove();
                 if(bukkitTask != null) {
                     bukkitTask.cancel();
