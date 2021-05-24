@@ -68,7 +68,6 @@ public class BearKit extends AbstractKit implements Listener {
             return;
         }
         if (!KitEventHandler.canUseKit(event, kitPlayer, this)) {
-            event.setCancelled(true);
             return;
         }
         ItemStack itemStack = player.getInventory().getItemInMainHand();

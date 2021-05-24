@@ -62,14 +62,13 @@ public class CookiemonsterKit extends AbstractKit implements Listener {
 
     @KitEvent
     @EventHandler
-    public void onInteract(BlockBreakEvent event) {
+    public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         if (event.getBlock().getType() != Material.GRASS) {
             return;
         }
         if (!KitEventHandler.canUseKit(event, kitPlayer, this)) {
-            event.setCancelled(true);
             return;
         }
         if(ChanceUtils.roll(likeihood)) {
