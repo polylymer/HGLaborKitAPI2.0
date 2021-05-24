@@ -43,8 +43,8 @@ public class MagicianKit extends AbstractKit {
     private int invalidColorRgb;
 
     protected MagicianKit() {
-        super("Magician", new ItemBuilder(Material.PLAYER_HEAD).setPlayerSkull("Sasukey").build());
-        setMainKitItem(new ItemBuilder(Material.PLAYER_HEAD).setPlayerSkull("Sasukey").build());
+        super("Magician", Material.DRAGON_BREATH);
+        setMainKitItem(getDisplayMaterial());
         this.cooldown = 35f;
         this.durationInSeconds = 6;
         this.validColorRgb = 11585581;
@@ -97,9 +97,8 @@ public class MagicianKit extends AbstractKit {
                 Player player = optionalPlayer.get();
                 PvPBot pvpBot = new PvPBot(player.getWorld(), player.getName(), player, KitApi.getInstance().getPlugin());
                 pvpBot.withHealth(120);
-                pvpBot.withMovementSpeed(0.30);
-                pvpBot.withDisplayInTab(false);
-                pvpBot.spawn(player.getLocation());
+                pvpBot.withMovementSpeed(0.17);
+                pvpBot.spawn(player.getLocation().clone().add(0,1,0));
                 Zombie zombie = pvpBot.getEntity();
                 Mob mob = (Mob) zombie;
                 EntityInsentient craftMonster = (EntityInsentient) ((CraftEntity) mob).getHandle();
@@ -108,16 +107,16 @@ public class MagicianKit extends AbstractKit {
                 Location location = player.getLocation().clone();
                 switch (magicianDirection) {
                     case POSITIVE_X:
-                        location.add(15,0,0);
+                        location.add(15,1,0);
                         break;
                     case NEGATIVE_X:
-                        location.add(-15,0,0);
+                        location.add(-15,1,0);
                         break;
                     case POSITIVE_Z:
-                        location.add(0,0,15);
+                        location.add(0,1,15);
                         break;
                     case NEGATIVE_Z:
-                        location.add(0,0,-15);
+                        location.add(0,1,-15);
                         break;
                 }
                 craftMonster.goalSelector.a(0, new LaborPathfinderMoveToLocation(location, craftMonster));
@@ -136,10 +135,10 @@ public class MagicianKit extends AbstractKit {
                                     zombie.addPassenger(player);
                                 }
                             }
-                            zombie.getWorld().spawnParticle(Particle.REDSTONE, zombie.getLocation(), 0, new Particle.DustOptions(Color.fromBGR(isValid ? validColorRgb : invalidColorRgb), 1f));
+                            zombie.getWorld().spawnParticle(Particle.REDSTONE, zombie.getLocation().clone().add(0,0.5,0), 0, new Particle.DustOptions(Color.fromBGR(isValid ? validColorRgb : invalidColorRgb), 1.5f));
                         }
                     }
-                }.runTaskTimer(KitApi.getInstance().getPlugin(), 9, 2);
+                }.runTaskTimer(KitApi.getInstance().getPlugin(), 1, 1);
             }
         }
 
