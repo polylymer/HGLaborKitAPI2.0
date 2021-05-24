@@ -59,7 +59,7 @@ public class SwordmanKit extends AbstractKit {
         this.cooldown = 13f;
         this.animationSpeed = 3;
         this.effectMultiplier = 3;
-        this.duration = 10;
+        this.duration = 6;
     }
 
     @KitEvent
@@ -92,8 +92,7 @@ public class SwordmanKit extends AbstractKit {
         if(entity == null) {
             return;
         }
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 8*20, effectMultiplier, false, false));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 8*20, effectMultiplier, false, false));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 50, effectMultiplier, false, false));
         long activationTime = System.currentTimeMillis();
         BukkitTask task;
         LivingEntity finalEntity = (LivingEntity) entity;
