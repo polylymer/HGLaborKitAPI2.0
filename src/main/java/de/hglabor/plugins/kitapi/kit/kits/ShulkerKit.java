@@ -28,7 +28,7 @@ public class ShulkerKit extends AbstractKit {
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        ShulkerBullet shulkerBullet = player.launchProjectile(ShulkerBullet.class, player.getLocation().getDirection().multiply(2));
+        player.launchProjectile(ShulkerBullet.class, player.getLocation().getDirection().multiply(2));
         KitApi.getInstance().getPlayer(player).activateKitCooldown(this);
     }
 }
