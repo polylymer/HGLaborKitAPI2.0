@@ -49,7 +49,6 @@ public class CookiemonsterKit extends AbstractKit implements Listener {
             return;
         }
         if (!KitEventHandler.canUseKit(event, kitPlayer, this)) {
-            event.setCancelled(true);
             return;
         }
         ItemStack itemStack = player.getInventory().getItemInMainHand();
@@ -57,12 +56,11 @@ public class CookiemonsterKit extends AbstractKit implements Listener {
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_DONKEY_EAT, 1, 1);
         player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, effectDuration*20, effectMultiplier, false, false));
         player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, effectDuration*20, effectMultiplier, false, false));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, effectDuration*20, effectMultiplier, false, false));
     }
 
     @KitEvent
     @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
+    public void onBlockBreakA(BlockBreakEvent event) {
         Player player = event.getPlayer();
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         if (event.getBlock().getType() != Material.GRASS) {
