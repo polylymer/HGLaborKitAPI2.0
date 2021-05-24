@@ -2,6 +2,7 @@ package de.hglabor.plugins.kitapi.kit.kits;
 
 import de.hglabor.plugins.kitapi.KitApi;
 import de.hglabor.plugins.kitapi.kit.AbstractKit;
+import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,7 +18,8 @@ public class ShulkerKit extends AbstractKit {
 
     protected ShulkerKit() {
         super("Shulker", Material.SHULKER_SHELL);
-        this.cooldown = 7f;
+        setMainKitItem(getDisplayMaterial());
+        this.cooldown = 13f;
     }
 
     @Override
@@ -25,6 +27,7 @@ public class ShulkerKit extends AbstractKit {
         return cooldown;
     }
 
+    @KitEvent
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Player player = event.getPlayer();
