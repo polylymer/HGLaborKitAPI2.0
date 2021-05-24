@@ -15,6 +15,7 @@ import de.hglabor.plugins.kitapi.supplier.KitItemSupplierImpl;
 import de.hglabor.plugins.kitapi.supplier.KitPlayerSupplier;
 import de.hglabor.utils.localization.Localization;
 import de.hglabor.utils.noriskutils.ChatUtils;
+import de.hglabor.utils.noriskutils.feast.Feast;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -39,6 +40,7 @@ public final class KitApi {
     private KitPlayerSupplier playerSupplier;
     private KitItemSupplier itemSupplier;
     private JavaPlugin plugin;
+    private Feast feast;
 
     private KitApi() {
         this.kits = new ArrayList<>();
@@ -158,12 +160,18 @@ public final class KitApi {
         kits.add(AnalystKit.INSTANCE);
         kits.add(KangarooKit.INSTANCE);
         kits.add(HulkKit.INSTANCE);
+        kits.add(DemomanKit.INSTANCE);
         kits.add(GardenerKit.INSTANCE);
         kits.add(BeequeenKit.INSTANCE);
         kits.add(PoseidonKit.INSTANCE);
         kits.add(PhantomKit.INSTANCE);
         kits.add(ArcherKit.INSTANCE);
         kits.add(HemomancerKit.INSTANCE);
+        kits.add(SpecialistKit.INSTANCE);
+        kits.add(PacifistKit.INSTANCE);
+        kits.add(NeoKit.INSTANCE);
+        kits.add(JokerKit.INSTANCE);
+        kits.add(ChameleonKit.INSTANCE);
         //kits.add(PirateKit.INSTANCE);
         //kits.add(BeamKit.INSTANCE);
         //sort alphabetically
@@ -283,5 +291,15 @@ public final class KitApi {
             }
         }
         return false;
+    }
+
+    public void setFeast(Feast feast) {
+        if (this.feast == null) {
+            this.feast = feast;
+        }
+    }
+
+    public Feast getFeast() {
+        return feast;
     }
 }

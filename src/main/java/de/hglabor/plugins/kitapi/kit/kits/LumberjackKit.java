@@ -29,7 +29,7 @@ public class LumberjackKit extends AbstractKit {
     @Override
     public void onBlockBreakWithKitItem(BlockBreakEvent e) {
         String blockTypeName = e.getBlock().getType().name().toLowerCase();
-        if (blockTypeName.contains("wood") || blockTypeName.contains("log")) {
+        if ((blockTypeName.contains("wood") || blockTypeName.contains("log") || blockTypeName.contains("stem") || blockTypeName.contains("hyphae")) && !blockTypeName.contains("mushroom")) {
             KitPlayer player = KitApi.getInstance().getPlayer(e.getPlayer());
             player.putKitAttribute(logCounterKey, new AtomicInteger());
             breakSurroundingWood(e.getBlock(), player);
@@ -38,7 +38,7 @@ public class LumberjackKit extends AbstractKit {
 
     public void breakSurroundingWood(Block block, KitPlayer kitPlayer) {
         String blockTypeName = block.getType().name().toLowerCase();
-        if (blockTypeName.contains("wood") || blockTypeName.contains("log")) {
+        if (blockTypeName.contains("wood") || blockTypeName.contains("log") || blockTypeName.contains("stem") || blockTypeName.contains("hyphae")) {
             block.breakNaturally();
             AtomicInteger count = kitPlayer.getKitAttribute(logCounterKey);
             if (count.getAndIncrement() > maxLogToBreak) return;
