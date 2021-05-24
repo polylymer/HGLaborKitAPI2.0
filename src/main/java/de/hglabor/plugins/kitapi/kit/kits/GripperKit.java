@@ -37,7 +37,7 @@ public class GripperKit extends AbstractKit {
     private final String grippedEntityKey = "grippedEntity";
     private final String runnableKey = "gripperRunnable";
 
-    protected GripperKit() {
+    private GripperKit() {
         super("Gripper", Material.MINECART);
         setMainKitItem(getDisplayMaterial());
         this.cooldown = 8f;
