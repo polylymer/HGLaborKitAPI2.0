@@ -47,8 +47,8 @@ public class BearKit extends AbstractKit implements Listener {
         snowballKey = "bearSnowball";
         damage = 2.0;
         volume = 4.3F;
-        this.explosionPower = 2.2f;
-        this.cooldown = 15.0f;
+        this.explosionPower = 1.2f;
+        this.cooldown = 50.0f;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class BearKit extends AbstractKit implements Listener {
         kitPlayer.getBukkitPlayer().ifPresent(player -> DisguiseAPI.disguiseEntity(player, new MobDisguise(DisguiseType.POLAR_BEAR)));
     }
 
-    @KitEvent
+    @KitEvent(ignoreCooldown = true)
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
