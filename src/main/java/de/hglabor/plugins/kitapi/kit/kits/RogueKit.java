@@ -38,7 +38,7 @@ public class RogueKit extends AbstractKit {
         Player player = event.getPlayer();
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         int counter = 0;
-        for (KitPlayer nearbyPlayerKitOwner : getKitPlayerInRadius(player)) {
+        for (KitPlayer nearbyPlayerKitOwner : getKitPlayersInRadius(player, radius)) {
             Player nearbyPlayer = Bukkit.getPlayer(nearbyPlayerKitOwner.getUUID());
             if (nearbyPlayer != player) {
                 counter++;
@@ -50,17 +50,6 @@ public class RogueKit extends AbstractKit {
         }
         player.sendMessage("You disabled the kits of " + counter + " players");
         kitPlayer.activateKitCooldown(this);
-    }
-
-    private List<KitPlayer> getKitPlayerInRadius(Player player) {
-        List<KitPlayer> enemies = new ArrayList<>();
-        for (Player nearbyPlayer : player.getWorld().getNearbyEntitiesByType(Player.class, player.getLocation(), radius)) {
-            KitPlayer nearbyKitPlayer = KitApi.getInstance().getPlayer(nearbyPlayer);
-            if (nearbyKitPlayer.isValid()) {
-                enemies.add(nearbyKitPlayer);
-            }
-        }
-        return enemies;
     }
 
     @Override
