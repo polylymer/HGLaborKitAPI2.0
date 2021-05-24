@@ -56,11 +56,9 @@ public class PhantomKit extends AbstractKit implements Listener {
         }
         Player entity = (Player) event.getEntity();
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(entity);
-
         if (!kitPlayer.hasKit(this)) {
             return;
         }
-
         ItemStack chestplate = entity.getInventory().getChestplate();
         if (chestplate != null && chestplate.getType().equals(Material.ELYTRA)) {
             return;
