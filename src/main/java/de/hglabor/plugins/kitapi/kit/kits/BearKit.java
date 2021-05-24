@@ -38,6 +38,8 @@ public class BearKit extends AbstractKit implements Listener {
     private final float volume;
     @FloatArg
     private final float explosionPower;
+    @FloatArg(min = 0.0F)
+    private final float cooldown;
 
     protected BearKit() {
         super("Bear", Material.DEAD_TUBE_CORAL);
@@ -46,6 +48,7 @@ public class BearKit extends AbstractKit implements Listener {
         damage = 2.0;
         volume = 4.3F;
         this.explosionPower = 2.2f;
+        this.cooldown = 15.0f;
     }
 
     @Override
@@ -107,5 +110,12 @@ public class BearKit extends AbstractKit implements Listener {
         Player player = event.getPlayer();
         player.getWorld().createExplosion(player.getLocation(), explosionPower, false, true, player);
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_POLAR_BEAR_WARNING, volume, 0.9f);
+        KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
+        kitPlayer.activateKitCooldown(this);
+    }
+
+    @Override
+    public float getCooldown() {
+        return cooldown;
     }
 }
