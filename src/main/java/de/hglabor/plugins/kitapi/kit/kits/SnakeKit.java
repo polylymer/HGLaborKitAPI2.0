@@ -20,11 +20,10 @@ public class SnakeKit extends AbstractKit {
     public static final SnakeKit INSTANCE = new SnakeKit();
 
     @IntArg
-    private final int likelihood, effectDuration, effectMultiplier;
+    private final int effectDuration, effectMultiplier;
 
     protected SnakeKit() {
         super("Snake", Material.WEEPING_VINES);
-        this.likelihood = 23;
         this.effectDuration = 2;
         this.effectMultiplier = 0;
         setMainKitItem(getDisplayMaterial());
@@ -33,13 +32,12 @@ public class SnakeKit extends AbstractKit {
     @KitEvent
     @Override
     public void onHitLivingEntityWithKitItem(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
-        if (ChanceUtils.roll(likelihood)) {
-            entity.addPotionEffect(new PotionEffect(PotionEffectType.POISON, effectDuration * 20, effectMultiplier, false, false));
-            entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_PHANTOM_BITE, 5, 10f);
-        }
+        entity.addPotionEffect(new PotionEffect(PotionEffectType.POISON, effectDuration * 20, effectMultiplier, false, false));
+        entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_PHANTOM_BITE, 5, 10f);
+        attacker.activateKitCooldown(this);
     }
 
-    @KitEvent
+    @KitEvent(ignoreCooldown = true)
     @Override
     public void onPlayerMoveEvent(PlayerMoveEvent event, KitPlayer kitPlayer) {
         Player player = event.getPlayer();
