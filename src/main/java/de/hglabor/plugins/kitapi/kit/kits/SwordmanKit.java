@@ -45,8 +45,6 @@ public class SwordmanKit extends AbstractKit {
     private final float cooldown;
     @LongArg
     private final long animationSpeed;
-    @DoubleArg
-    private double minHearts;
 
     protected SwordmanKit() {
         super("Swordman", Material.GOLDEN_SWORD);
@@ -59,7 +57,6 @@ public class SwordmanKit extends AbstractKit {
         this.cooldown = 13f;
         this.animationSpeed = 3;
         this.effectMultiplier = 3;
-        this.minHearts = 3.5;
     }
 
     @KitEvent
@@ -94,12 +91,19 @@ public class SwordmanKit extends AbstractKit {
         }
         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 8*20, effectMultiplier, false, false));
         player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 8*20, effectMultiplier, false, false));
+        long activationTime = System.currentTimeMillis();
         BukkitTask task;
         LivingEntity finalEntity = (LivingEntity) entity;
         ArmorStand armorStand = spawnSword(player.getLocation());
         kitPlayer.putKitAttribute(armorStandAttributeKey, armorStand);
         task = Bukkit.getScheduler().runTaskTimer(KitApi.getInstance().getPlugin(), () -> {
             BukkitTask bukkitTask = kitPlayer.getKitAttribute(runnableAttributeKey);
+            if(System.currentTimeMillis() >= activationTime + 15000) {
+                armorStand.remove();
+                if(bukkitTask != null) {
+                    bukkitTask.cancel();
+                }
+            }
             if(finalEntity.isDead()) {
                 armorStand.remove();
                 if(bukkitTask != null) {
@@ -111,12 +115,6 @@ public class SwordmanKit extends AbstractKit {
                     finalEntity.getWorld().spawnParticle(Particle.SWEEP_ATTACK, finalEntity.getLocation().clone().add(0,1.4,0), 1);
                     finalEntity.getWorld().playSound(finalEntity.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1, 1);
                     finalEntity.damage(damage, player);
-                    if(finalEntity.getHealth() < minHearts && finalEntity instanceof Player) {
-                        if(bukkitTask != null) {
-                            bukkitTask.cancel();
-                        }
-                        armorStand.remove();
-                    }
                 } else {
                     int x = finalEntity.getLocation().getBlockX();
                     int y = finalEntity.getLocation().getBlockY();
