@@ -36,6 +36,8 @@ public class BearKit extends AbstractKit implements Listener {
     private final double damage;
     @FloatArg
     private final float volume;
+    @FloatArg
+    private final float explosionPower;
 
     protected BearKit() {
         super("Bear", Material.DEAD_TUBE_CORAL);
@@ -43,6 +45,7 @@ public class BearKit extends AbstractKit implements Listener {
         snowballKey = "bearSnowball";
         damage = 2.0;
         volume = 4.3F;
+        this.explosionPower = 2.2f;
     }
 
     @Override
@@ -56,9 +59,10 @@ public class BearKit extends AbstractKit implements Listener {
         Player player = event.getPlayer();
         KitPlayer kitPlayer = KitApi.getInstance().getPlayer(player);
         if (event.getAction() != Action.LEFT_CLICK_AIR) {
-            if(!player.getInventory().getItemInMainHand().getType().equals(Material.BAMBOO)) {
-                return;
-            }
+            return;
+        }
+        if(!player.getInventory().getItemInMainHand().getType().equals(Material.BAMBOO)) {
+            return;
         }
         if (!KitEventHandler.canUseKit(event, kitPlayer, this)) {
             event.setCancelled(true);
@@ -66,7 +70,8 @@ public class BearKit extends AbstractKit implements Listener {
         }
         ItemStack itemStack = player.getInventory().getItemInMainHand();
         itemStack.setAmount(itemStack.getAmount()-1);
-        player.launchProjectile(Snowball.class, player.getLocation().getDirection().multiply(2));
+        Snowball snowball = player.launchProjectile(Snowball.class, player.getLocation().getDirection().multiply(2));
+        snowball.addScoreboardTag(snowballKey);
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
     }
 
@@ -100,7 +105,7 @@ public class BearKit extends AbstractKit implements Listener {
     @Override
     public void onPlayerRightClickKitItem(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        player.getWorld().createExplosion(player.getLocation(), 1, false, true, player);
+        player.getWorld().createExplosion(player.getLocation(), explosionPower, false, true, player);
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_POLAR_BEAR_WARNING, volume, 0.9f);
     }
 }
