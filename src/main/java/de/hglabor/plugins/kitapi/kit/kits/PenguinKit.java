@@ -43,14 +43,7 @@ public class PenguinKit extends AbstractKit implements Listener {
         return cooldown;
     }
 
-    @KitEvent
-    @Override
-    public void onPlayerRightClickPlayerWithKitItem(PlayerInteractAtEntityEvent event, KitPlayer kitPlayer, Player rightClicked) {
-
-        kitPlayer.activateKitCooldown(this);
-    }
-
-    @KitEvent
+    @KitEvent(ignoreCooldown = true)
     @Override
     public void onProjectileHitEvent(ProjectileHitEvent event, KitPlayer kitPlayer, Entity hitEntity) {
         if(kitPlayer.isValid()) {
@@ -103,9 +96,7 @@ public class PenguinKit extends AbstractKit implements Listener {
                             Location location = player.getLocation().clone().subtract(0,2,0);
                             Material old = location.getBlock().getType();
                             location.getBlock().setType(Material.ICE);
-                            Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> {
-                                location.getBlock().setType(old);
-                            }, 40);
+                            Bukkit.getScheduler().runTaskLater(KitApi.getInstance().getPlugin(), () -> location.getBlock().setType(old), 40);
                         }
                     }
                 }

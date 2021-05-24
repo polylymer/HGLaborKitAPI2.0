@@ -22,11 +22,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.List;
 import java.util.Optional;
 
 public class GripperKit extends AbstractKit {
 
     public static final GripperKit INSTANCE = new GripperKit();
+    private final Material[] disabledBlocks = {Material.BEDROCK, Material.OBSIDIAN, Material.BARRIER};
 
     @FloatArg(min = 0.0F)
     private final float cooldown;
@@ -112,6 +114,9 @@ public class GripperKit extends AbstractKit {
             if(canGrabBlocks) {
                 Block block = event.getClickedBlock();
                 if(block == null || event.isCancelled()) {
+                    return;
+                }
+                if(List.of(disabledBlocks).contains(block.getType())) {
                     return;
                 }
                 FallingBlock grippedBlock = kitPlayer.getKitAttribute(grippedEntityKey);
